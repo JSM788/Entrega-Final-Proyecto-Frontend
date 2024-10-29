@@ -12,7 +12,7 @@ function App() {
       <main className="flex-grow bg-white">
         <HomeContainer />
       </main>
-      {/*<Footer /> */}
+      <Footer /> 
     </div>
   );
 }
