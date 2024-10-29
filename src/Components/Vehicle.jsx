@@ -15,7 +15,7 @@ export const VehicleCard = (props) => {
       color="blue-gray"
       className="text-center font-bold mb-2"
     >
-      {vehicle.nombreVehiculo } - {vehicle.nombreVehiculo } 
+      {vehicle.nombreVehiculo } · {vehicle.marcaVehiculo } 
     </Typography>
     <div className="flex justify-center mb-4">
       <img
@@ -25,10 +25,10 @@ export const VehicleCard = (props) => {
       />
     </div>
     <div className="flex justify-evenly mb-4">
-      <Button size="sm" color="gray" className="">
+      <Button size="sm" color="gray" className="sm:w-52 md:w-72 lg:w-48">
         VER MÁS
       </Button>
-      <Button size="sm" className="bg-[#32CEB1]">
+      <Button size="sm" className="bg-[#32CEB1] sm:w-52 md:w-72 lg:w-48">
         RESERVAR
       </Button>
     </div>
