@@ -5,9 +5,9 @@ import {
   Typography,
   Button,
 } from "@material-tailwind/react";
-import AutoPlata from "../assets/icons/auto-plata.svg";
+import carsData from "../assets/cars.json";
 
-export const RecommendationCard = () => {
+export const RecommendationCard = ({ vehicle }) => {
   return (
     <Card className="w-full max-w-md flex flex-col md:flex-row items-center p-4 border rounded-lg shadow-md">
       <CardHeader
@@ -16,7 +16,7 @@ export const RecommendationCard = () => {
         className="m-0 w-full md:w-1/3 shrink-0 rounded-b-none md:rounded-r-none"
       >
         <img
-          src="/public/Car-Brand.png"
+          src={vehicle.imagen}
           alt="Imagen del vehículo eléctrico"
           className="h-full w-full object-cover rounded-lg"
         />
@@ -25,9 +25,9 @@ export const RecommendationCard = () => {
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center space-x-1">
             <Typography variant="small" color="gray" className="font-bold">
-              Camioneta
+              {vehicle.categoria}
             </Typography>
-            {[...Array(4)].map((_, i) => (
+            {[...Array(5)].map((_, i) => (
               <svg
                 key={i}
                 xmlns="http://www.w3.org/2000/svg"
@@ -44,18 +44,18 @@ export const RecommendationCard = () => {
             className="text-xs font-bold bg-[#2A606E]"
             ripple={true}
           >
-            4
+            5
           </Button>
         </div>
         <div className="flex items-center justify-between">
           <Typography variant="h6" color="blue-gray" className="font-bold">
-            Modelo X
+            {vehicle.modelo}
           </Typography>
           <span className="text-xs text-gray-500">Excelente</span>
         </div>
         <div className="flex items-start">
           <Typography variant="small" color="gray" className="mb-1">
-            Autonomía: 300 km
+            Trasmisión: {vehicle.transmision}
           </Typography>
         </div>
 
@@ -70,7 +70,7 @@ export const RecommendationCard = () => {
               <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5z" />
             </svg>
             <Typography variant="small" className="ml-1">
-              6
+              {vehicle.capacidad_pasajeros}
             </Typography>
           </div>
           <div className="flex items-center">
@@ -83,7 +83,7 @@ export const RecommendationCard = () => {
               <path d="M13 3h-2v10h3l-4 8v-6H7l6-12z" />
             </svg>
             <Typography variant="small" className="ml-1">
-              Carga Rápida
+              Año: {vehicle.año}
             </Typography>
           </div>
         </div>
@@ -93,6 +93,7 @@ export const RecommendationCard = () => {
 };
 
 export const Recommendations = () => {
+  const vehicles = [...carsData].slice(3, 5);
   return (
     <div className="bg-[#DEECEC] p-4 m-5 mx-auto max-w-[1113px]">
       <div className="text-left pl-5 pt-2">
@@ -104,8 +105,10 @@ export const Recommendations = () => {
                     sm:grid-cols-1 
                     lg:grid-cols-2 justify-items-center"
       >
-        <RecommendationCard />
-        <RecommendationCard />
+        {vehicles.map((vehicle) => (
+          <RecommendationCard key={vehicle.id} vehicle={vehicle} />
+        ))}
+        ;
       </div>
     </div>
   );
