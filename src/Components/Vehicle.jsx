@@ -1,23 +1,27 @@
 import { Card, CardBody, Typography, Button } from "@material-tailwind/react";
-
 import AutoPlata from "../assets/icons/auto-plata.svg";
 import AutoBlack from "../assets/icons/auto-black.svg";
 import dolar from "../assets/icons/dolar.svg";
+import { useContextGlobal } from '../Components/utils/global.context'
 
-export const VehicleCard = () => (
+export const VehicleCard = (props) => {
+  const vehicle = props.vehicle
+  console.log(vehicle);
+
+  return(
   <Card className="p-4 rounded-lg shadow-lg border">
     <Typography
       variant="h6"
       color="blue-gray"
       className="text-center font-bold mb-2"
     >
-      MODELO DE AUTO
+      {vehicle.nombreVehiculo } - {vehicle.nombreVehiculo } 
     </Typography>
     <div className="flex justify-center mb-4">
       <img
-        src={AutoPlata} // Reemplaza con la ruta de tu imagen
+        src={vehicle.img} // Reemplaza con la ruta de tu imagen
         alt="Vehículo eléctrico"
-        className="h-24 w-full object-contain"
+        className="h-36 w-full object-contain"
       />
     </div>
     <div className="flex justify-evenly mb-4">
@@ -39,7 +43,7 @@ export const VehicleCard = () => (
         >
           <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5z" />
         </svg>
-        <Typography variant="small">4</Typography>
+        <Typography variant="small">{vehicle.noPasajeros}</Typography>
       </div>
       <div className="flex items-center">
         <img
@@ -47,7 +51,7 @@ export const VehicleCard = () => (
           alt="Imagen del vehículo eléctrico"
           className="h-4 w-4 mr-3"
         />
-        <Typography variant="small">Manual</Typography>
+        <Typography variant="small">{vehicle.tipoCargador}</Typography>
       </div>
 
       <div className="flex items-center">
@@ -57,15 +61,19 @@ export const VehicleCard = () => (
           className="h-4 w-4 mr-2"
         />
         <Typography variant="small" className="font-bold text-blue-gray-700">
-          200/h
+          {vehicle.precioPorDia}
         </Typography>
       </div>
     </div>
   </Card>
-);
+  )
+}
 
-export const VehicleList = () => {
-  return (
+
+
+const VehicleList = () => {
+  const {state} = useContextGlobal();
+  return(
     <>
       <div className="text-left pl-5 pt-4 mx-auto max-w-[1113px]">
         <Typography variant="h4">Productos</Typography>
@@ -74,16 +82,18 @@ export const VehicleList = () => {
         className="mx-auto max-w-[1113px]
                     grid gap-6 p-4 
                     grid-cols-1 
-                    sm:grid-cols-2 
-                    lg:grid-cols-3"
+                    sm:grid-cols-1 
+                    lg:grid-cols-2"
       >
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
-        <VehicleCard />
+      {
+      state.vehicles
+                .sort(() => Math.random() - 0.5)
+                .map( (vehicle)=> (
+                  <VehicleCard key={vehicle.id} vehicle={vehicle} />
+              ))
+      }
       </div>
     </>
-  );
-};
+  )
+}
+export {VehicleList}
