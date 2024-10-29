@@ -37,14 +37,14 @@
 .socialneticon {
   width: 24px;
   height: 24px;
-margin: 0 10px; 
+  margin: 0 10px;
 }
 
 .socialLinks {
   display: flex;
   align-items: center;
   padding: 20px 0;
-  justify-content: space-evenly; 
+  justify-content: space-evenly;
 }
 
 .footerText {
@@ -87,4 +87,19 @@ margin: 0 10px;
   font-family: 'Quicksand', sans-serif;
   font-weight: 700;
   color: white;
+}
+
+/* Media query para dispositivos móviles (pantallas pequeñas) */
+@media (max-width: 768px) {
+  .footerText h2 {
+    font-size: 12px;
+  }
+
+  .footerText h3 {
+    font-size: 10px;
+  }
+
+  .logoAndText h1 {
+    font-size: 20px;
+  }
 }
