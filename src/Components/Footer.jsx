@@ -8,7 +8,7 @@ const Footer = () => {
         <div className={styles.bar}>
           <div className={styles.logoAndText}>
             <h1>
-              MOVEIT
+              MOVELT
             </h1>
             <div className={styles.footerText}>
               <h2>@2024 Digital Booking</h2>

@@ -5,11 +5,13 @@ import {
   Typography,
   Button,
   IconButton,
-  Card,
 } from "@material-tailwind/react";
+
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 
 export function StickyNavbar() {
   const [openNav, setOpenNav] = React.useState(false);
+  const navigate = useNavigate(); // Hook de navegación
 
   React.useEffect(() => {
     window.addEventListener(
@@ -57,13 +59,15 @@ export function StickyNavbar() {
     <div className="sticky top-0 mx-10 my-5 z-20">
       <Navbar className="!bg-white h-max max-w-full rounded-md px-4 py-2 lg:px-8 lg:py-4">
         <div className="flex items-center justify-between text-blue-gray-900">
+          {/* Agregamos el evento onClick al logo */}
           <Typography
             as="a"
-            href="#"
             className="mr-4 cursor-pointer py-1.5 font-medium"
+            onClick={() => navigate("/")} // Navega al Home al hacer clic
           >
-            Movel
+            MOVELT
           </Typography>
+
           <div className="flex items-center gap-4">
             <div className="mr-4 hidden lg:block">{navList}</div>
             <div className="flex items-center gap-x-1">
@@ -121,14 +125,15 @@ export function StickyNavbar() {
             </IconButton>
           </div>
         </div>
+
         <Collapse open={openNav}>
           {navList}
           <div className="flex items-center gap-x-1">
             <Button fullWidth variant="text" size="sm" className="">
-              <span>Log In</span>
+              <span>Iniciar Sesion</span>
             </Button>
             <Button fullWidth variant="gradient" size="sm" className="">
-              <span>Sign in</span>
+              <span>Registrarse</span>
             </Button>
           </div>
         </Collapse>
