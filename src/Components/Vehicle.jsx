@@ -67,11 +67,12 @@ export const VehicleCard = () => (
 export const VehicleList = () => {
   return (
     <>
-      <div className="text-left pl-5 pt-4">
+      <div className="text-left pl-5 pt-4 mx-auto max-w-[1113px]">
         <Typography variant="h4">Productos</Typography>
       </div>
       <div
-        className="grid gap-6 p-4 
+        className="mx-auto max-w-[1113px]
+                    grid gap-6 p-4 
                     grid-cols-1 
                     sm:grid-cols-2 
                     lg:grid-cols-3"

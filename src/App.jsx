@@ -4,15 +4,29 @@ import { HomeContainer } from "./Components/HomeContainer.jsx";
 import NavbarComponent from "./Components/NavbarComponent.jsx";
 import { NavbarSimple } from "./Components/NavbarSimple.jsx";
 import StickyNavbar from "./Components/StickyNavbar.jsx";
+import ProductDetail from "./Components/ProductDetail.jsx";
+import { Link, Route, Routes } from "react-router-dom";
 
 function App() {
   return (
     <div className="flex flex-col min-h-screen">
-      <StickyNavbar />
-      <main className="flex-grow bg-white">
-        <HomeContainer />
-      </main>
-      <Footer /> 
+    <StickyNavbar />
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <>
+             <HomeContainer />
+            {/* <Link to={`/product/${producto.id}`}>Ver Detalles</Link> */}
+            {/* <Link to={`/product/1`}>Ver Detalles del Producto 1</Link>
+            <Link to={`/product/2`}>Ver Detalles del Producto 2</Link> */}
+          </>
+        }
+      />
+      <Route path="/product/:id" element={<ProductDetail />} />
+      <Route path="*" element={<h1>Error 404 - Page not Found</h1>} />
+    </Routes>
+    <Footer />
     </div>
   );
 }

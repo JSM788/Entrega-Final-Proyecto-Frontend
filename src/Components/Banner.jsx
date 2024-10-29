@@ -9,8 +9,8 @@ const BannerHome = () => {
       </h1>
       <Carousel
         className="rounded-xl"
-        prevArrow={""}
-        nextArrow={""}
+        // prevArrow={""}
+        // nextArrow={""}
         autoplay={true}
         autoplayDelay={5000}
         loop={true}

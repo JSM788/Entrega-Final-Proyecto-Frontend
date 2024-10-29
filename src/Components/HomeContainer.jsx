@@ -8,7 +8,7 @@ import { VehicleList } from "./Vehicle";
 
 export const HomeContainer = () => {
   return (
-    <>
+    <main className="flex-grow bg-white">
       {/* Banner */}
       <BannerHome />
       {/* Categorias */}
@@ -22,6 +22,6 @@ export const HomeContainer = () => {
 
       {/* Recomendaciones  */}
       <Recommendations />
-    </>
+    </main>
   );
 };
