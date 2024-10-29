@@ -50,7 +50,7 @@ export const Categories = () => {
           </Typography>
         </div>
       </div>
-      <div className="relative h-[88px] py-5"> hola</div>
+      <div className="relative h-[88px] py-5"></div>
     </>
   );
 };

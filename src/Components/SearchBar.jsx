@@ -62,7 +62,7 @@ export const SearchBar = () => {
             />
           </div>
         </div>
-        <div className="flex flex-col col-span-1 md:col-span-3 lg:col-span-1 self-center">
+        <div className="flex flex-col col-span-1 md:col-span-3 lg:col-span-1 self-end">
           <Button
             type="submit"
             className="bg-[#2A606E] text-white rounded"
