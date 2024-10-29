@@ -9,6 +9,14 @@
   text-align: center;
 }
 
+@media (max-width: 380px) {
+  #root {
+    padding-bottom: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+}
+
 .logo {
   height: 96px;
   padding: 24px;
