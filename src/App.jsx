@@ -1,8 +1,6 @@
 import "./App.css";
 import Footer from "./Components/Footer.jsx";
 import { HomeContainer } from "./Components/HomeContainer.jsx";
-import NavbarComponent from "./Components/NavbarComponent.jsx";
-import { NavbarSimple } from "./Components/NavbarSimple.jsx";
 import StickyNavbar from "./Components/StickyNavbar.jsx";
 import ProductDetail from "./Components/ProductDetail.jsx";
 import { Link, Route, Routes } from "react-router-dom";
