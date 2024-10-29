@@ -94,7 +94,7 @@ export const RecommendationCard = () => {
 
 export const Recommendations = () => {
   return (
-    <div className="bg-[#DEECEC] p-4 m-5 mx-4">
+    <div className="bg-[#DEECEC] p-4 m-5 mx-auto max-w-[1113px]">
       <div className="text-left pl-5 pt-2">
         <Typography variant="h4">Recomendaciones</Typography>
       </div>

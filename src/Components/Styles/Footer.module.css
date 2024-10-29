@@ -1,18 +1,17 @@
 .footer {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  margin: 20px auto;
   display: flex;
   justify-content: center;
   text-align: center;
   padding-top: 20px;
-  position: relative;
+  position: sticky;
   bottom: 0;
   height: 80px;
 }
 
 .bar {
-  width: 100%;
+  width: 95%;
   background-color: #272727;
   margin-top: 0px;
   display: flex;
