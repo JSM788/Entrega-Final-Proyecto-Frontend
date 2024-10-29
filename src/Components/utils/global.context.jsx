@@ -1,0 +1,38 @@
+import { useContext, createContext, useEffect, useReducer } from "react";
+import axios from "axios";
+import { reducer } from "./reducer";
+
+const ContextGlobal = createContext();
+
+const initialState = {
+  vehicles: []
+};
+
+const ContextProvider = ({ children }) => {
+  
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const endpointProducts = "https://671b9a142c842d92c3809d39.mockapi.io/api/v1/moveit/vehiculo";
+
+  useEffect( ()=> {
+
+    axios(endpointProducts).then( (response) => {
+      console.log("en axios")
+      console.log(response)
+      dispatch({ type: "SET_VEHICLES", payload: response.data });      
+    
+    }).catch((error) => {
+      console.error("Error obteniendo vehículos:", error);
+    });
+  }, []);
+
+
+  return (
+    <ContextGlobal.Provider value = {{state, dispatch}}>
+      {children}
+    </ContextGlobal.Provider>
+  );
+};
+
+export default ContextProvider;
+
+export const useContextGlobal = () => useContext(ContextGlobal);
