@@ -1,43 +1,25 @@
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { Button } from "@material-tailwind/react";
 import { useParams, useNavigate } from "react-router-dom";
-import productos from "../productos.json";
-import { useEffect, useState } from "react";
+// import productos from "../productos.json";
+// import { useEffect, useState } from "react";
+import { useContextGlobal } from "../Components/utils/global.context";
 
 const ProductDetail = () => {
+  const { state } = useContextGlobal(); // Acceder al estado global
   const { id } = useParams();
-  const [product, setProduct] = useState(null);
-  // const [loading, setLoading] = useState(true);
-  // const [error, setError] = useState(null);
-  const [activeImage, setActiveImage] = useState(null);
+  // const [product, setProduct] = useState(null);
+  // const [activeImage, setActiveImage] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // const fetchProduct = async () => {
-    //   setLoading(true);
-    //   setError(null);
-    //   try {
-    //     const response = await fetch(
-    //       `https://671b9a142c842d92c3809d39.mockapi.io/api/v1/moveit/vehiculo/${id}`
-    //     );
-    //     if (!response.ok) throw new Error("Producto no encontrado");
-    //     const data = await response.json();
-    //     setProduct(data);
-    //   } catch (err) {
-    //     setError(err.message);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
+  // useEffect(() => {
+  //   const productFound = productos.find((item) => item.id === parseInt(id));
+  //   setProduct(productFound);
+  //   setActiveImage(productFound?.images[0] || null); // Imagen inicial
+  // }, [id]);
+  // Filtrar el producto específico desde el array vehicles en el contexto global
+  const product = state.vehicles.find((vehicle) => vehicle.id === id);
 
-    // fetchProduct();
-    const productFound = productos.find((item) => item.id === parseInt(id));
-    setProduct(productFound);
-    setActiveImage(productFound?.images[0] || null); // Imagen inicial
-  }, [id]);
-
-  // if (loading) return <div>Cargando...</div>;
-  // if (error) return <div>{error}</div>;
   if (!product) return <div>Producto no encontrado</div>;
 
   return (
@@ -54,7 +36,7 @@ const ProductDetail = () => {
         <div className="flex flex-col items-start ml-12">
           <h4 className="text-lg	text-customBlack">Carro eléctrico</h4>
           <h3 className="text-2xl text-black font-semibold text-left flex-grow">
-            {product.nombre}
+            {product.nombreVehiculo}
           </h3>
         </div>
       </header>
@@ -77,7 +59,7 @@ const ProductDetail = () => {
               </svg>
               <p className="text-customBlack2 text-base w-28 font-semibold mt-1">
                 <strong className="text-black text-[32px]">
-                  {product.velocidad}
+                  {product.kilometraje}
                 </strong>
                 <span className="text-lg text-black"> km/h</span> <br />
                 velocidad máxima
@@ -98,7 +80,7 @@ const ProductDetail = () => {
               </svg>
               <p className="text-customBlack2 text-base w-28 font-semibold mt-1">
                 <strong className="text-black text-[32px]">
-                  {product.potencia}
+                  {product.duracionKmCarga}
                 </strong>
                 <span className="text-lg text-black"> w</span>
                 <br />
@@ -119,7 +101,7 @@ const ProductDetail = () => {
               </svg>
               <p className="text-customBlack2 text-base w-28 font-semibold mt-1">
                 <strong className="text-black text-[32px]">
-                  {product.precio}
+                  {product.tiempoCarga}
                 </strong>
                 <span className="text-lg text-black"> horas</span>
                 <br />
@@ -127,11 +109,19 @@ const ProductDetail = () => {
               </p>
             </div>
             {/* Imagen principal del producto */}
-            <img
+            {/* <img
               src={activeImage}
-              alt={product.nombre}
+              alt={product.nombreVehiculo}
               className="w-full lg:h-64 object-cover relative right-12 lg:right-[-80px] top-3 lg:top-[15%]"
-            />
+            /> */}
+            {/* Product Image */}
+            <div className="flex justify-center items-center">
+              <img
+                src={product.img}
+                alt={product.nombreVehiculo}
+                className="rounded-3xl max-w-[444px] shadow-md"
+              />
+            </div>
           </div>
 
           {/* Price and Plan */}
@@ -140,8 +130,8 @@ const ProductDetail = () => {
               PRECIOS Y PLANES
             </h3>
             <p className="text-base mt-2 text-start font-semibold">
-            Carro eléctrico
-              <span className="text-deepTeal"> {product.nombre}</span>
+              Carro eléctrico
+              <span className="text-deepTeal"> {product.nombreVehiculo}</span>
             </p>
             <div className="mt-4 space-y-2">
               <label className="flex space-x-2 items-start max-w-[251px] h-[66px]">
@@ -191,13 +181,13 @@ const ProductDetail = () => {
         </section>
 
         {/* Carousel */}
-        <section className="mt-8 overflow-x-auto md:overflow-hidden">
+        {/* <section className="mt-8 overflow-x-auto md:overflow-hidden">
           <div className="flex md:justify-center gap-4  md:flex-nowrap">
             {product.images.map((image, index) => (
               <img
                 key={index}
                 src={image}
-                alt={`${product.nombre} - imagen ${index + 1}`}
+                alt={`${product.nombreVehiculo} - imagen ${index + 1}`}
                 className={`h-24 w-32 object-cover cursor-pointer rounded-lg border ${
                   activeImage === image ? "border-aquaTeal" : "border-customGrayTransparent opacity-50"
                 }`}
@@ -205,7 +195,7 @@ const ProductDetail = () => {
               />
             ))}
           </div>
-        </section>
+        </section> */}
 
         {/* Characteristics */}
         <section className="my-8 bg-customGray h-[314px] py-4 pl-8 w-screen lg:w-auto">
@@ -215,45 +205,43 @@ const ProductDetail = () => {
           <div className="flex overflow-x-auto whitespace-nowrap space-x-4">
             <div className="flex items-center min-w-[479px]">
               <img
-                src={product.image}
-                alt={product.nombre}
+                src={product.img}
+                alt={product.nombreVehiculo}
                 className="w-[223px] h-[174px] object-cover rounded-lg"
               />
               <div className="bg-mintTeal rounded-l-none rounded-r-lg min-w-[280px] text-start p-7">
                 <p className="mt-2 font-medium text-lg text-black">
-                  Descripción:
+                  Color de vehiculo
                 </p>
-                <p className="text-[11px] text-black">{product.descripcion}</p>
+                <p className="text-[11px] text-black">
+                  {product.colorVehiculo}
+                </p>
               </div>
             </div>
             <div className="flex items-center  min-w-[479px]">
               <img
-                 src={product.image}
-                 alt={product.nombre}
+                src={product.img}
+                alt={product.nombreVehiculo}
                 className="w-[223px] h-[174px] object-cover rounded-lg"
               />
               <div className="bg-mintTeal rounded-l-none rounded-r-lg min-w-[280px] text-start p-7">
                 <p className="mt-2 font-medium text-lg text-black">
-                Capacidad para 4 personas
+                  N° de Puertas
                 </p>
-                <p className="text-[11px] text-black">
-                Sillas cómodas, tapizadas en cuero
-                </p>
+                <p className="text-[11px] text-black">{product.noPuertas}</p>
               </div>
             </div>
             <div className="flex items-center  min-w-[479px] last:!mr-8">
               <img
-                 src={product.image}
-                 alt={product.nombre}
+                src={product.img}
+                alt={product.nombreVehiculo}
                 className="w-[223px] h-[174px] object-cover rounded-lg"
               />
               <div className="bg-mintTeal rounded-l-none rounded-r-lg min-w-[280px] text-start p-7">
                 <p className="mt-2 font-medium text-lg text-black">
-                  Capacidad para 4 personas
+                  N° de Pasajeros
                 </p>
-                <p className="text-[11px] text-black">
-                  Sillas cómodas, tapizadas en cuero
-                </p>
+                <p className="text-[11px] text-black">{product.noPasajeros}</p>
               </div>
             </div>
           </div>

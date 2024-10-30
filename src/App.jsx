@@ -18,9 +18,6 @@ function App() {
           element={
             <>
               <HomeContainer />
-              {/* <Link to={`/product/${producto.id}`}>Ver Detalles</Link> */}
-              {/* <Link to={`/product/1`}>Ver Detalles del Producto 1</Link>
-            <Link to={`/product/2`}>Ver Detalles del Producto 2</Link> */}
             </>
           }
         />
