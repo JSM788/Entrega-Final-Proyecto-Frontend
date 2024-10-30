@@ -5,7 +5,7 @@
   justify-content: center;
   text-align: center;
   padding-top: 20px;
-  position: sticky;
+  position: relative;
   bottom: 0;
   height: 80px;
 }
@@ -91,6 +91,23 @@
 
 /* Media query para dispositivos móviles (pantallas pequeñas) */
 @media (max-width: 768px) {
+  .bar {
+    flex-direction: column;
+    padding: 15px;
+    height: auto;
+  }
+
+  .logoAndText {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footerText {
+    align-items: center;
+    padding: 10px 0;
+  }
+
   .footerText h2 {
     font-size: 12px;
   }
@@ -101,5 +118,11 @@
 
   .logoAndText h1 {
     font-size: 20px;
+    margin-bottom: 5px;
+  }
+
+  .footer {
+    height: auto;
+    margin: 10px auto;
   }
 }
