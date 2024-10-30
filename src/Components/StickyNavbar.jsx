@@ -48,8 +48,8 @@ export function StickyNavbar() {
         color="blue-gray"
         className="p-1 font-normal"
       >
-        <a href="#" className="flex items-center">
-          Blocks
+        <a href="/admin" className="flex items-center">
+          Administración
         </a>
       </Typography>
     </ul>
