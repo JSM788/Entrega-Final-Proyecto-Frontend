@@ -108,7 +108,6 @@ export const Recommendations = () => {
         {vehicles.map((vehicle) => (
           <RecommendationCard key={vehicle.id} vehicle={vehicle} />
         ))}
-        ;
       </div>
     </div>
   );
