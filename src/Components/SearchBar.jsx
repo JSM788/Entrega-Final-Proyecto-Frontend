@@ -5,7 +5,7 @@ import "./Styles/SearchBar.css"; // Asegúrate de importar el CSS
 
 export const SearchBar = () => {
   return (
-    <div className="p-4 bg-[#DEECEC] rounded-lg mt-5 mx-auto max-w-[1113px]">
+    <div className="p-4 bg-[#DEECEC] rounded-lg mt-5 mx-auto w-[90%]">
       <form className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 m-4">
         <div className="flex flex-col col-span-1 md:col-span-1 lg:col-span-1">
           <Typography variant="small" className="mb-1 text-left">

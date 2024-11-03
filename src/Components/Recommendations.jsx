@@ -95,7 +95,7 @@ export const RecommendationCard = ({ vehicle }) => {
 export const Recommendations = () => {
   const vehicles = [...carsData].slice(3, 5);
   return (
-    <div className="bg-[#DEECEC] p-4 m-5 mx-auto max-w-[1113px]">
+    <div className="bg-[#DEECEC] p-4 m-5 mx-auto">
       <div className="text-left pl-5 pt-2">
         <Typography variant="h4">Recomendaciones</Typography>
       </div>
