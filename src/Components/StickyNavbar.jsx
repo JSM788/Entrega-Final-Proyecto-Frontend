@@ -94,10 +94,10 @@ export function StickyNavbar() {
 
             {!isLoggedIn ? (
               <div className="flex items-center gap-x-4">
-                <button className="hidden lg:inline-block rounded-lg border border-customBlack  p-2.5 text-center text-black text-base font-semibold" onClick={handleLoginNavigation}>
+                <button className="hidden lg:block rounded-lg border border-customBlack  p-2.5 text-center text-black text-base font-semibold" onClick={handleLoginNavigation}>
                   INICIA SESIÓN
                 </button>
-                <button className="hidden lg:inline-block rounded-lg  bg-[#2a606e] p-2.5 text-center text-white text-base font-semibold" onClick={handleRegisterNavigation}>
+                <button className="hidden lg:block rounded-lg  bg-[#2a606e] p-2.5 text-center text-white text-base font-semibold" onClick={handleRegisterNavigation}>
                   REGÍSTRATE
                 </button>
               </div>
@@ -105,29 +105,29 @@ export function StickyNavbar() {
               // Mostrar las iniciales en un círculo cuando hay sesión iniciada
               <div className="relative">
                 <div
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-customBlack text-white font-medium cursor-pointer"
+                  className="hidden lg:flex items-center justify-center w-10 h-10 rounded-full bg-customBlack text-white font-medium cursor-pointer"
                   onClick={() => setOpenNav(!openNav)}
                 >
                   {getInitials(user.name)}
                 </div>
                 {/* Menú desplegable */}
                 {openNav && (
-                  <div class="absolute  right-0 hidden lg:flex h-[212px] w-[214px] p-5 bg-customGray2 rounded-lg shadow flex-col justify-start items-start gap-2.5">
-                    <div class="flex justify-between w-full">
+                  <div className="absolute  right-0 hidden lg:flex h-[212px] w-[214px] p-5 bg-customGray2 rounded-lg shadow flex-col justify-start items-start gap-2.5">
+                    <div className="flex justify-between w-full">
                       <div className="flex items-center justify-center w-[54px] h-[54px] rounded-full bg-customBlack text-white text-lg font-medium">
                         {getInitials(user.name)}
                       </div>
-                      <div class="flex flex-col">
-                        <div class="text-center text-black text-xl font-medium font-['Roboto']">
+                      <div className="flex flex-col">
+                        <div className="text-center text-black text-xl font-medium font-['Roboto']">
                           {user.name}
                         </div>
-                        <div class="text-[#79747e] text-[13px] font-medium font-['Roboto']">
+                        <div className="text-[#79747e] text-[13px] font-medium font-['Roboto']">
                           {user.email}
                         </div>
                       </div>
                     </div>
-                    <div class="self-stretch h-[0px] border border-customGray3"></div>
-                    <div class="pl-2.5 pr-5 py-2.5 justify-start items-center gap-2.5 flex">
+                    <div className="self-stretch h-[0px] border border-customGray3"></div>
+                    <div className="pl-2.5 pr-5 py-2.5 justify-start items-center gap-2.5 flex">
                       <svg
                         width="24"
                         height="24"
@@ -141,12 +141,12 @@ export function StickyNavbar() {
                         />
                       </svg>
 
-                      <span class="text-black text-lg font-medium font-['Roboto']">
+                      <span className="text-black text-lg font-medium font-['Roboto']">
                         Mi cuenta
                       </span>
                     </div>
                     <button
-                      class="self-stretch pl-2.5 pr-5 py-2.5 bg-[#32ceb1] rounded-lg justify-center items-center gap-2.5 flex text-white text-lg font-medium font-['Roboto']"
+                      className="self-stretch pl-2.5 pr-5 py-2.5 bg-[#32ceb1] rounded-lg justify-center items-center gap-2.5 flex text-white text-lg font-medium font-['Roboto']"
                       onClick={handleLogout}
                     >
                       <svg
@@ -221,7 +221,7 @@ export function StickyNavbar() {
               </div>
             ) : (
               <button
-                class="self-stretch pl-2.5 pr-5 py-2.5 bg-[#32ceb1] rounded-lg justify-center items-center gap-2.5 flex text-white text-lg font-medium font-['Roboto']"
+              className="self-stretch pl-2.5 pr-5 py-2.5 bg-[#32ceb1] rounded-lg justify-center items-center gap-2.5 flex text-white text-lg font-medium font-['Roboto']"
                 onClick={handleLogout}
               >
                 <svg
