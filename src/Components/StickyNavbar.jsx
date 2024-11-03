@@ -78,12 +78,12 @@ export function StickyNavbar() {
 
   return (
     <div className="sticky top-0 mx-10 my-5 z-20">
-      <Navbar className="!bg-customGray2 h-max max-w-full rounded-2xl shadow px-4 py-2 lg:px-8 lg:py-4">
+      <Navbar className="!bg-[#fafafa] h-max max-w-full rounded-2xl shadow px-4 py-2 lg:px-8 lg:py-4">
         <div className="flex items-center justify-between text-blue-gray-900">
           {/* Agregamos el evento onClick al logo */}
           <Typography
             as="a"
-            className="mr-4 cursor-pointer py-1.5 font-medium"
+            className="mr-4 cursor-pointer py-1.5 font-semibold"
             onClick={() => navigate("/")} // Navega al Home al hacer clic
           >
             MOVELT

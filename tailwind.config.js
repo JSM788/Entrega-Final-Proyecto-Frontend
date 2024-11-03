@@ -11,6 +11,7 @@ module.exports = withMT({
         deepTeal: "#2A606E",
         aquaTeal: "#6ADCC7",
         mintTeal: "#DEECEC",
+        mintTeal2:"#c8ece5",
         customGrayTransparent: '#D9D9D9B2',
         customGray: '#F1F1F1',
         customGray2:"#F9F9F9",
