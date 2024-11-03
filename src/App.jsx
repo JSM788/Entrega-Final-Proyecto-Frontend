@@ -21,6 +21,8 @@ function App() {
             </>
           }
         />
+        <Route path="/login" element={<h1>ingresa credenciales</h1>}/>
+        <Route path="/register" element={<h1>registrate</h1>}/>
         <Route path="/admin" element={<Admin />}/>
         <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/admin/vehicles" element={<AdminVehicles />} />

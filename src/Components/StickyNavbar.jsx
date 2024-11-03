@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 export function StickyNavbar() {
   const [openNav, setOpenNav] = React.useState(false);
   const navigate = useNavigate(); // Hook de navegación
-  const isLoggedIn = false; // Cambia esto dependiendo del estado de la sesión del usuario
+  const [isLoggedIn, setIsLoggedIn] = React.useState(true);
   const user = { name: "Ana Cecilia", email: "ana@gmail.com" }; // Datos del usuario
 
   React.useEffect(() => {
@@ -29,7 +29,16 @@ export function StickyNavbar() {
   };
 
   const handleLogout = () => {
-    console.log("Cerrar sesión");
+    setIsLoggedIn(false);
+    navigate("/login");
+  };
+
+  const handleLoginNavigation = () => {
+    navigate("/login");
+  };
+  
+  const handleRegisterNavigation = () => {
+    navigate("/register");
   };
 
   const navList = (
@@ -85,10 +94,10 @@ export function StickyNavbar() {
 
             {!isLoggedIn ? (
               <div className="flex items-center gap-x-4">
-                <button className="hidden lg:inline-block rounded-lg border border-customBlack  p-2.5 text-center text-black text-base font-semibold">
+                <button className="hidden lg:inline-block rounded-lg border border-customBlack  p-2.5 text-center text-black text-base font-semibold" onClick={handleLoginNavigation}>
                   INICIA SESIÓN
                 </button>
-                <button className="hidden lg:inline-block rounded-lg  bg-[#2a606e] p-2.5 text-center text-white text-base font-semibold">
+                <button className="hidden lg:inline-block rounded-lg  bg-[#2a606e] p-2.5 text-center text-white text-base font-semibold" onClick={handleRegisterNavigation}>
                   REGÍSTRATE
                 </button>
               </div>
@@ -203,10 +212,10 @@ export function StickyNavbar() {
             {navList}
             {!isLoggedIn ? (
               <div className="flex items-center gap-x-1">
-                <button className="w-full rounded-lg border border-customBlack  p-2.5 text-center text-black text-base font-semibold">
+                <button className="w-full rounded-lg border border-customBlack  p-2.5 text-center text-black text-base font-semibold" onClick={handleLoginNavigation}>
                   INICIA SESIÓN
                 </button>
-                <button className="w-full rounded-lg  bg-[#2a606e] p-2.5 text-center text-white text-base font-semibold">
+                <button className="w-full rounded-lg  bg-[#2a606e] p-2.5 text-center text-white text-base font-semibold" onClick={handleRegisterNavigation}>
                   REGÍSTRATE
                 </button>
               </div>
