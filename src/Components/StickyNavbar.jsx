@@ -9,10 +9,11 @@ import { useNavigate } from "react-router-dom";
 
 export function StickyNavbar() {
   const [openNav, setOpenNav] = React.useState(false);
+  const [openSubMenu, setOpenSubMenu] = React.useState(false);
   const navigate = useNavigate(); // Hook de navegación
   const isLoggedIn = false;
   // const [isLoggedIn, setIsLoggedIn] = React.useState(true);
-  const user = { name: "Ana Cecilia", email: "ana@gmail.com" }; // Datos del usuario
+  const user = { name: "Ana Cecilia", email: "ana@gmail.com", role: "admin" }; // Datos del usuario
 
   React.useEffect(() => {
     window.addEventListener(
@@ -37,7 +38,7 @@ export function StickyNavbar() {
   const handleLoginNavigation = () => {
     navigate("/login");
   };
-  
+
   const handleRegisterNavigation = () => {
     navigate("/register");
   };
@@ -70,8 +71,8 @@ export function StickyNavbar() {
         color="blue-gray"
         className="p-1 font-normal"
       >
-        <a href="/admin" className="flex items-center">
-          Administración
+        <a href="#" className="flex items-center">
+          Other
         </a>
       </Typography>
     </ul>
@@ -81,43 +82,43 @@ export function StickyNavbar() {
     <div className="sticky top-0 mx-10 my-5 z-20">
       <Navbar className="!bg-[#fafafa] h-max max-w-full rounded-2xl shadow px-4 py-2 lg:px-8 lg:py-4">
         <div className="flex items-center justify-between text-blue-gray-900">
-        <IconButton
-              variant="text"
-              className="h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
-              ripple={false}
-              onClick={() => setOpenNav(!openNav)}
-            >
-              {openNav ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  className="h-6 w-6"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              )}
-            </IconButton>
+          <IconButton
+            variant="text"
+            className="h-6 w-6 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent lg:hidden"
+            ripple={false}
+            onClick={() => setOpenNav(!openNav)}
+          >
+            {openNav ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                className="h-6 w-6"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+            )}
+          </IconButton>
           {/* Agregamos el evento onClick al logo */}
           <Typography
             as="a"
@@ -128,14 +129,22 @@ export function StickyNavbar() {
           </Typography>
 
           <div className="flex items-center gap-4 w-auto lg:w-full">
-            <div className="mr-4 hidden lg:flex w-full justify-center">{navList}</div>
+            <div className="mr-4 hidden lg:flex w-full justify-center">
+              {navList}
+            </div>
 
             {!isLoggedIn ? (
               <div className="hidden md:flex items-center gap-x-4 w-full justify-end">
-                <button className="rounded-lg border border-customBlack  p-2.5 text-center text-black text-base font-semibold" onClick={handleLoginNavigation}>
+                <button
+                  className="rounded-lg border border-customBlack  p-2.5 text-center text-black text-base font-semibold"
+                  onClick={handleLoginNavigation}
+                >
                   INICIA SESIÓN
                 </button>
-                <button className="rounded-lg  bg-[#2a606e] p-2.5 text-center text-white text-base font-semibold" onClick={handleRegisterNavigation}>
+                <button
+                  className="rounded-lg  bg-[#2a606e] p-2.5 text-center text-white text-base font-semibold"
+                  onClick={handleRegisterNavigation}
+                >
                   REGÍSTRATE
                 </button>
               </div>
@@ -144,13 +153,13 @@ export function StickyNavbar() {
               <div className="relative">
                 <div
                   className="flex items-center justify-center w-10 h-10 rounded-full bg-customBlack text-white font-medium cursor-pointer"
-                  onClick={() => setOpenNav(!openNav)}
+                  onClick={() => setOpenSubMenu(!openSubMenu)}
                 >
                   {getInitials(user.name)}
                 </div>
                 {/* Menú desplegable */}
-                {openNav && (
-                  <div className="absolute  right-0 hidden lg:flex h-[212px] w-[214px] p-5 bg-customGray2 rounded-lg shadow flex-col justify-start items-start gap-2.5">
+                {openSubMenu && (
+                  <div className="absolute  right-0 flex h-[212px] w-[214px] p-5 bg-customGray2 rounded-lg shadow flex-col justify-start items-start gap-2.5">
                     <div className="flex justify-between w-full">
                       <div className="flex items-center justify-center w-[54px] h-[54px] rounded-full bg-customBlack text-white text-lg font-medium">
                         {getInitials(user.name)}
@@ -179,9 +188,21 @@ export function StickyNavbar() {
                         />
                       </svg>
 
-                      <span className="text-black text-lg font-medium font-['Roboto']">
-                        Mi cuenta
-                      </span>
+                      {user.role === "admin" ? (
+                        <span
+                          onClick={() => navigate("/admin")}
+                          className="text-black text-lg font-medium cursor-pointer"
+                        >
+                          Administración
+                        </span>
+                      ) : (
+                        <span
+                          onClick={() => navigate("/my-profile")}
+                          className="text-black text-lg font-medium cursor-pointer"
+                        >
+                          Mi Cuenta
+                        </span>
+                      )}
                     </div>
                     <button
                       className="self-stretch pl-2.5 pr-5 py-2.5 bg-[#32ceb1] rounded-lg justify-center items-center gap-2.5 flex text-white text-lg font-medium font-['Roboto']"
@@ -211,34 +232,21 @@ export function StickyNavbar() {
         <div className="block lg:hidden">
           <Collapse open={openNav}>
             {navList}
-            {!isLoggedIn ? (
+            {!isLoggedIn && (
               <div className="flex md:hidden items-center gap-x-1">
-                <button className="w-full rounded-lg border border-customBlack  p-2.5 text-center text-black text-base font-semibold" onClick={handleLoginNavigation}>
+                <button
+                  className="w-full rounded-lg border border-customBlack  p-2.5 text-center text-black text-base font-semibold"
+                  onClick={handleLoginNavigation}
+                >
                   INICIA SESIÓN
                 </button>
-                <button className="w-full rounded-lg  bg-[#2a606e] p-2.5 text-center text-white text-base font-semibold" onClick={handleRegisterNavigation}>
+                <button
+                  className="w-full rounded-lg  bg-[#2a606e] p-2.5 text-center text-white text-base font-semibold"
+                  onClick={handleRegisterNavigation}
+                >
                   REGÍSTRATE
                 </button>
               </div>
-            ) : (
-              <button
-              className="self-stretch pl-2.5 pr-5 py-2.5 bg-[#32ceb1] rounded-lg justify-center items-center gap-2.5 flex text-white text-lg font-medium font-['Roboto']"
-                onClick={handleLogout}
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M5 21C4.45 21 3.97917 20.8042 3.5875 20.4125C3.19583 20.0208 3 19.55 3 19V5C3 4.45 3.19583 3.97917 3.5875 3.5875C3.97917 3.19583 4.45 3 5 3H12V5H5V19H12V21H5ZM16 17L14.625 15.55L17.175 13H9V11H17.175L14.625 8.45L16 7L21 12L16 17Z"
-                    fill="white"
-                  />
-                </svg>
-                Cerrar Sesión
-              </button>
             )}
           </Collapse>
         </div>
