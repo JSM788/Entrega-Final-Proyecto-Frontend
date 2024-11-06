@@ -32,15 +32,15 @@ export function StickyNavbar() {
 
   const handleLogout = () => {
     // setIsLoggedIn(false);
-    navigate("/login");
+    navigate("/logIn");
   };
 
   const handleLoginNavigation = () => {
-    navigate("/login");
+    navigate("/logIn");
   };
 
   const handleRegisterNavigation = () => {
-    navigate("/register");
+    navigate("/singIn");
   };
 
   const navList = (
