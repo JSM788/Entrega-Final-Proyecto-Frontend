@@ -7,6 +7,8 @@ import { Link, Route, Routes } from "react-router-dom"
 import { Admin } from "./Components/admin/Admin.jsx"
 import { AdminUsers } from "./Components/admin/AdminUsers.jsx"
 import { AdminVehicles } from "./Components/admin/AdminVehicles.jsx"
+import { LogIn } from "./Components/LogIn.jsx"
+import { SignIn } from "./Components/SignIn.jsx"
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
         <Route path="/admin" element={<Admin />}/>
         <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/admin/vehicles" element={<AdminVehicles />} />
+        <Route path="/logIn" element={<LogIn />} />
+        <Route path="/singIn" element={<SignIn />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="*" element={<h1>Error 404 - Page not Found</h1>} />
       </Routes>
