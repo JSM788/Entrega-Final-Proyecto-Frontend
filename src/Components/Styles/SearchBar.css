@@ -12,7 +12,7 @@
 
 input[type="text"],
 input[type="date"] {
-  padding-left: 2.5rem !important; /* Adjust the padding to accommodate the icon */
+  padding-left: 2.5rem; /* Adjust the padding to accommodate the icon */
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {

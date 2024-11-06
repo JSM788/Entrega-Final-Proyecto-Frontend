@@ -1,0 +1,58 @@
+.container {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+  background-color: #deecec;
+}
+
+.container form {
+  width: 400px;
+}
+.container button {
+  background-color: #6adcc7;
+  width: 100%;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.container button:hover {
+  background-color: #2a606e;
+}
+
+.container button:focus {
+  outline: none;
+}
+
+.container h1 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+input[type="tel"] {
+  padding-left: 30px;
+}
+
+input[type="password"] {
+  padding-left: 30px;
+}
+
+input[type="email"] {
+  padding-left: 30px;
+}
+
+form label{
+    text-align: left;
+    font-size: 15px;
+    padding-bottom: 3px;
+    font-weight: 300;
+}
+
+form h1{
+    padding-bottom: 5px;
+}
