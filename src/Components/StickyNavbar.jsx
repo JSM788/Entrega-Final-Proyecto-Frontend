@@ -159,7 +159,7 @@ export function StickyNavbar() {
                 </div>
                 {/* Menú desplegable */}
                 {openSubMenu && (
-                  <div className="absolute  right-0 flex h-[212px] w-[214px] p-5 bg-customGray2 rounded-lg shadow flex-col justify-start items-start gap-2.5">
+                  <div className="absolute  right-0 flex w-[214px] p-5 bg-customGray2 rounded-lg shadow flex-col justify-start items-start gap-2.5">
                     <div className="flex justify-between w-full">
                       <div className="flex items-center justify-center w-[54px] h-[54px] rounded-full bg-customBlack text-white text-lg font-medium">
                         {getInitials(user.name)}
@@ -174,6 +174,16 @@ export function StickyNavbar() {
                       </div>
                     </div>
                     <div className="self-stretch h-[0px] border border-customGray3"></div>
+                    {user.role === "admin" && (
+                      <div className="pl-2.5 pr-5 py-2.5">
+                        <span
+                          onClick={() => navigate("/admin")}
+                          className="text-black text-lg font-medium cursor-pointer"
+                        >
+                          Administración
+                        </span>
+                      </div>
+                    )}
                     <div className="pl-2.5 pr-5 py-2.5 justify-start items-center gap-2.5 flex">
                       <svg
                         width="24"
@@ -188,21 +198,12 @@ export function StickyNavbar() {
                         />
                       </svg>
 
-                      {user.role === "admin" ? (
-                        <span
-                          onClick={() => navigate("/admin")}
-                          className="text-black text-lg font-medium cursor-pointer"
-                        >
-                          Administración
-                        </span>
-                      ) : (
-                        <span
-                          onClick={() => navigate("/my-profile")}
-                          className="text-black text-lg font-medium cursor-pointer"
-                        >
-                          Mi Cuenta
-                        </span>
-                      )}
+                      <span
+                        onClick={() => navigate("/my-profile")}
+                        className="text-black text-lg font-medium cursor-pointer"
+                      >
+                        Mi Cuenta
+                      </span>
                     </div>
                     <button
                       className="self-stretch pl-2.5 pr-5 py-2.5 bg-[#32ceb1] rounded-lg justify-center items-center gap-2.5 flex text-white text-lg font-medium font-['Roboto']"
