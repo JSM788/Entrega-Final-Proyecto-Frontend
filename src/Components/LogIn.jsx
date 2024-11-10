@@ -50,7 +50,7 @@ const LoginForm = () => {
           title: "¡Bienvenido de nuevo!",
           text: response.data.fullName,
           showConfirmButton: false,
-          timer: 8000,
+          timer: 2000,
           customClass: {
             title: "text-green-600"
           }
