@@ -6,14 +6,13 @@ import {
   IconButton,
 } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
+import { useContextGlobal } from "./utils/global.context";
 
 export function StickyNavbar() {
   const [openNav, setOpenNav] = React.useState(false);
   const [openSubMenu, setOpenSubMenu] = React.useState(false);
-  const navigate = useNavigate(); // Hook de navegación
-  const isLoggedIn = false;
-  // const [isLoggedIn, setIsLoggedIn] = React.useState(true);
-  const user = { name: "Ana Cecilia", email: "ana@gmail.com", role: "admin" }; // Datos del usuario
+  const navigate = useNavigate(); 
+  const { state, dispatch } = useContextGlobal();
 
   React.useEffect(() => {
     window.addEventListener(
@@ -22,21 +21,13 @@ export function StickyNavbar() {
     );
   }, []);
 
-  const getInitials = (name) => {
-    return name
-      .split(" ")
-      .map((word) => word[0])
-      .join("")
-      .toUpperCase();
-  };
-
   const handleLogout = () => {
-    // setIsLoggedIn(false);
-    navigate("/logIn");
+    dispatch({ type: 'logout' })
+    navigate("/login");
   };
 
   const handleLoginNavigation = () => {
-    navigate("/logIn");
+    navigate("/login");
   };
 
   const handleRegisterNavigation = () => {
@@ -133,7 +124,7 @@ export function StickyNavbar() {
               {navList}
             </div>
 
-            {!isLoggedIn ? (
+            {!state.isAuth ? (
               <div className="hidden md:flex items-center gap-x-4 w-full justify-end">
                 <button
                   className="rounded-lg border border-customBlack  p-2.5 text-center text-black text-base font-semibold"
@@ -155,26 +146,26 @@ export function StickyNavbar() {
                   className="flex items-center justify-center w-10 h-10 rounded-full bg-customBlack text-white font-medium cursor-pointer"
                   onClick={() => setOpenSubMenu(!openSubMenu)}
                 >
-                  {getInitials(user.name)}
+                  {state.user.avatarInitials}
                 </div>
                 {/* Menú desplegable */}
                 {openSubMenu && (
                   <div className="absolute  right-0 flex w-[214px] p-5 bg-customGray2 rounded-lg shadow flex-col justify-start items-start gap-2.5">
                     <div className="flex justify-between w-full">
                       <div className="flex items-center justify-center w-[54px] h-[54px] rounded-full bg-customBlack text-white text-lg font-medium">
-                        {getInitials(user.name)}
+                        {state.user.avatarInitials}
                       </div>
                       <div className="flex flex-col">
                         <div className="text-center text-black text-xl font-medium font-['Roboto']">
-                          {user.name}
+                          {state.user.fullName}
                         </div>
                         <div className="text-[#79747e] text-[13px] font-medium font-['Roboto']">
-                          {user.email}
+                          {state.user.email}
                         </div>
                       </div>
                     </div>
                     <div className="self-stretch h-[0px] border border-customGray3"></div>
-                    {user.role === "admin" && (
+                    {state.user.roles.includes("ROLE_ADMIN") && (
                       <div className="pl-2.5 pr-5 py-2.5">
                         <span
                           onClick={() => navigate("/admin")}
@@ -233,7 +224,7 @@ export function StickyNavbar() {
         <div className="block lg:hidden">
           <Collapse open={openNav}>
             {navList}
-            {!isLoggedIn && (
+            {!state.isAuth && (
               <div className="flex md:hidden items-center gap-x-1">
                 <button
                   className="w-full rounded-lg border border-customBlack  p-2.5 text-center text-black text-base font-semibold"

@@ -1,12 +1,8 @@
 import { useContext, createContext, useEffect, useReducer } from "react";
 import axios from "axios";
-import { reducer } from "./reducer";
+import { initialState, reducer } from "./reducer";
 
 const ContextGlobal = createContext();
-
-const initialState = {
-  vehicles: []
-};
 
 const ContextProvider = ({ children }) => {
   
@@ -25,6 +21,11 @@ const ContextProvider = ({ children }) => {
     });
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem('login', JSON.stringify(state.isAuth));
+    localStorage.setItem('user', JSON.stringify(state.user));
+    localStorage.setItem('accessToken', state.accessToken || "");
+  }, [state.isAuth, state.user, state.accessToken]);
 
   return (
     <ContextGlobal.Provider value = {{state, dispatch}}>
