@@ -1,6 +1,10 @@
 import React from "react";
 import { useState } from "react";
 import styles from "../Components/Styles/SignIn.module.css";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import FormInput from './FormInput';
 
 export const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -14,186 +18,269 @@ export const SignIn = () => {
     nationality: "",
     birthDate: "",
   });
-  // Definicion de los errores
-  const [nameError, setNameError] = useState(false);
 
-  //Manejo logica de verificacion
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const [errors, setErrors] = useState({});
 
-  const handleChangeName = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    if (/[^a-zA-Z0-9]/.test(formData.firstName)) {
-      setNameError(true);
-    }else{
-      setNameError(false);
-        
+  const navigate = useNavigate();
+
+  const [birthDateFields, setBirthDateFields] = useState({
+    day: '',
+    month: '',
+    year: ''
+  });
+
+  const handleBirthDateChange = (field, value) => {
+    const newBirthDateFields = { ...birthDateFields, [field]: value };
+    setBirthDateFields(newBirthDateFields);
+    
+    if (newBirthDateFields.day && newBirthDateFields.month && newBirthDateFields.year) {
+      const fullDate = `${newBirthDateFields.year}-${newBirthDateFields.month.padStart(2, '0')}-${newBirthDateFields.day.padStart(2, '0')}`;
+      setFormData(prev => ({
+        ...prev,
+        birthDate: fullDate
+      }));
     }
   };
 
-  const handleSubmit = (e) => {
+  const validateField = (name, value) => {
+    switch (name) {
+      case "firstName":
+      case "secondName":
+      case "lastName":
+        return {
+          isValid: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,30}$/.test(value.trim()),
+          error: "Solo letras, entre 2 y 30 caracteres"
+        };
+      case "email":
+        return {
+          isValid: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+          error: "Email inválido"
+        };
+      case "phone":
+        return {
+          isValid: /^\+?[\d\s-]{10,}$/.test(value),
+          error: "Número de teléfono inválido"
+        };
+      case "address":
+        return {
+          isValid: value.trim().length >= 5,
+          error: "La dirección debe tener al menos 5 caracteres"
+        };
+      case "password":
+        return {
+          isValid: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/.test(value),
+          error: "Mínimo 8 caracteres, al menos una letra y un número"
+        };
+      case "nationality":
+        return {
+          isValid: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,30}$/.test(value.trim()),
+          error: "Nacionalidad inválida"
+        };
+      case "birthDate":
+        const date = new Date(value);
+        const today = new Date();
+        const minAge = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+        return {
+          isValid: date <= minAge,
+          error: "Debes ser mayor de 18 años"
+        };
+      default:
+        return { isValid: true, error: "" };
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    const { isValid, error } = validateField(name, value);
+    setErrors(prev => ({
+      ...prev,
+      [name]: !isValid ? error : ""
+    }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
-    // Aquí puedes manejar la lógica de registro
+
+    const newErrors = {};
+    Object.keys(formData).forEach(key => {
+      const { isValid, error } = validateField(key, formData[key]);
+      if (!isValid) newErrors[key] = error;
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de validación',
+        text: 'Por favor, revisa los campos marcados en rojo',
+        confirmButtonColor: '#32CEB1'
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post("http://localhost:8080/api/auth/register", formData);
+      
+      if (response.status === 201) {
+        Swal.fire({
+          icon: 'success',
+          title: '¡Registro exitoso!',
+          text: 'Tu cuenta ha sido creada correctamente',
+          confirmButtonColor: '#32CEB1'
+        });
+        navigate("/login");
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: error.response?.data?.message || 'Error al registrar usuario',
+        confirmButtonColor: '#32CEB1'
+      });
+    }
   };
 
   return (
     <div className={styles.container}>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm"
-      >
+      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm">
         <h1>Registrarse</h1>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Primer Nombre
-          </label>
-          <input
-            type="text"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleChangeName}
-            required
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Tu primer nombre"
-          />
-        </div>
-        {nameError ? (
-          <>
-            <h2 style={{ color: "red" }}>
-              Tu nombre no puede contener caracteres especiales
-            </h2>
-          </>
-        ) : null}
+        <FormInput
+          label="Primer Nombre"
+          type="text"
+          name="firstName"
+          value={formData.firstName}
+          onChange={handleChange}
+          placeholder="Tu primer nombre"
+          error={errors.firstName}
+        />
+
+        <FormInput
+          label="Segundo Nombre"
+          type="text"
+          name="secondName"
+          value={formData.secondName}
+          onChange={handleChange}
+          placeholder="Tu segundo nombre"
+          error={errors.secondName}
+        />
+
+        <FormInput
+          label="Apellido"
+          type="text"
+          name="lastName"
+          value={formData.lastName}
+          onChange={handleChange}
+          placeholder="Tu apellido"
+          error={errors.lastName}
+        />
+
+        <FormInput
+          label="Correo Electrónico"
+          type="email"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+          placeholder="ejemplo@correo.com"
+          error={errors.email}
+        />
+
+        <FormInput
+          label="Teléfono"
+          type="tel"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+          placeholder="Tu número de teléfono"
+          error={errors.phone}
+        />
+
+        <FormInput
+          label="Dirección"
+          type="text"
+          name="address"
+          value={formData.address}
+          onChange={handleChange}
+          placeholder="Tu dirección"
+          error={errors.address}
+        />
+
+        <FormInput
+          label="Contraseña"
+          type="password"
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
+          placeholder="********"
+          error={errors.password}
+        />
+
+        <FormInput
+          label="Nacionalidad"
+          type="text"
+          name="nationality"
+          value={formData.nationality}
+          onChange={handleChange}
+          placeholder="Tu nacionalidad"
+          error={errors.nationality}
+        />
 
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700">
-            Segundo Nombre
+            Fecha de Nacimiento
           </label>
-          <input
-            type="text"
-            name="secondName"
-            value={formData.secondName}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Tu segundo nombre"
-          />
+          <div className="grid grid-cols-3 gap-2">
+            <select
+              name="day"
+              value={birthDateFields.day}
+              onChange={(e) => handleBirthDateChange('day', e.target.value)}
+              className="p-2 border rounded-md"
+            >
+              <option value="">Día</option>
+              {[...Array(31)].map((_, i) => (
+                <option key={i + 1} value={i + 1}>{i + 1}</option>
+              ))}
+            </select>
+            
+            <select
+              name="month"
+              value={birthDateFields.month}
+              onChange={(e) => handleBirthDateChange('month', e.target.value)}
+              className="p-2 border rounded-md"
+            >
+              <option value="">Mes</option>
+              {[
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+              ].map((month, i) => (
+                <option key={i + 1} value={i + 1}>{month}</option>
+              ))}
+            </select>
+            
+            <select
+              name="year"
+              value={birthDateFields.year}
+              onChange={(e) => handleBirthDateChange('year', e.target.value)}
+              className="p-2 border rounded-md"
+            >
+              <option value="">Año</option>
+              {[...Array(100)].map((_, i) => {
+                const year = new Date().getFullYear() - i;
+                return <option key={year} value={year}>{year}</option>;
+              })}
+            </select>
+          </div>
+          {errors.birthDate && (
+            <p className="mt-1 text-sm text-red-600">{errors.birthDate}</p>
+          )}
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Apellido
-          </label>
-          <input
-            type="text"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Tu apellido"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Correo Electrónico
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="ejemplo@correo.com"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Teléfono
-          </label>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Tu número de teléfono"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Dirección
-          </label>
-          <input
-            type="text"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Tu dirección"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Contraseña
-          </label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="********"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">
-            Nacionalidad
-          </label>
-          <input
-            type="text"
-            name="nationality"
-            value={formData.nationality}
-            onChange={handleChange}
-            required
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            placeholder="Tu nacionalidad"
-          />
-        </div>
-
-        {/* Uncomment this section if you want to include birth date */}
-        {/* <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700">
-              Fecha de Nacimiento
-            </label>
-            <input
-              type="date"
-              name="birthDate"
-              value={formData.birthDate}
-              onChange={handleChange}
-              required
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            />
-          </div> */}
-
-        <button
-          type="submit"
-          className="mt-4 bg-blue-500 text-white p-2 rounded-md"
-        >
+        <button type="submit" className="mt-4 bg-blue-500 text-white p-2 rounded-md">
           Registrarse
         </button>
 
