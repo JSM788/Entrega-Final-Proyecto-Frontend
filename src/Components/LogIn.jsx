@@ -52,7 +52,7 @@ const LoginForm = () => {
           showConfirmButton: false,
           timer: 2000,
           customClass: {
-            title: "text-green-600"
+            htmlContainer: "!text-[#32CEB1]"
           }
         })
       }
@@ -108,8 +108,8 @@ const LoginForm = () => {
               id="email"
               className={`w-full rounded-lg mt-3 p-3 border 
                 ${customer.email
-                  ? (validateField("email", customer.email) ? "border-green-500" : "border-red-500")
-                  : "border-[#ACACAC]"}`}
+                  ? (validateField("email", customer.email) ? "border-[#32CEB1]" : "border-red-500")
+                  : "border-customGray3"}`}
               placeholder="Ingrese su email" 
               name="email"
               value={customer.email}
@@ -133,8 +133,8 @@ const LoginForm = () => {
                 id="password"
                 className={`w-full rounded-lg p-3 border 
                   ${customer.password
-                    ? (validateField("password", customer.password) ? "border-green-500" : "border-red-500")
-                    : "border-[#ACACAC]"}`}
+                    ? (validateField("password", customer.password) ? "border-[#32CEB1]" : "border-red-500")
+                    : "border-customGray3"}`}
                 placeholder="Ingrese su contraseña"
                 name="password"
                 value={customer.password}
@@ -145,7 +145,7 @@ const LoginForm = () => {
                 onClick={() => setShowPassword(!showPassword)} 
                 className="absolute right-3 top-1/2 transform -translate-y-1/2"
               >
-                {showPassword ? <HiEyeOff size={20} /> : <HiEye size={20} />} 
+                {showPassword ? <HiEyeOff size={20} className="text-deepTeal" /> : <HiEye size={20} className="text-deepTeal" />} 
               </button>
             </div>
 
@@ -167,7 +167,7 @@ const LoginForm = () => {
           </div>
 
           <p className="text-center text-sm lg:text-lg text-black font-bold pt-12">
-            ¿No tienes cuenta? <Link to={"/singIn"}><span className="text-[#32CEB1] hover:underline">Registrate</span></Link>
+            ¿No tienes cuenta? <Link to={"/singIn"}><span className="text-[#32CEB1] underline">Regístrate</span></Link>
           </p>
         </form>
       </div>
