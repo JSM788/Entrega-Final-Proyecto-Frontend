@@ -7,6 +7,7 @@ import {
 } from "@material-tailwind/react";
 import { useNavigate } from "react-router-dom";
 import { useContextGlobal } from "./utils/global.context";
+import Swal from "sweetalert2";
 
 export function StickyNavbar() {
   const [openNav, setOpenNav] = React.useState(false);
@@ -33,6 +34,32 @@ export function StickyNavbar() {
   const handleRegisterNavigation = () => {
     navigate("/singIn");
   };
+
+  const handleMiCuenta = () => {
+    Swal.fire({
+      title: "Datos de usuario",
+      html: `
+        <p style="margin-bottom: 8px; font-size: 22px;">
+          <span style="color: #32CEB1;">Nombre:</span> <span style="color: #000;">
+            ${state.user.fullName}
+          </span></p>
+        <p style="margin-bottom: 8px; font-size: 22px;">
+          <span style="color: #32CEB1;">Email:</span> <span style="color: #000;">
+            ${state.user.email}
+        </span></p>
+        <p style="margin-bottom: 8px; font-size: 22px;">
+          <span style="color: #32CEB1;">Nombre de usuario:</span> <span style="color: #000;">
+            ${state.user.username}
+        </span></p>
+      `,
+      showConfirmButton: false,
+      showCloseButton: true,
+      customClass: {
+        title: "text-black",
+        htmlContainer: "!text-[#32CEB1]"
+      }
+    });
+  }
 
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
@@ -190,7 +217,7 @@ export function StickyNavbar() {
                       </svg>
 
                       <span
-                        onClick={() => navigate("/my-profile")}
+                        onClick={handleMiCuenta}
                         className="text-black text-lg font-medium cursor-pointer"
                       >
                         Mi Cuenta
