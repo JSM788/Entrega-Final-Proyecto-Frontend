@@ -143,11 +143,46 @@ export const SignIn = () => {
       if (response.status === 200) {
         Swal.fire({
           icon: 'success',
-          title: '¡Registro exitoso!',
-          text: 'Tu cuenta ha sido creada correctamente',
-          confirmButtonColor: '#32CEB1'
+          title: '¡Gracias por registrarte!',
+          html: `
+              <p>
+                Te hemos enviado un correo para confirmar tu dirección. Revisa tu bandeja de entrada (y la carpeta de spam) para activar tu cuenta. 
+                En caso de que no te haya llegado ningún correo, puedes 
+                <a href="#" id="resendEmailLink" style="color: #32CEB1; text-decoration: underline;">volver a enviarlo</a>.
+              </p>
+              <button id="loginButton" class="swal2-confirm swal2-styled" style="background-color: #32CEB1; margin-top: 20px;">
+                INICIAR SESIÓN
+              </button>
+            `,
+            showConfirmButton: false,
         });
-        navigate("/login");
+        document.getElementById('resendEmailLink').addEventListener('click', async (e) => {
+          e.preventDefault();
+          try {
+            // Reemplazar la solicitud con una solicitud POST y enviar el correo como parámetro de consulta
+            const email = encodeURIComponent(formData.email); // Asegurarse de que el correo esté codificado para la URL
+            const response = await axios.post(`http://localhost:8080/api/auth/resend-confirmation?email=${email}`);
+        
+            Swal.fire({
+              icon: 'success',
+              title: 'Correo reenviado',
+              text: 'Te hemos reenviado el correo de confirmación. Revisa tu bandeja de entrada y la carpeta de spam.',
+              confirmButtonColor: '#32CEB1',
+            });
+          } catch (error) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Error al reenviar',
+              text: error.response?.data?.message || 'Hubo un problema al intentar reenviar el correo.',
+              confirmButtonColor: '#32CEB1',
+            });
+          }
+        });
+
+        document.getElementById('loginButton').addEventListener('click', () => {
+          navigate("/login");
+        });
+      
       }
     } catch (error) {
       Swal.fire({
