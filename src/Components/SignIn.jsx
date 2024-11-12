@@ -123,10 +123,25 @@ export const SignIn = () => {
       return;
     }
 
+    const fullName = `${formData.firstName} ${formData.secondName} ${formData.lastName}`.trim();
+    const username = formData.email.split('@')[0];
+    const birthDate = `${birthDateFields.day.padStart(2, '0')}/${birthDateFields.month.padStart(2, '0')}/${birthDateFields.year.slice(-2)}`;
+
+    const formattedData = {
+      address: formData.address,
+      birthDate,
+      nationality: formData.nationality,
+      password: formData.password,
+      phone: formData.phone,
+      username,
+      fullName,
+      email: formData.email,
+      role: ["USER"],
+    }
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/register", formData);
-      
-      if (response.status === 201) {
+      const response = await axios.post("http://localhost:8080/api/auth/signup", formattedData);
+      console.log('respuesta:', response.status);
+      if (response.status === 200) {
         Swal.fire({
           icon: 'success',
           title: '¡Registro exitoso!',
