@@ -125,8 +125,7 @@ export const SignIn = () => {
 
     const fullName = `${formData.firstName} ${formData.secondName} ${formData.lastName}`.trim();
     const username = formData.email.split('@')[0];
-    const birthDate = `${birthDateFields.day.padStart(2, '0')}/${birthDateFields.month.padStart(2, '0')}/${birthDateFields.year.slice(-2)}`;
-
+    const birthDate = `${birthDateFields.year}-${birthDateFields.month.padStart(2,"0")}-${birthDateFields.day.padStart(2, "0")}`;
     const formattedData = {
       address: formData.address,
       birthDate,
