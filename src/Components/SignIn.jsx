@@ -8,8 +8,7 @@ import FormInput from './FormInput';
 
 export const SignIn = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    secondName: "",
+    name: "",
     lastName: "",
     email: "",
     phone: "",
@@ -44,8 +43,7 @@ export const SignIn = () => {
 
   const validateField = (name, value) => {
     switch (name) {
-      case "firstName":
-      case "secondName":
+      case "name":
       case "lastName":
         return {
           isValid: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{2,30}$/.test(value.trim()),
@@ -123,7 +121,7 @@ export const SignIn = () => {
       return;
     }
 
-    const fullName = `${formData.firstName} ${formData.secondName} ${formData.lastName}`.trim();
+    const fullName = `${formData.name} ${formData.lastName}`.trim();
     const username = formData.email.split('@')[0];
     const birthDate = `${birthDateFields.year}-${birthDateFields.month.padStart(2,"0")}-${birthDateFields.day.padStart(2, "0")}`;
     const formattedData = {
@@ -200,24 +198,15 @@ export const SignIn = () => {
         <h1>Registrarse</h1>
 
         <FormInput
-          label="Primer Nombre"
+          label="Nombre"
           type="text"
-          name="firstName"
-          value={formData.firstName}
+          name="name"
+          value={formData.name}
           onChange={handleChange}
-          placeholder="Tu primer nombre"
-          error={errors.firstName}
+          placeholder="Tu nombre"
+          error={errors.name}
         />
 
-        <FormInput
-          label="Segundo Nombre"
-          type="text"
-          name="secondName"
-          value={formData.secondName}
-          onChange={handleChange}
-          placeholder="Tu segundo nombre"
-          error={errors.secondName}
-        />
 
         <FormInput
           label="Apellido"
