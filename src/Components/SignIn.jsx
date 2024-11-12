@@ -123,8 +123,22 @@ export const SignIn = () => {
       return;
     }
 
+    const full_name = `${formData.firstName} ${formData.secondName} ${formData.lastName}`.trim();
+    const username = formData.email.split('@')[0];
+
+    const formattedData = {
+      address: formData.address,
+      birth_date: formData.birthDate,
+      email: formData.email,
+      full_name,
+      nationality: formData.nationality,
+      password: formData.password,
+      phone: formData.phone,
+      username,
+      role_id: 2,
+    }
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/register", formData);
+      const response = await axios.post("http://localhost:8080/api/auth/singup", formattedData);
       
       if (response.status === 201) {
         Swal.fire({
