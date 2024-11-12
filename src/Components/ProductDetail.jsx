@@ -34,7 +34,7 @@ const ProductDetail = () => {
           <ArrowLeftIcon className="h-6 w-6 text-deepTeal" />
         </Button>
         <div className="flex flex-col items-start ml-0 sm:ml-12">
-          <h4 className="text-lg	text-customBlack">Carro eléctrico</h4>
+          <h4 className="text-lg	text-customBlack">{product.tipo}</h4>
           <h3 className="text-2xl text-black font-semibold text-left flex-grow">
             {product.nombreVehiculo}
           </h3>
@@ -136,7 +136,7 @@ const ProductDetail = () => {
               PRECIOS Y PLANES
             </h3>
             <p className="text-base mt-2 text-start font-semibold">
-              Carro eléctrico
+            {product.tipo}
               <span className="text-deepTeal"> {product.nombreVehiculo}</span>
             </p>
             <div className="mt-4 space-y-2">
@@ -147,7 +147,7 @@ const ProductDetail = () => {
                     Alquiler por hora
                   </span>
                   <br />
-                  <span className="text-lg">${product.precio}/</span>
+                  <span className="text-lg">${product.precioPorHora}/</span>
                   <span className="font-semibold text-[11px]">por hora</span>
                 </span>
               </label>
@@ -155,7 +155,7 @@ const ProductDetail = () => {
                 <input type="radio" name="price" className="mt-4 ml-4" />
                 <span className="py-[10px] m-0 text-start">
                   <span className="text-sm font-semibold">Alquiler diario</span>
-                  <br /> <span className="text-lg"> $70/</span>
+                  <br /> <span className="text-lg"> ${product.precioPorDia}/</span>
                   <span className="font-semibold text-[11px]"> por día</span>
                 </span>
               </label>
@@ -165,7 +165,7 @@ const ProductDetail = () => {
                   <span className="text-sm font-semibold">
                     Suscripción mensual
                   </span>
-                  <br /> <span className="text-lg">$300/</span>
+                  <br /> <span className="text-lg">${product.precioMensual}/</span>
                   <span className="font-semibold text-[11px]"> por mes</span>
                 </span>
               </label>
@@ -175,13 +175,13 @@ const ProductDetail = () => {
                   <span className="text-sm font-semibold">
                     Suscripción anual
                   </span>
-                  <br /> <span className="text-lg">$700/</span>
+                  <br /> <span className="text-lg">${product.precioAnual}/</span>
                   <span className="font-semibold text-[11px]"> anual</span>
                 </span>
               </label>
             </div>
             <button className="bg-[#32ceb1] text-white px-4 py-2 mt-1 rounded-md w-full">
-            RESERVA AHORA
+              RESERVA AHORA
             </button>
           </div>
         </section>
@@ -204,52 +204,32 @@ const ProductDetail = () => {
         </section> */}
 
         {/* Characteristics */}
-        <h3 className="text-2xl font-semibold my-4 text-black underline" style={{ textDecorationColor: '#6adcc7' }}>
-        CARACTERÍSTICAS:
+        <h3
+          className="text-2xl font-semibold my-4 text-black underline"
+          style={{ textDecorationColor: "#6adcc7" }}
+        >
+          CARACTERÍSTICAS:
         </h3>
         <section className="my-8 bg-customGray py-4 w-auto">
           <div className="flex overflow-x-auto whitespace-nowrap space-x-4">
-            <div className="flex items-center min-w-[530px] first:!ml-8">
-              <img
-                src={product.img}
-                alt={product.nombreVehiculo}
-                className="w-[223px] h-[174px] object-cover rounded-lg"
-              />
-              <div className="bg-mintTeal2 rounded-l-none rounded-r-lg min-w-[280px] text-start p-7">
-                <p className="mt-2 font-medium text-lg text-black">
-                  Color de vehiculo
-                </p>
-                <p className="text-[11px] text-black">
-                  {product.colorVehiculo}
-                </p>
+            {/* Características dinámicas */}
+            {product.caracteristicas?.map((caracteristica, index) => (
+              <div key={index} className="flex items-center min-w-[530px] first:!ml-8">
+                <img
+                  src={caracteristica.imagen}
+                  alt={caracteristica.titulo}
+                  className="w-[223px] h-[174px] object-cover rounded-lg"
+                />
+                <div className="bg-mintTeal2 rounded-l-none rounded-r-lg min-w-[280px] text-start p-7">
+                  <p className="mt-2 font-medium text-lg text-black">
+                    {caracteristica.titulo}
+                  </p>
+                  <p className="text-[11px] text-black">
+                    {caracteristica.descripcion}
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center  min-w-[530px]">
-              <img
-                src={product.img}
-                alt={product.nombreVehiculo}
-                className="w-[223px] h-[174px] object-cover rounded-lg"
-              />
-              <div className="bg-mintTeal2 rounded-l-none rounded-r-lg min-w-[280px] text-start p-7">
-                <p className="mt-2 font-medium text-lg text-black">
-                  N° de Puertas
-                </p>
-                <p className="text-[11px] text-black">{product.noPuertas}</p>
-              </div>
-            </div>
-            <div className="flex items-center  min-w-[530px] last:!mr-8">
-              <img
-                src={product.img}
-                alt={product.nombreVehiculo}
-                className="w-[223px] h-[174px] object-cover rounded-lg"
-              />
-              <div className="bg-mintTeal2 rounded-l-none rounded-r-lg min-w-[280px] text-start p-7">
-                <p className="mt-2 font-medium text-lg text-black">
-                  N° de Pasajeros
-                </p>
-                <p className="text-[11px] text-black">{product.noPasajeros}</p>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
       </main>
