@@ -21,7 +21,7 @@ import {
   IconButton,
   Tooltip,
 } from "@material-tailwind/react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const TABLE_HEAD = [
   "ID",
@@ -60,6 +60,27 @@ const VEHICLE_DATA = [
   },
 ];
 
+// Hook personalizado para verificar si el dispositivo es móvil
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); // Ajusta el tamaño según tus necesidades
+    };
+
+    // Chequear el tamaño inicial y añadir event listener
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return isMobile;
+};
+
 export const AdminVehicles = () => {
   const [vehicleData, setVehicleData] = useState({
     name: "",
@@ -88,6 +109,24 @@ export const AdminVehicles = () => {
     console.log("Vehicle added:", newVehicle);
     setVehicleData({ name: "", category: "", year: "", price: "", img: "" }); // Reset form
   };
+
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-center p-4 bg-white shadow-md rounded-lg">
+          <h2 className="text-xl font-semibold text-red-600">
+            Acceso no disponible
+          </h2>
+          <p className="text-gray-700">
+            La página de administración no está disponible en dispositivos
+            móviles.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex gap-4">
