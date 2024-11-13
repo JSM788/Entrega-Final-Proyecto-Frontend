@@ -9,10 +9,14 @@ import { useNavigate } from "react-router-dom";
 import { useContextGlobal } from "./utils/global.context";
 import Swal from "sweetalert2";
 
+const truncateText = (text, maxLength) => {
+  return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+};
+
 export function StickyNavbar() {
   const [openNav, setOpenNav] = React.useState(false);
   const [openSubMenu, setOpenSubMenu] = React.useState(false);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const { state, dispatch } = useContextGlobal();
 
   React.useEffect(() => {
@@ -23,7 +27,8 @@ export function StickyNavbar() {
   }, []);
 
   const handleLogout = () => {
-    dispatch({ type: 'logout' })
+    setOpenSubMenu(false); // Cierra el submenú
+    dispatch({ type: "logout" });
     navigate("/login");
   };
 
@@ -36,6 +41,7 @@ export function StickyNavbar() {
   };
 
   const handleMiCuenta = () => {
+    setOpenSubMenu(false); // Cierra el submenú
     Swal.fire({
       title: "Datos de usuario",
       html: `
@@ -56,10 +62,10 @@ export function StickyNavbar() {
       showCloseButton: true,
       customClass: {
         title: "text-black",
-        htmlContainer: "!text-[#32CEB1]"
-      }
+        htmlContainer: "!text-[#32CEB1]",
+      },
     });
-  }
+  };
 
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
@@ -184,24 +190,14 @@ export function StickyNavbar() {
                       </div>
                       <div className="flex flex-col">
                         <div className="text-center text-black text-xl font-medium font-['Roboto']">
-                          {state.user.fullName}
+                          {truncateText(state.user.fullName, 8)}
                         </div>
                         <div className="text-[#79747e] text-[13px] font-medium font-['Roboto']">
-                          {state.user.email}
+                          {truncateText(state.user.email, 12)}
                         </div>
                       </div>
                     </div>
                     <div className="self-stretch h-[0px] border border-customGray3"></div>
-                    {state.user.roles.includes("ROLE_ADMIN") && (
-                      <div className="pl-2.5 pr-5 py-2.5">
-                        <span
-                          onClick={() => navigate("/admin")}
-                          className="text-black text-lg font-medium cursor-pointer"
-                        >
-                          Administración
-                        </span>
-                      </div>
-                    )}
                     <div className="pl-2.5 pr-5 py-2.5 justify-start items-center gap-2.5 flex">
                       <svg
                         width="24"
@@ -223,24 +219,71 @@ export function StickyNavbar() {
                         Mi Cuenta
                       </span>
                     </div>
-                    <button
-                      className="self-stretch pl-2.5 pr-5 py-2.5 bg-[#32ceb1] rounded-lg justify-center items-center gap-2.5 flex text-white text-lg font-medium font-['Roboto']"
-                      onClick={handleLogout}
-                    >
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                    {state.user.roles.includes("ROLE_ADMIN") ? (
+                      <>
+                        <button
+                          className="self-stretch pl-2.5 pr-5 py-2.5 bg-[#32ceb1] rounded-lg justify-center items-center gap-2.5 flex text-white text-lg font-medium font-['Roboto']"
+                          onClick={() =>  {
+                            navigate("/admin");
+                            setOpenSubMenu(false); // Cierra el submenú
+                          }}
+                        >
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 20 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M2 20C1.45 20 0.979167 19.8042 0.5875 19.4125C0.195833 19.0208 0 18.55 0 18V7C0 6.45 0.195833 5.97917 0.5875 5.5875C0.979167 5.19583 1.45 5 2 5H7V2C7 1.45 7.19583 0.979167 7.5875 0.5875C7.97917 0.195833 8.45 0 9 0H11C11.55 0 12.0208 0.195833 12.4125 0.5875C12.8042 0.979167 13 1.45 13 2V5H18C18.55 5 19.0208 5.19583 19.4125 5.5875C19.8042 5.97917 20 6.45 20 7V18C20 18.55 19.8042 19.0208 19.4125 19.4125C19.0208 19.8042 18.55 20 18 20H2ZM2 18H18V7H13C13 7.55 12.8042 8.02083 12.4125 8.4125C12.0208 8.80417 11.55 9 11 9H9C8.45 9 7.97917 8.80417 7.5875 8.4125C7.19583 8.02083 7 7.55 7 7H2V18ZM4 16H10V15.55C10 15.2667 9.92083 15.0042 9.7625 14.7625C9.60417 14.5208 9.38333 14.3333 9.1 14.2C8.76667 14.05 8.42917 13.9375 8.0875 13.8625C7.74583 13.7875 7.38333 13.75 7 13.75C6.61667 13.75 6.25417 13.7875 5.9125 13.8625C5.57083 13.9375 5.23333 14.05 4.9 14.2C4.61667 14.3333 4.39583 14.5208 4.2375 14.7625C4.07917 15.0042 4 15.2667 4 15.55V16ZM12 14.5H16V13H12V14.5ZM7 13C7.41667 13 7.77083 12.8542 8.0625 12.5625C8.35417 12.2708 8.5 11.9167 8.5 11.5C8.5 11.0833 8.35417 10.7292 8.0625 10.4375C7.77083 10.1458 7.41667 10 7 10C6.58333 10 6.22917 10.1458 5.9375 10.4375C5.64583 10.7292 5.5 11.0833 5.5 11.5C5.5 11.9167 5.64583 12.2708 5.9375 12.5625C6.22917 12.8542 6.58333 13 7 13ZM12 11.5H16V10H12V11.5ZM9 7H11V2H9V7Z"
+                              fill="white"
+                            />
+                          </svg>
+                          Administración
+                        </button>
+                        <div className="pl-2.5 pr-5 py-2.5 justify-start items-center gap-2.5 flex">
+                          <svg
+                            width="19"
+                            height="18"
+                            viewBox="0 0 19 18"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M2.5 18C1.95 18 1.47917 17.8042 1.0875 17.4125C0.695833 17.0208 0.5 16.55 0.5 16V2C0.5 1.45 0.695833 0.979167 1.0875 0.5875C1.47917 0.195833 1.95 0 2.5 0H9.5V2H2.5V16H9.5V18H2.5ZM13.5 14L12.125 12.55L14.675 10H6.5V8H14.675L12.125 5.45L13.5 4L18.5 9L13.5 14Z"
+                              fill="#272727"
+                            />
+                          </svg>
+
+                          <span
+                            onClick={handleLogout}
+                            className="text-black text-lg font-medium cursor-pointer"
+                          >
+                            Cerrar Sesión
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      <button
+                        className="self-stretch pl-2.5 pr-5 py-2.5 bg-[#32ceb1] rounded-lg justify-center items-center gap-2.5 flex text-white text-lg font-medium font-['Roboto']"
+                        onClick={handleLogout}
                       >
-                        <path
-                          d="M5 21C4.45 21 3.97917 20.8042 3.5875 20.4125C3.19583 20.0208 3 19.55 3 19V5C3 4.45 3.19583 3.97917 3.5875 3.5875C3.97917 3.19583 4.45 3 5 3H12V5H5V19H12V21H5ZM16 17L14.625 15.55L17.175 13H9V11H17.175L14.625 8.45L16 7L21 12L16 17Z"
-                          fill="white"
-                        />
-                      </svg>
-                      Cerrar Sesión
-                    </button>
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M5 21C4.45 21 3.97917 20.8042 3.5875 20.4125C3.19583 20.0208 3 19.55 3 19V5C3 4.45 3.19583 3.97917 3.5875 3.5875C3.97917 3.19583 4.45 3 5 3H12V5H5V19H12V21H5ZM16 17L14.625 15.55L17.175 13H9V11H17.175L14.625 8.45L16 7L21 12L16 17Z"
+                            fill="white"
+                          />
+                        </svg>
+                        Cerrar Sesión
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
