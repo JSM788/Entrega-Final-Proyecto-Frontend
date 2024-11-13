@@ -8,6 +8,7 @@ import {
   // IconButton,
   // Tooltip,
   // Button,
+  Select,
   Option,
 } from "@material-tailwind/react";
 // import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
@@ -223,7 +224,7 @@ export const AdminUsers = () => {
                         </Typography>
                       </td>
                       <td className={classes}>
-                        <select
+                        <Select
                           value={isAdmin ? "admin" : "user"}
                           onChange={(value) => {
                             updateRole(
@@ -233,11 +234,11 @@ export const AdminUsers = () => {
                           }}
                           disabled={isFirstUser || isUserLoggedIn} // Deshabilitar el select
                         >
-                          <option value="admin" disabled={isFirstUser || isUserLoggedIn}>
+                          <Option value="admin" disabled={isFirstUser || isUserLoggedIn}>
                             Admin
-                          </option>
-                          <option value="user">User</option>
-                        </select>
+                          </Option>
+                          <Option value="user">User</Option>
+                        </Select>
                       </td>
                        {/* <td className={classes}>
                       <div className="flex space-x-2">
