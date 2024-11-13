@@ -16,10 +16,33 @@ import { useContextGlobal } from "../utils/global.context";
 
 const TABLE_HEAD = ["ID", "Nombre", "Correo Electrónico", "Rol"]; //,"Acciones"
 
+// Hook personalizado para verificar si el dispositivo es móvil
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  return isMobile;
+};
+
 export const AdminUsers = () => {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { state } = useContextGlobal();
   const { accessToken } = state;
+
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -40,6 +63,8 @@ export const AdminUsers = () => {
       } catch (error) {
         console.error("Error fetching users:", error);
         setUsers([]);
+      } finally {
+        setLoading(false); // Set loading to false after data is fetched
       }
     };
 
@@ -51,11 +76,11 @@ export const AdminUsers = () => {
   const updateRole = async (userId, newRole) => {
     const currentUser = users.find((user) => user.userId === userId);
     if (!currentUser) return;
-  
+
     // Detecta el rol actual y define los IDs de rol correspondientes
-    const currentRole = currentUser.roles.includes(1) ? 1 : 2; 
+    const currentRole = currentUser.roles.includes(1) ? 1 : 2;
     const newRoleId = newRole === "admin" ? 1 : 2;
-    console.log(currentRole, newRoleId)
+    console.log(currentRole, newRoleId);
     try {
       // Remove the current role
       await fetch("http://localhost:8080/api/user/removeRole", {
@@ -66,7 +91,7 @@ export const AdminUsers = () => {
         },
         body: JSON.stringify({ userId, roleId: currentRole }),
       });
-  
+
       // Add the new role
       await fetch("http://localhost:8080/api/user/addRole", {
         method: "PUT",
@@ -76,19 +101,33 @@ export const AdminUsers = () => {
         },
         body: JSON.stringify({ userId, roleId: newRoleId }),
       });
-  
+
       // Actualiza el estado local para reflejar el nuevo rol
       setUsers((prevUsers) =>
         prevUsers.map((user) =>
-          user.userId === userId
-            ? { ...user, roles: [newRoleId] }
-            : user
+          user.userId === userId ? { ...user, roles: [newRoleId] } : user
         )
       );
     } catch (error) {
       console.error("Error updating role:", error);
     }
-  };  
+  };
+
+  if (isMobile) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="text-center p-4 bg-white shadow-md rounded-lg">
+          <h2 className="text-xl font-semibold text-red-600">
+            Acceso no disponible
+          </h2>
+          <p className="text-gray-700">
+            La página de administración no está disponible en dispositivos
+            móviles.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full w-full flex flex-col items-center justify-center px-10">
@@ -103,82 +142,89 @@ export const AdminUsers = () => {
         </CardHeader>
 
         <CardBody className="overflow-auto px-0">
-          <table className="mt-4 w-full min-w-max table-auto text-left">
-            <thead>
-              <tr>
-                {TABLE_HEAD.map((head) => (
-                  <th
-                    key={head}
-                    className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
-                  >
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
+          {loading ? (
+            <div className="text-center p-4">
+              <Typography variant="h6" color="blue-gray">
+                Cargando...
+              </Typography>
+            </div>
+          ) : (
+            <table className="mt-4 w-full min-w-max table-auto text-left">
+              <thead>
+                <tr>
+                  {TABLE_HEAD.map((head) => (
+                    <th
+                      key={head}
+                      className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
                     >
-                      {head}
-                    </Typography>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((user, index) => {
-                const isAdmin = user.roles.includes(1);
-                const isLast = index === users.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
+                      >
+                        {head}
+                      </Typography>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {users.map((user, index) => {
+                  const isAdmin = user.roles.includes(1);
+                  const isLast = index === users.length - 1;
+                  const classes = isLast
+                    ? "p-4"
+                    : "p-4 border-b border-blue-gray-50";
 
-                const isFirstUser = user.email === "admin@gmail.com"; // Check if it's the first user (admin)
+                  const isFirstUser = user.email === "admin@gmail.com"; // Check if it's the first user (admin)
 
-                return (
-                  <tr key={user.email}>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {index + 1}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {user.name}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="font-normal"
-                      >
-                        {user.email}
-                      </Typography>
-                    </td>
-                    <td className={classes}>
-                      <Select
-                        value={isAdmin ? "admin" : "user"}
-                        onChange={(value) => {
-                          updateRole(
-                            user.userId,
-                            value === "admin" ? "admin" : "user"
-                          );
-                        }}
-                        disabled={isFirstUser} // Deshabilitar el select para el primer usuario
-                      >
-                        <Option value="admin" disabled={isFirstUser}>
-                          Admin
-                        </Option>
-                        <Option value="user">User</Option>
-                      </Select>
-                    </td>
-                    {/* <td className={classes}>
+                  return (
+                    <tr key={user.email}>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {index + 1}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {user.name}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Typography
+                          variant="small"
+                          color="blue-gray"
+                          className="font-normal"
+                        >
+                          {user.email}
+                        </Typography>
+                      </td>
+                      <td className={classes}>
+                        <Select
+                          value={isAdmin ? "admin" : "user"}
+                          onChange={(value) => {
+                            updateRole(
+                              user.userId,
+                              value === "admin" ? "admin" : "user"
+                            );
+                          }}
+                          disabled={isFirstUser} // Deshabilitar el select para el primer usuario
+                        >
+                          <Option value="admin" disabled={isFirstUser}>
+                            Admin
+                          </Option>
+                          <Option value="user">User</Option>
+                        </Select>
+                      </td>
+                       {/* <td className={classes}>
                       <div className="flex space-x-2">
                         <Tooltip content="Editar usuario">
                           <IconButton variant="text">
@@ -192,13 +238,13 @@ export const AdminUsers = () => {
                         </Tooltip>
                       </div>
                     </td> */}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
         </CardBody>
-
         {/* <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
           <Typography variant="small" color="blue-gray" className="font-normal">
             Page 1 of 10
