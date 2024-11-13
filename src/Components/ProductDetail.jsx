@@ -1,24 +1,21 @@
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { Button } from "@material-tailwind/react";
 import { useParams, useNavigate } from "react-router-dom";
-// import productos from "../productos.json";
-// import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useContextGlobal } from "../Components/utils/global.context";
 
 const ProductDetail = () => {
   const { state } = useContextGlobal(); // Acceder al estado global
   const { id } = useParams();
-  // const [product, setProduct] = useState(null);
-  // const [activeImage, setActiveImage] = useState(null);
+  const [activeImage, setActiveImage] = useState(null);
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   const productFound = productos.find((item) => item.id === parseInt(id));
-  //   setProduct(productFound);
-  //   setActiveImage(productFound?.images[0] || null); // Imagen inicial
-  // }, [id]);
   // Filtrar el producto específico desde el array vehicles en el contexto global
   const product = state.vehicles.find((vehicle) => vehicle.id === id);
+  useEffect(() => {
+    if (product?.images?.length > 0) {
+      setActiveImage(product.images[0].img); // Primera imagen como activa
+    }
+  }, [product]);
 
   if (!product) return <div>Producto no encontrado</div>;
 
@@ -114,21 +111,34 @@ const ProductDetail = () => {
                 </p>
               </div>
             </div>
-            {/* Imagen principal del producto */}
-            {/* <img
-              src={activeImage}
-              alt={product.nombreVehiculo}
-              className="w-full xl:h-64 object-cover relative right-12 xl:right-[-80px] top-3 xl:top-[15%]"
-            /> */}
-            {/* Product Image */}
+            {/* Imagen principal */}
             <div className="flex justify-center items-center">
               <img
-                src={product.img}
+                src={activeImage}
                 alt={product.nombreVehiculo}
                 className="rounded-3xl w-[90%] sm:w-auto xl:w-[566px] shadow-md sm:ml-[15%]"
               />
             </div>
           </div>
+
+          {/* Carrusel de imágenes */}
+        <section className="block lg:hidden mt-8 overflow-x-auto md:overflow-hidden">
+          <div className="flex md:justify-center gap-4 md:flex-nowrap">
+            {product.images.map((image, index) => (
+              <img
+                key={index}
+                src={image.img}
+                alt={`${product.nombreVehiculo} - imagen ${index + 1}`}
+                className={`h-24 w-32 object-cover cursor-pointer rounded-lg border first:!ml-8 ${
+                  activeImage === image.img
+                    ? "border-aquaTeal"
+                    : "border-customGrayTransparent opacity-50"
+                }`}
+                onClick={() => setActiveImage(image.img)} // Cambiar imagen activa al hacer clic
+              />
+            ))}
+          </div>
+        </section>
 
           {/* Price and Plan */}
           <div className="bg-customGray p-6 rounded-2xl shadow-md w-[80%] lg:w-[40%] m-auto xl:mx-0 xl:w-[338px] h-[447px] xl:mr-[8%]">
@@ -136,7 +146,7 @@ const ProductDetail = () => {
               PRECIOS Y PLANES
             </h3>
             <p className="text-base mt-2 text-start font-semibold">
-            {product.tipo}
+              {product.tipo}
               <span className="text-deepTeal"> {product.nombreVehiculo}</span>
             </p>
             <div className="mt-4 space-y-2">
@@ -155,7 +165,8 @@ const ProductDetail = () => {
                 <input type="radio" name="price" className="mt-4 ml-4" />
                 <span className="py-[10px] m-0 text-start">
                   <span className="text-sm font-semibold">Alquiler diario</span>
-                  <br /> <span className="text-lg"> ${product.precioPorDia}/</span>
+                  <br />{" "}
+                  <span className="text-lg"> ${product.precioPorDia}/</span>
                   <span className="font-semibold text-[11px]"> por día</span>
                 </span>
               </label>
@@ -165,7 +176,8 @@ const ProductDetail = () => {
                   <span className="text-sm font-semibold">
                     Suscripción mensual
                   </span>
-                  <br /> <span className="text-lg">${product.precioMensual}/</span>
+                  <br />{" "}
+                  <span className="text-lg">${product.precioMensual}/</span>
                   <span className="font-semibold text-[11px]"> por mes</span>
                 </span>
               </label>
@@ -175,7 +187,8 @@ const ProductDetail = () => {
                   <span className="text-sm font-semibold">
                     Suscripción anual
                   </span>
-                  <br /> <span className="text-lg">${product.precioAnual}/</span>
+                  <br />{" "}
+                  <span className="text-lg">${product.precioAnual}/</span>
                   <span className="font-semibold text-[11px]"> anual</span>
                 </span>
               </label>
@@ -186,22 +199,24 @@ const ProductDetail = () => {
           </div>
         </section>
 
-        {/* Carousel */}
-        {/* <section className="mt-8 overflow-x-auto md:overflow-hidden">
-          <div className="flex md:justify-center gap-4  md:flex-nowrap">
+        {/* Carrusel de imágenes */}
+        <section className="hidden lg:block mt-8 overflow-x-auto md:overflow-hidden">
+          <div className="flex md:justify-center gap-4 md:flex-nowrap">
             {product.images.map((image, index) => (
               <img
                 key={index}
-                src={image}
+                src={image.img}
                 alt={`${product.nombreVehiculo} - imagen ${index + 1}`}
                 className={`h-24 w-32 object-cover cursor-pointer rounded-lg border ${
-                  activeImage === image ? "border-aquaTeal" : "border-customGrayTransparent opacity-50"
+                  activeImage === image.img
+                    ? "border-aquaTeal"
+                    : "border-customGrayTransparent opacity-50"
                 }`}
-                onClick={() => setActiveImage(image)}
+                onClick={() => setActiveImage(image.img)} // Cambiar imagen activa al hacer clic
               />
             ))}
           </div>
-        </section> */}
+        </section>
 
         {/* Characteristics */}
         <h3
@@ -214,7 +229,10 @@ const ProductDetail = () => {
           <div className="flex overflow-x-auto whitespace-nowrap space-x-4">
             {/* Características dinámicas */}
             {product.caracteristicas?.map((caracteristica, index) => (
-              <div key={index} className="flex items-center min-w-[530px] first:!ml-8">
+              <div
+                key={index}
+                className="flex items-center min-w-[530px] first:!ml-8"
+              >
                 <img
                   src={caracteristica.imagen}
                   alt={caracteristica.titulo}
