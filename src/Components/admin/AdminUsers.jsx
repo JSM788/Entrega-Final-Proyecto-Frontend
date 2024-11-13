@@ -8,11 +8,11 @@ import {
   // IconButton,
   // Tooltip,
   // Button,
-  Select,
   Option,
 } from "@material-tailwind/react";
 // import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useContextGlobal } from "../utils/global.context";
+import Swal from "sweetalert2";
 
 const TABLE_HEAD = ["ID", "Nombre", "Correo Electrónico", "Rol"]; //,"Acciones"
 
@@ -108,8 +108,21 @@ export const AdminUsers = () => {
           user.userId === userId ? { ...user, roles: [newRoleId] } : user
         )
       );
+       // Muestra el mensaje de éxito con SweetAlert2
+       Swal.fire({
+        icon: 'success',
+        title: 'Rol modificado',
+        html: `El rol de <strong>${currentUser.name}</strong> ha sido actualizado a <strong>${newRole === 'admin' ? 'Admin' : 'User'}</strong>.`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
     } catch (error) {
       console.error("Error updating role:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un problema al actualizar el rol.',
+      });
     }
   };
 
@@ -178,6 +191,8 @@ export const AdminUsers = () => {
 
                   const isFirstUser = user.email === "admin@gmail.com"; // Check if it's the first user (admin)
 
+                  const isUserLoggedIn = user.userId === state.user.id; // Verificar si es el usuario logueado
+
                   return (
                     <tr key={user.email}>
                       <td className={classes}>
@@ -208,7 +223,7 @@ export const AdminUsers = () => {
                         </Typography>
                       </td>
                       <td className={classes}>
-                        <Select
+                        <select
                           value={isAdmin ? "admin" : "user"}
                           onChange={(value) => {
                             updateRole(
@@ -216,13 +231,13 @@ export const AdminUsers = () => {
                               value === "admin" ? "admin" : "user"
                             );
                           }}
-                          disabled={isFirstUser} // Deshabilitar el select para el primer usuario
+                          disabled={isFirstUser || isUserLoggedIn} // Deshabilitar el select
                         >
-                          <Option value="admin" disabled={isFirstUser}>
+                          <option value="admin" disabled={isFirstUser || isUserLoggedIn}>
                             Admin
-                          </Option>
-                          <Option value="user">User</Option>
-                        </Select>
+                          </option>
+                          <option value="user">User</option>
+                        </select>
                       </td>
                        {/* <td className={classes}>
                       <div className="flex space-x-2">
