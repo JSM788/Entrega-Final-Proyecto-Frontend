@@ -7,7 +7,7 @@ const ContextGlobal = createContext();
 const ContextProvider = ({ children }) => {
   
   const [state, dispatch] = useReducer(reducer, initialState);
-  const endpointProducts = "https://671b9a142c842d92c3809d39.mockapi.io/api/v1/moveit/vehiculo";
+  const endpointProducts = "http://localhost:8080/api/products";
 
   useEffect( ()=> {
 
