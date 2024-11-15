@@ -40,10 +40,10 @@ export const AdminVehicles = () => {
   const { state } = useContextGlobal();
   const [vehicleData, setVehicleData] = useState({
     name: "",
-    category: "",
-    year: "",
-    price: "",
     img: "",
+    category: "",
+    price: "",
+    characteristics: [],
   });
 
   const [vehicleList, setVehicleList] = useState([]);
@@ -59,27 +59,105 @@ export const AdminVehicles = () => {
     setVehicleData({ ...vehicleData, [name]: value });
   };
 
+  const handleAddCharacteristic = () => {
+    setVehicleData({
+      ...vehicleData,
+      characteristics: [
+        ...vehicleData.characteristics,
+        {
+          featureName: "",
+          featureImageUrl: "",
+          featureDescription: "",
+        },
+      ],
+    });
+  };
+  
+  const handleCharacteristicChange = (e, index) => {
+    const { name, value } = e.target;
+    const updatedCharacteristics = [...vehicleData.characteristics];
+    updatedCharacteristics[index][name] = value;
+    setVehicleData({ ...vehicleData, characteristics: updatedCharacteristics });
+  };
+
   const handleAddClick = () => {
     setIsAdding(!isAdding); // Alterna entre mostrar y ocultar el formulario
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newVehicle = {
-      id: `VH00${vehicleList.length + 1}`,
-      ...vehicleData,
+      name: vehicleData.name,
+      type_product: vehicleData.type_product,
+      description: vehicleData.description, 
+      price_per_hour: parseFloat(vehicleData.price),
+      price_per_day: parseFloat(vehicleData.price) * 24,
+      price_per_month: parseFloat(vehicleData.price) * 30,
+      price_per_year: parseFloat(vehicleData.price) * 365,
+      maximum_speed: parseFloat(vehicleData.maximum_speed),
+      engine_power: parseFloat(vehicleData.engine_power),
+      status: "available",
+      number_passengers: parseInt(vehicleData.number_passengers),
+      charge_time: parseInt(vehicleData.charge_time),
+      brand_name: vehicleData.brand_name,
+      manufacturing_country: vehicleData.manufacturing_country,
+      rental_city: vehicleData.rental_city,
+      categoryId: vehicleData.categoryId,
+      images: [
+        { url: vehicleData.img }, 
+      ],
+      characteristics: vehicleData.characteristics,
     };
 
-    setVehicleList([...vehicleList, newVehicle]);
-    Swal.fire({
-      icon: "success",
-      title: "¡Vehículo agregado!",
-      text: "El vehículo se ha añadido exitosamente.",
-      confirmButtonColor: "#32CEB1",
-    });
-    setVehicleData({ name: "", category: "", year: "", price: "", img: "" });
-    setIsAdding(false); // Cierra el formulario al añadir
+    try {
+      const response = await fetch("http://localhost:8080/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${state.accessToken}`,
+        },
+        body: JSON.stringify(newVehicle),
+      });
+
+      if (response.ok) {
+        const addedProduct = await response.json();
+        setVehicleList([...vehicleList, addedProduct]);
+        Swal.fire({
+          icon: "success",
+          title: "¡Vehículo agregado!",
+          text: "El vehículo se ha añadido exitosamente.",
+          confirmButtonColor: "#32CEB1",
+        });
+        setVehicleData({
+          name: "",
+          category: "",
+          price: "",
+          img: "",
+          maximum_speed: "",
+          engine_power: "",
+          number_passengers: "",
+          charge_time: "",
+          brand_name: "",
+          manufacturing_country: "",
+          rental_city: "",
+          type_product: null,
+          categoryId: null,
+          characteristics: [],
+        });
+        setIsAdding(false);
+      } else {
+        throw new Error("Error al agregar el producto");
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un problema al agregar el vehículo.",
+        confirmButtonColor: "#32CEB1",
+      });
+      console.error("Error en la solicitud:", error);
+    }
   };
 
   const handleDeleteVehicle = async (productId) => {
@@ -172,34 +250,239 @@ export const AdminVehicles = () => {
           <CardBody>
             <h2 className="text-lg font-medium mb-4">Agregar Vehículo</h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              {["name", "category", "year", "price", "img"].map(
-                (field, index) => (
-                  <div key={index}>
-                    <label className="block mb-1 text-sm font-medium text-gray-700">
-                      {field.charAt(0).toUpperCase() +
-                        field.slice(1).replace("img", "URL de Imagen")}
-                    </label>
-                    <input
-                      name={field}
-                      type={
-                        field === "year" || field === "price"
-                          ? "number"
-                          : "text"
-                      }
-                      value={vehicleData[field]}
-                      onChange={handleInputChange}
-                      required
-                      className="block w-full border border-gray-300 rounded-md p-2"
-                      placeholder={`Ingrese ${
-                        field === "img" ? "la URL de la imagen" : field
-                      }`}
-                    />
-                  </div>
-                )
-              )}
-              <Button type="submit" variant="filled" className="bg-[#32CEB1]">
-                Guardar Vehículo
-              </Button>
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  Nombre del Vehículo
+                </label>
+                <input
+                  name="name"
+                  value={vehicleData.name}
+                  onChange={handleInputChange}
+                  required
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                  placeholder="Ingrese el nombre del vehículo"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                Tipo de Producto
+                </label>
+                <input
+                  name="type_product"
+                  value={vehicleData.type_product}
+                  onChange={handleInputChange}
+                  required
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                  placeholder="Ingrese la descripción"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  Descripción
+                </label>
+                <input
+                  name="description"
+                  value={vehicleData.description}
+                  onChange={handleInputChange}
+                  required
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                  placeholder="Ingrese la descripción"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  Precio por Hora
+                </label>
+                <input
+                  name="price"
+                  type="number"
+                  value={vehicleData.price}
+                  onChange={handleInputChange}
+                  required
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                  placeholder="Ingrese el precio por hora"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  Velocidad Máxima
+                </label>
+                <input
+                  name="maximum_speed"
+                  type="number"
+                  value={vehicleData.maximum_speed}
+                  onChange={handleInputChange}
+                  required
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                  placeholder="Ingrese la velocidad máxima"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  Potencia del Motor
+                </label>
+                <input
+                  name="engine_power"
+                  type="number"
+                  value={vehicleData.engine_power}
+                  onChange={handleInputChange}
+                  required
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                  placeholder="Ingrese la potencia del motor"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  Número de Pasajeros
+                </label>
+                <input
+                  name="number_passengers"
+                  type="number"
+                  value={vehicleData.number_passengers}
+                  onChange={handleInputChange}
+                  required
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                  placeholder="Ingrese el número de pasajeros"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  Tiempo de Carga
+                </label>
+                <input
+                  name="charge_time"
+                  type="number"
+                  value={vehicleData.charge_time}
+                  onChange={handleInputChange}
+                  required
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                  placeholder="Ingrese el tiempo de carga"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  Marca
+                </label>
+                <input
+                  name="brand_name"
+                  value={vehicleData.brand_name}
+                  onChange={handleInputChange}
+                  required
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                  placeholder="Ingrese la marca"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  País de Fabricación
+                </label>
+                <input
+                  name="manufacturing_country"
+                  value={vehicleData.manufacturing_country}
+                  onChange={handleInputChange}
+                  required
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                  placeholder="Ingrese el país de fabricación"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  Ciudad de Alquiler
+                </label>
+                <input
+                  name="rental_city"
+                  value={vehicleData.rental_city}
+                  onChange={handleInputChange}
+                  required
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                  placeholder="Ingrese la ciudad de alquiler"
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  Categoría
+                </label>
+                <select
+                  name="categoryId"
+                  value={vehicleData.categoryId}
+                  onChange={handleInputChange}
+                  required
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                >
+                  <option value="1">Autos</option>
+                  <option value="2">Motos</option>
+                  <option value="3">Scooter</option>
+                  <option value="4">Bicicletas</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block mb-1 text-sm font-medium text-gray-700">
+                  Imagen
+                </label>
+                <input
+                  name="img"
+                  type="text"
+                  value={vehicleData.img}
+                  onChange={handleInputChange}
+                  required
+                  className="block w-full border border-gray-300 rounded-md p-2"
+                  placeholder="URL de la imagen"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={handleAddCharacteristic}
+                className="bg-blue-500 text-white p-2 rounded-md"
+              >
+                Añadir Característica
+              </button>
+
+              {/* Mostrar características añadidas */}
+              {vehicleData.characteristics.map((characteristic, index) => (
+                <div key={index} className="flex gap-4">
+                  <input
+                    name="featureName"
+                    value={characteristic.featureName}
+                    onChange={(e) => handleCharacteristicChange(e, index)}
+                    placeholder="Nombre de la característica"
+                    className="border p-2"
+                  />
+                  <input
+                    name="featureImageUrl"
+                    value={characteristic.featureImageUrl}
+                    onChange={(e) => handleCharacteristicChange(e, index)}
+                    placeholder="URL de la imagen"
+                    className="border p-2"
+                  />
+                  <input
+                    name="featureDescription"
+                    value={characteristic.featureDescription}
+                    onChange={(e) => handleCharacteristicChange(e, index)}
+                    placeholder="Descripción"
+                    className="border p-2"
+                  />
+                </div>
+              ))}
+
+              <button
+                type="submit"
+                className="bg-green-500 text-white p-3 rounded-md"
+              >
+                Añadir Vehículo
+              </button>
             </form>
           </CardBody>
         </Card>
@@ -242,7 +525,7 @@ export const AdminVehicles = () => {
                   return (
                     <tr key={productId}>
                       <td className={classes}>
-                        <p className="font-normal">{productId}</p>
+                        <p className="font-normal">{index + 1}</p>
                       </td>
                       <td className={classes}>
                         <div className="flex items-center gap-3">
