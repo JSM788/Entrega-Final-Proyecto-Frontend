@@ -46,7 +46,7 @@ export const VehicleCard = (props) => {
           >
             <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5z" />
           </svg>
-          <Typography variant="small">X</Typography>
+          <Typography variant="small">{vehicle.numberPassengers}</Typography>
         </div>
         <div className="flex items-center">
           <img
