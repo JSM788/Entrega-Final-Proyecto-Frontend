@@ -40,9 +40,19 @@ export const AdminVehicles = () => {
   const { state } = useContextGlobal();
   const [vehicleData, setVehicleData] = useState({
     name: "",
-    img: "",
     category: "",
+    description: "",
     price: "",
+    images: [{ url: "" }],
+    maximum_speed: "",
+    engine_power: "",
+    number_passengers: "",
+    charge_time: "",
+    brand_name: "",
+    manufacturing_country: "",
+    rental_city: "",
+    type_product: "",
+    categoryId: "",
     characteristics: [],
   });
 
@@ -59,6 +69,19 @@ export const AdminVehicles = () => {
     setVehicleData({ ...vehicleData, [name]: value });
   };
 
+  const handleAddImage = () => {
+    setVehicleData({
+      ...vehicleData,
+      images: [...vehicleData.images, { url: "" }],
+    });
+  };
+
+  const handleImageChange = (e, index) => {
+    const newImages = [...vehicleData.images];
+    newImages[index].url = e.target.value;
+    setVehicleData({ ...vehicleData, images: newImages });
+  };
+
   const handleAddCharacteristic = () => {
     setVehicleData({
       ...vehicleData,
@@ -72,7 +95,7 @@ export const AdminVehicles = () => {
       ],
     });
   };
-  
+
   const handleCharacteristicChange = (e, index) => {
     const { name, value } = e.target;
     const updatedCharacteristics = [...vehicleData.characteristics];
@@ -90,7 +113,7 @@ export const AdminVehicles = () => {
     const newVehicle = {
       name: vehicleData.name,
       type_product: vehicleData.type_product,
-      description: vehicleData.description, 
+      description: vehicleData.description,
       price_per_hour: parseFloat(vehicleData.price),
       price_per_day: parseFloat(vehicleData.price) * 24,
       price_per_month: parseFloat(vehicleData.price) * 30,
@@ -104,9 +127,7 @@ export const AdminVehicles = () => {
       manufacturing_country: vehicleData.manufacturing_country,
       rental_city: vehicleData.rental_city,
       categoryId: vehicleData.categoryId,
-      images: [
-        { url: vehicleData.img }, 
-      ],
+      images: vehicleData.images,
       characteristics: vehicleData.characteristics,
     };
 
@@ -133,7 +154,8 @@ export const AdminVehicles = () => {
           name: "",
           category: "",
           price: "",
-          img: "",
+          description: "",
+          images: [{ url: "" }],
           maximum_speed: "",
           engine_power: "",
           number_passengers: "",
@@ -141,8 +163,8 @@ export const AdminVehicles = () => {
           brand_name: "",
           manufacturing_country: "",
           rental_city: "",
-          type_product: null,
-          categoryId: null,
+          type_product: "",
+          categoryId: "",
           characteristics: [],
         });
         setIsAdding(false);
@@ -251,7 +273,7 @@ export const AdminVehicles = () => {
             <h2 className="text-lg font-medium mb-4">Agregar Vehículo</h2>
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
+                <label className="block mb-1 text-sm font-bold text-gray-700">
                   Nombre del Vehículo
                 </label>
                 <input
@@ -265,8 +287,8 @@ export const AdminVehicles = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
-                Tipo de Producto
+                <label className="block mb-1 text-sm font-bold text-gray-700">
+                  Tipo de Producto
                 </label>
                 <input
                   name="type_product"
@@ -274,12 +296,12 @@ export const AdminVehicles = () => {
                   onChange={handleInputChange}
                   required
                   className="block w-full border border-gray-300 rounded-md p-2"
-                  placeholder="Ingrese la descripción"
+                  placeholder="Ingrese el tipo"
                 />
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
+                <label className="block mb-1 text-sm font-bold text-gray-700">
                   Descripción
                 </label>
                 <input
@@ -293,7 +315,7 @@ export const AdminVehicles = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
+                <label className="block mb-1 text-sm font-bold text-gray-700">
                   Precio por Hora
                 </label>
                 <input
@@ -308,7 +330,7 @@ export const AdminVehicles = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
+                <label className="block mb-1 text-sm font-bold text-gray-700">
                   Velocidad Máxima
                 </label>
                 <input
@@ -323,7 +345,7 @@ export const AdminVehicles = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
+                <label className="block mb-1 text-sm font-bold text-gray-700">
                   Potencia del Motor
                 </label>
                 <input
@@ -338,7 +360,7 @@ export const AdminVehicles = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
+                <label className="block mb-1 text-sm font-bold text-gray-700">
                   Número de Pasajeros
                 </label>
                 <input
@@ -353,7 +375,7 @@ export const AdminVehicles = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
+                <label className="block mb-1 text-sm font-bold text-gray-700">
                   Tiempo de Carga
                 </label>
                 <input
@@ -368,7 +390,7 @@ export const AdminVehicles = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
+                <label className="block mb-1 text-sm font-bold text-gray-700">
                   Marca
                 </label>
                 <input
@@ -382,7 +404,7 @@ export const AdminVehicles = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
+                <label className="block mb-1 text-sm font-bold text-gray-700">
                   País de Fabricación
                 </label>
                 <input
@@ -396,7 +418,7 @@ export const AdminVehicles = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
+                <label className="block mb-1 text-sm font-bold text-gray-700">
                   Ciudad de Alquiler
                 </label>
                 <input
@@ -410,7 +432,7 @@ export const AdminVehicles = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
+                <label className="block mb-1 text-sm font-bold text-gray-700">
                   Categoría
                 </label>
                 <select
@@ -428,29 +450,35 @@ export const AdminVehicles = () => {
               </div>
 
               <div>
-                <label className="block mb-1 text-sm font-medium text-gray-700">
-                  Imagen
+                <hr />
+                <label className="block mt-2 mb-1 text-sm font-bold text-gray-700">
+                  Imágenes
                 </label>
-                <input
-                  name="img"
-                  type="text"
-                  value={vehicleData.img}
-                  onChange={handleInputChange}
-                  required
-                  className="block w-full border border-gray-300 rounded-md p-2"
-                  placeholder="URL de la imagen"
-                />
+                {vehicleData.images.map((image, index) => (
+                  <input
+                    key={index}
+                    name={`image-${index}`}
+                    value={image.url}
+                    onChange={(e) => handleImageChange(e, index)}
+                    required={index === 0} // El primer campo es obligatorio
+                    className="block w-full border border-gray-300 rounded-md p-2 mb-2"
+                    placeholder={`URL de la imagen ${index + 1}`}
+                  />
+                ))}
+                <button
+                  type="button"
+                  onClick={handleAddImage}
+                  className="border border-customBlack text-black font-semibold p-2 rounded-md w-3/6"
+                >
+                  Añadir Imagen
+                </button>
               </div>
 
-              <button
-                type="button"
-                onClick={handleAddCharacteristic}
-                className="bg-blue-500 text-white p-2 rounded-md"
-              >
-                Añadir Característica
-              </button>
-
               {/* Mostrar características añadidas */}
+              <hr />
+              <label className="block mb-1 text-sm font-bold text-gray-700">
+                Características:
+              </label>
               {vehicleData.characteristics.map((characteristic, index) => (
                 <div key={index} className="flex gap-4">
                   <input
@@ -458,28 +486,36 @@ export const AdminVehicles = () => {
                     value={characteristic.featureName}
                     onChange={(e) => handleCharacteristicChange(e, index)}
                     placeholder="Nombre de la característica"
-                    className="border p-2"
+                    className="border border-gray-300 rounded-md p-2"
                   />
                   <input
                     name="featureImageUrl"
                     value={characteristic.featureImageUrl}
                     onChange={(e) => handleCharacteristicChange(e, index)}
                     placeholder="URL de la imagen"
-                    className="border p-2"
+                    className="border border-gray-300 rounded-md p-2 w-1/2"
                   />
                   <input
                     name="featureDescription"
                     value={characteristic.featureDescription}
                     onChange={(e) => handleCharacteristicChange(e, index)}
                     placeholder="Descripción"
-                    className="border p-2"
+                    className="border border-gray-300 rounded-md p-2 w-1/2"
                   />
                 </div>
               ))}
 
               <button
+                type="button"
+                onClick={handleAddCharacteristic}
+                className="border border-customBlack text-black font-semibold p-2 rounded-md w-3/6 m-auto"
+              >
+                Añadir Característica
+              </button>
+
+              <button
                 type="submit"
-                className="bg-green-500 text-white p-3 rounded-md"
+                className="bg-[#2A606E] text-white p-2 rounded-md"
               >
                 Añadir Vehículo
               </button>
