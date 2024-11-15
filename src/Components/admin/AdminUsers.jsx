@@ -3,11 +3,6 @@ import {
   Card,
   CardHeader,
   CardBody,
-  // CardFooter,
-  Typography,
-  // IconButton,
-  // Tooltip,
-  // Button,
   Select,
   Option,
 } from "@material-tailwind/react";
@@ -109,20 +104,24 @@ export const AdminUsers = () => {
           user.userId === userId ? { ...user, roles: [newRoleId] } : user
         )
       );
-       // Muestra el mensaje de éxito con SweetAlert2
-       Swal.fire({
-        icon: 'success',
-        title: 'Rol modificado',
-        html: `El rol de <strong>${currentUser.name}</strong> ha sido actualizado a <strong>${newRole === 'admin' ? 'Admin' : 'User'}</strong>.`,
+      // Muestra el mensaje de éxito con SweetAlert2
+      Swal.fire({
+        icon: "success",
+        title: "Rol modificado",
+        html: `El rol de <strong>${
+          currentUser.name
+        }</strong> ha sido actualizado a <strong>${
+          newRole === "admin" ? "Admin" : "User"
+        }</strong>.`,
         showConfirmButton: false,
         timer: 1500,
       });
     } catch (error) {
       console.error("Error updating role:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Hubo un problema al actualizar el rol.',
+        icon: "error",
+        title: "Error",
+        text: "Hubo un problema al actualizar el rol.",
       });
     }
   };
@@ -147,20 +146,16 @@ export const AdminUsers = () => {
     <div className="h-full w-full flex flex-col items-center justify-center px-10">
       <Card className="h-full w-full">
         <CardHeader floated={false} shadow={false} className="rounded-none">
-          <Typography variant="h5" color="blue-gray">
-            Lista de Usuarios
-          </Typography>
-          <Typography color="gray" className="mt-1 font-normal">
+          <h1 className="font-semibold">Lista de Usuarios</h1>
+          <h2 className="mt-1 font-normal">
             Información sobre todos los usuarios
-          </Typography>
+          </h2>
         </CardHeader>
 
         <CardBody className="overflow-auto px-0">
           {loading ? (
             <div className="text-center p-4">
-              <Typography variant="h6" color="blue-gray">
-                Cargando...
-              </Typography>
+              <h2>Cargando...</h2>
             </div>
           ) : (
             <table className="mt-4 w-full min-w-max table-auto text-left">
@@ -171,13 +166,9 @@ export const AdminUsers = () => {
                       key={head}
                       className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
                     >
-                      <Typography
-                        variant="small"
-                        color="blue-gray"
-                        className="flex items-center justify-between gap-2 font-normal leading-none opacity-70"
-                      >
+                      <h3 className="flex items-center justify-between gap-2 font-normal leading-none opacity-70">
                         {head}
-                      </Typography>
+                      </h3>
                     </th>
                   ))}
                 </tr>
@@ -197,31 +188,13 @@ export const AdminUsers = () => {
                   return (
                     <tr key={user.email}>
                       <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {index + 1}
-                        </Typography>
+                        <p className="font-normal">{index + 1}</p>
                       </td>
                       <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {user.name}
-                        </Typography>
+                        <p className="font-normal">{user.name}</p>
                       </td>
                       <td className={classes}>
-                        <Typography
-                          variant="small"
-                          color="blue-gray"
-                          className="font-normal"
-                        >
-                          {user.email}
-                        </Typography>
+                        <p className="font-normal">{user.email}</p>
                       </td>
                       <td className={classes}>
                         <Select
@@ -234,13 +207,16 @@ export const AdminUsers = () => {
                           }}
                           disabled={isFirstUser || isUserLoggedIn} // Deshabilitar el select
                         >
-                          <Option value="admin" disabled={isFirstUser || isUserLoggedIn}>
+                          <Option
+                            value="admin"
+                            disabled={isFirstUser || isUserLoggedIn}
+                          >
                             Admin
                           </Option>
                           <Option value="user">User</Option>
                         </Select>
                       </td>
-                       {/* <td className={classes}>
+                      {/* <td className={classes}>
                       <div className="flex space-x-2">
                         <Tooltip content="Editar usuario">
                           <IconButton variant="text">
