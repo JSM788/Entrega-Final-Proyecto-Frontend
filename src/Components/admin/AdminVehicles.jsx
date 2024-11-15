@@ -10,6 +10,7 @@ import {
 } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 import { useContextGlobal } from "../utils/global.context";
+import Swal from "sweetalert2";
 
 const TABLE_HEAD = ["ID", "Nombre", "Categoría", "Precio por hora", "Acciones"];
 
@@ -96,6 +97,60 @@ export const AdminVehicles = () => {
     setVehicleList([...vehicleList, newVehicle]);
     console.log("Vehicle added:", newVehicle);
     setVehicleData({ name: "", category: "", year: "", price: "", img: "" });
+  };
+
+  const handleDeleteVehicle = async (productId) => {
+    const result = await Swal.fire({
+      title: "¿Estás seguro?",
+      text: "No podrás revertir esta acción.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#32CEB1",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/products/${productId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${state.accessToken}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          setVehicleList(
+            vehicleList.filter((vehicle) => vehicle.productId !== productId)
+          );
+          Swal.fire({
+            icon: "success",
+            title: "¡Eliminado!",
+            text: "El vehículo ha sido eliminado.",
+            confirmButtonColor: "#32CEB1",
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo eliminar el vehículo.",
+            confirmButtonColor: "#32CEB1",
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un problema al eliminar el vehículo.",
+          confirmButtonColor: "#32CEB1",
+        });
+        console.error("Error en la solicitud:", error);
+      }
+    }
   };
 
   const isMobile = useIsMobile();
@@ -195,7 +250,12 @@ export const AdminVehicles = () => {
                         </td>
                         <td className={classes}>
                           <div className="flex items-center gap-3">
-                            <Avatar src={images[0]?.url} alt={name} size="sm" className="rounded-full border border-aquaTeal" />
+                            <Avatar
+                              src={images[0]?.url}
+                              alt={name}
+                              size="sm"
+                              className="rounded-full border border-aquaTeal"
+                            />
                             <p className="font-normal">{name}</p>
                           </div>
                         </td>
@@ -215,7 +275,10 @@ export const AdminVehicles = () => {
                               </IconButton>
                             </Tooltip>
                             <Tooltip content="Eliminar vehículo">
-                              <IconButton variant="text">
+                              <IconButton
+                                variant="text"
+                                onClick={() => handleDeleteVehicle(productId)}
+                              >
                                 <TrashIcon className="h-4 w-4" />
                               </IconButton>
                             </Tooltip>
