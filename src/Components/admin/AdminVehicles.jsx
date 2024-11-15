@@ -1,36 +1,17 @@
-import {
-  MagnifyingGlassIcon,
-  ChevronUpDownIcon,
-  PencilSquareIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline"
-import { PencilIcon } from "@heroicons/react/24/solid"
+import { ChevronUpDownIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon } from "@heroicons/react/24/solid";
 import {
   Card,
   CardHeader,
-  Input,
-  Typography,
-  Button,
   CardBody,
-  Chip,
-  CardFooter,
-  Tabs,
-  TabsHeader,
-  Tab,
   Avatar,
   IconButton,
   Tooltip,
-} from "@material-tailwind/react"
-import { useEffect, useState } from "react"
+} from "@material-tailwind/react";
+import { useEffect, useState } from "react";
+import { useContextGlobal } from "../utils/global.context";
 
-const TABLE_HEAD = [
-  "ID",
-  "Vehículo",
-  "Categoría",
-  "Año",
-  "Precio por hora",
-  "Acciones",
-]
+const TABLE_HEAD = ["ID", "Nombre", "Categoría", "Precio por hora", "Acciones"];
 
 // Datos ficticios de vehículos
 const VEHICLE_DATA = [
@@ -82,6 +63,7 @@ const useIsMobile = () => {
 };
 
 export const AdminVehicles = () => {
+  const { state } = useContextGlobal();
   const [vehicleData, setVehicleData] = useState({
     name: "",
     category: "",
@@ -90,7 +72,13 @@ export const AdminVehicles = () => {
     img: "",
   });
 
-  const [vehicleList, setVehicleList] = useState(VEHICLE_DATA);
+  const [vehicleList, setVehicleList] = useState([]);
+
+  useEffect(() => {
+    // Consolear los productos cada vez que se actualice el estado
+    console.log("Productos en el contexto global:", state.vehicles);
+    setVehicleList(state.vehicles || []); // Cargar vehículos al componente
+  }, [state.vehicles]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -101,13 +89,13 @@ export const AdminVehicles = () => {
     e.preventDefault();
 
     const newVehicle = {
-      id: `VH00${vehicleList.length + 1}`, // Generar un nuevo ID automáticamente
-      ...vehicleData, // Usar directamente vehicleData
+      id: `VH00${vehicleList.length + 1}`,
+      ...vehicleData,
     };
 
     setVehicleList([...vehicleList, newVehicle]);
     console.log("Vehicle added:", newVehicle);
-    setVehicleData({ name: "", category: "", year: "", price: "", img: "" }); // Reset form
+    setVehicleData({ name: "", category: "", year: "", price: "", img: "" });
   };
 
   const isMobile = useIsMobile();
@@ -129,9 +117,9 @@ export const AdminVehicles = () => {
   }
 
   return (
-    <div className="flex gap-4">
-      <div className="w-1/3">
-        <Card className="h-full">
+    <div className="flex gap-4 px-10">
+      {/* <div className="w-1/3">
+      <Card className="h-full">
           <CardHeader floated={false} shadow={false} className="rounded-none">
             <Typography variant="h5" color="blue-gray">
               Agregar Vehículo
@@ -161,76 +149,86 @@ export const AdminVehicles = () => {
             </form>
           </CardBody>
         </Card>
-      </div>
+      </div> */}
       <div className="flex-1">
         <Card className="h-full w-full">
           <CardHeader floated={false} shadow={false} className="rounded-none">
-            <Typography variant="h5" color="blue-gray">
-              Lista de Vehículos
-            </Typography>
-            <Typography color="gray" className="mt-1 font-normal">
+            <h1 className="font-semibold">Lista de Vehículos</h1>
+            <h2 className="mt-1 font-normal">
               Información sobre todos los vehículos
-            </Typography>
+            </h2>
           </CardHeader>
           <CardBody className="overflow-auto px-0">
             <table className="mt-4 w-full min-w-max table-auto text-left">
               <thead>
                 <tr>
                   {TABLE_HEAD.map((head) => (
-                    <th key={head} className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4">
-                      <Typography variant="small" color="blue-gray" className="flex items-center justify-between gap-2 font-normal leading-none opacity-70">
+                    <th
+                      key={head}
+                      className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
+                    >
+                      <h3 className="flex items-center justify-between gap-2 font-normal leading-none opacity-70">
                         {head}
-                        <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
-                      </Typography>
+                        <ChevronUpDownIcon
+                          strokeWidth={2}
+                          className="h-4 w-4"
+                        />
+                      </h3>
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {vehicleList.map(({ id, name, img, category, year, price }, index) => {
-                  const isLast = index === vehicleList.length - 1;
-                  const classes = isLast ? "p-4" : "p-4 border-b border-blue-gray-50";
-                  return (
-                    <tr key={id}>
-                      <td className={classes}>
-                        <Typography variant="small" color="blue-gray" className="font-normal">{id}</Typography>
-                      </td>
-                      <td className={classes}>
-                        <div className="flex items-center gap-3">
-                          <Avatar src={img} alt={name} size="sm" />
-                          <Typography variant="small" color="blue-gray" className="font-normal">{name}</Typography>
-                        </div>
-                      </td>
-                      <td className={classes}>
-                        <Typography variant="small" color="blue-gray" className="font-normal">{category}</Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography variant="small" color="blue-gray" className="font-normal">{year}</Typography>
-                      </td>
-                      <td className={classes}>
-                        <Typography variant="small" color="blue-gray" className="font-normal">{price}</Typography>
-                      </td>
-                      <td className={classes}>
-                        <div className="flex space-x-2">
-                          <Tooltip content="Editar vehículo">
-                            <IconButton variant="text">
-                              <PencilIcon className="h-4 w-4" />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip content="Eliminar vehículo">
-                            <IconButton variant="text">
-                              <TrashIcon className="h-4 w-4" />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {vehicleList.map(
+                  (
+                    { productId, name, category, pricePerHour, images },
+                    index
+                  ) => {
+                    const isLast = index === vehicleList.length - 1;
+                    const classes = isLast
+                      ? "p-4"
+                      : "p-4 border-b border-blue-gray-50";
+                    return (
+                      <tr key={productId}>
+                        <td className={classes}>
+                          <p className="font-normal">{productId}</p>
+                        </td>
+                        <td className={classes}>
+                          <div className="flex items-center gap-3">
+                            <Avatar src={images[0]?.url} alt={name} size="sm" className="rounded-full border border-aquaTeal" />
+                            <p className="font-normal">{name}</p>
+                          </div>
+                        </td>
+                        <td className={classes}>
+                          <p className="font-normal">
+                            {category?.categoryName}
+                          </p>
+                        </td>
+                        <td className={classes}>
+                          <p className="font-normal">${pricePerHour}/hora</p>
+                        </td>
+                        <td className={classes}>
+                          <div className="flex space-x-2">
+                            <Tooltip content="Editar vehículo">
+                              <IconButton variant="text">
+                                <PencilIcon className="h-4 w-4" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip content="Eliminar vehículo">
+                              <IconButton variant="text">
+                                <TrashIcon className="h-4 w-4" />
+                              </IconButton>
+                            </Tooltip>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }
+                )}
               </tbody>
             </table>
           </CardBody>
-          <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
+          {/* <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
             <Typography variant="small" color="blue-gray" className="font-normal">
               Page 1 of 10
             </Typography>
@@ -238,7 +236,7 @@ export const AdminVehicles = () => {
               <Button variant="outlined" size="sm">Previous</Button>
               <Button variant="outlined" size="sm">Next</Button>
             </div>
-          </CardFooter>
+          </CardFooter> */}
         </Card>
       </div>
     </div>
