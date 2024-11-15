@@ -10,10 +10,12 @@ const ProductDetail = () => {
   const [activeImage, setActiveImage] = useState(null);
   const navigate = useNavigate();
   // Filtrar el producto específico desde el array vehicles en el contexto global
-  const product = state.vehicles.find((vehicle) => vehicle.id === id);
+  const product = state.vehicles.find(
+    (vehicle) => vehicle.productId === Number(id)
+  );
   useEffect(() => {
     if (product?.images?.length > 0) {
-      setActiveImage(product.images[0].img); // Primera imagen como activa
+      setActiveImage(product.images[0].url); // Primera imagen como activa
     }
   }, [product]);
 
@@ -31,9 +33,11 @@ const ProductDetail = () => {
           <ArrowLeftIcon className="h-6 w-6 text-deepTeal" />
         </Button>
         <div className="flex flex-col items-start ml-0 sm:ml-12">
-          <h4 className="text-lg	text-customBlack">{product.tipo}</h4>
+          <h4 className="text-lg	text-customBlack">
+            {product.category.categoryName.toUpperCase()}
+          </h4>
           <h3 className="text-2xl text-black font-semibold text-left flex-grow">
-            {product.nombreVehiculo}
+            {product.name}
           </h3>
         </div>
       </header>
@@ -57,7 +61,7 @@ const ProductDetail = () => {
                 </svg>
                 <p className="text-customBlack2 text-base w-28 font-semibold mt-1">
                   <strong className="text-black text-[32px]">
-                    {product.kilometraje}
+                    {product.maximumSpeed}
                   </strong>
                   <span className="text-lg text-black"> km/h</span> <br />
                   velocidad máxima
@@ -80,7 +84,7 @@ const ProductDetail = () => {
                 </svg>
                 <p className="text-customBlack2 text-base w-28 font-semibold mt-1">
                   <strong className="text-black text-[32px]">
-                    {product.duracionKmCarga}
+                    {product.enginePower}
                   </strong>
                   <span className="text-lg text-black"> w</span>
                   <br />
@@ -103,7 +107,7 @@ const ProductDetail = () => {
                 </svg>
                 <p className="text-customBlack2 text-base w-28 font-semibold mt-1">
                   <strong className="text-black text-[32px]">
-                    {product.tiempoCarga}
+                    {product.chargeTime}
                   </strong>
                   <span className="text-lg text-black"> horas</span>
                   <br />
@@ -115,30 +119,30 @@ const ProductDetail = () => {
             <div className="flex justify-center items-center">
               <img
                 src={activeImage}
-                alt={product.nombreVehiculo}
+                alt={product.name}
                 className="rounded-3xl w-[90%] sm:w-auto xl:w-[566px] shadow-md sm:ml-[15%]"
               />
             </div>
           </div>
 
           {/* Carrusel de imágenes */}
-        <section className="block lg:hidden mt-8 overflow-x-auto md:overflow-hidden">
-          <div className="flex md:justify-center gap-4 md:flex-nowrap">
-            {product.images.map((image, index) => (
-              <img
-                key={index}
-                src={image.img}
-                alt={`${product.nombreVehiculo} - imagen ${index + 1}`}
-                className={`h-24 w-32 object-cover cursor-pointer rounded-lg border first:!ml-8 ${
-                  activeImage === image.img
-                    ? "border-aquaTeal"
-                    : "border-customGrayTransparent opacity-50"
-                }`}
-                onClick={() => setActiveImage(image.img)} // Cambiar imagen activa al hacer clic
-              />
-            ))}
-          </div>
-        </section>
+          <section className="block lg:hidden mt-8 overflow-x-auto md:overflow-hidden">
+            <div className="flex md:justify-center gap-4 md:flex-nowrap">
+              {product.images.map((image, index) => (
+                <img
+                  key={index}
+                  src={image.url}
+                  alt={`${product.name} - imagen ${index + 1}`}
+                  className={`h-24 w-32 object-cover cursor-pointer rounded-lg border first:!ml-8 ${
+                    activeImage === image.url
+                      ? "border-aquaTeal"
+                      : "border-customGrayTransparent opacity-50"
+                  }`}
+                  onClick={() => setActiveImage(image.url)} // Cambiar imagen activa al hacer clic
+                />
+              ))}
+            </div>
+          </section>
 
           {/* Price and Plan */}
           <div className="bg-customGray p-6 rounded-2xl shadow-md w-[80%] lg:w-[40%] m-auto xl:mx-0 xl:w-[338px] h-[447px] xl:mr-[8%]">
@@ -146,8 +150,8 @@ const ProductDetail = () => {
               PRECIOS Y PLANES
             </h3>
             <p className="text-base mt-2 text-start font-semibold">
-              {product.tipo}
-              <span className="text-deepTeal"> {product.nombreVehiculo}</span>
+              {product.category.categoryName.toUpperCase()}
+              <span className="text-deepTeal"> {product.name}</span>
             </p>
             <div className="mt-4 space-y-2">
               <label className="flex space-x-2 items-start max-w-[251px] h-[66px]">
@@ -157,7 +161,7 @@ const ProductDetail = () => {
                     Alquiler por hora
                   </span>
                   <br />
-                  <span className="text-lg">${product.precioPorHora}/</span>
+                  <span className="text-lg">${product.pricePerHour}/</span>
                   <span className="font-semibold text-[11px]">por hora</span>
                 </span>
               </label>
@@ -166,7 +170,7 @@ const ProductDetail = () => {
                 <span className="py-[10px] m-0 text-start">
                   <span className="text-sm font-semibold">Alquiler diario</span>
                   <br />{" "}
-                  <span className="text-lg"> ${product.precioPorDia}/</span>
+                  <span className="text-lg"> ${product.pricePerDay}/</span>
                   <span className="font-semibold text-[11px]"> por día</span>
                 </span>
               </label>
@@ -177,7 +181,7 @@ const ProductDetail = () => {
                     Suscripción mensual
                   </span>
                   <br />{" "}
-                  <span className="text-lg">${product.precioMensual}/</span>
+                  <span className="text-lg">${product.pricePerMonth}/</span>
                   <span className="font-semibold text-[11px]"> por mes</span>
                 </span>
               </label>
@@ -188,7 +192,7 @@ const ProductDetail = () => {
                     Suscripción anual
                   </span>
                   <br />{" "}
-                  <span className="text-lg">${product.precioAnual}/</span>
+                  <span className="text-lg">${product.pricePerYear}/</span>
                   <span className="font-semibold text-[11px]"> anual</span>
                 </span>
               </label>
@@ -205,14 +209,14 @@ const ProductDetail = () => {
             {product.images.map((image, index) => (
               <img
                 key={index}
-                src={image.img}
-                alt={`${product.nombreVehiculo} - imagen ${index + 1}`}
+                src={image.url}
+                alt={`${product.name} - imagen ${index + 1}`}
                 className={`h-24 w-32 object-cover cursor-pointer rounded-lg border ${
-                  activeImage === image.img
+                  activeImage === image.url
                     ? "border-aquaTeal"
                     : "border-customGrayTransparent opacity-50"
                 }`}
-                onClick={() => setActiveImage(image.img)} // Cambiar imagen activa al hacer clic
+                onClick={() => setActiveImage(image.url)} // Cambiar imagen activa al hacer clic
               />
             ))}
           </div>
@@ -228,22 +232,22 @@ const ProductDetail = () => {
         <section className="my-8 bg-customGray py-4 w-auto">
           <div className="flex overflow-x-auto whitespace-nowrap space-x-4">
             {/* Características dinámicas */}
-            {product.caracteristicas?.map((caracteristica, index) => (
+            {product.characteristics?.map((caracteristica, index) => (
               <div
                 key={index}
                 className="flex items-center min-w-[530px] first:!ml-8"
               >
                 <img
-                  src={caracteristica.imagen}
-                  alt={caracteristica.titulo}
+                  src={caracteristica.featureImageUrl}
+                  alt={caracteristica.featureName}
                   className="w-[223px] h-[174px] object-cover rounded-lg"
                 />
                 <div className="bg-mintTeal2 rounded-l-none rounded-r-lg min-w-[280px] text-start p-7">
                   <p className="mt-2 font-medium text-lg text-black">
-                    {caracteristica.titulo}
+                    {caracteristica.featureName}
                   </p>
                   <p className="text-[11px] text-black">
-                    {caracteristica.descripcion}
+                    {caracteristica.featureDescription}
                   </p>
                 </div>
               </div>

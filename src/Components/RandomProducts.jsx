@@ -12,7 +12,7 @@ const RandomProducts = () => {
         state.vehicles
           .sort(() => Math.random() - 0.5)
           .map( (vehicle)=> (
-            <Product key={vehicle.id} vehicle={vehicle} />
+            <Product key={vehicle.productId} vehicle={vehicle} />
         ))
         }
 

@@ -16,17 +16,17 @@ export const VehicleCard = (props) => {
         color="blue-gray"
         className="text-center font-bold mb-2"
       >
-        {vehicle.nombreVehiculo} · {vehicle.marcaVehiculo}
+        {vehicle.name}
       </Typography>
       <div className="flex justify-center mb-4">
         <img
-          src={vehicle.img} // Reemplaza con la ruta de tu imagen
+          src={vehicle.images[0]?.url} // Reemplaza con la ruta de tu imagen
           alt="Vehículo eléctrico"
           className="h-36 w-full object-contain"
         />
       </div>
       <div className="flex justify-evenly mb-4">
-        <Link to={`/product/${vehicle.id}`}>
+        <Link to={`/product/${vehicle.productId}`}>
           <Button size="sm" color="gray" className="sm:w-52 md:w-72 lg:w-48">
             VER MÁS
           </Button>
@@ -46,7 +46,7 @@ export const VehicleCard = (props) => {
           >
             <path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm0 2c-3.33 0-10 1.67-10 5v2h20v-2c0-3.33-6.67-5-10-5z" />
           </svg>
-          <Typography variant="small">{vehicle.noPasajeros}</Typography>
+          <Typography variant="small">{vehicle.numberPassengers}</Typography>
         </div>
         <div className="flex items-center">
           <img
@@ -54,7 +54,7 @@ export const VehicleCard = (props) => {
             alt="Imagen del vehículo eléctrico"
             className="h-4 w-4 mr-3"
           />
-          <Typography variant="small">{vehicle.tipoCargador}</Typography>
+          <Typography variant="small">{vehicle.chargeTime}</Typography>
         </div>
 
         <div className="flex items-center">
@@ -64,7 +64,7 @@ export const VehicleCard = (props) => {
             className="h-4 w-4 mr-2"
           />
           <Typography variant="small" className="font-bold text-blue-gray-700">
-            {vehicle.precioPorDia}
+            {vehicle.pricePerHour}
           </Typography>
         </div>
       </div>
@@ -89,7 +89,7 @@ const VehicleList = () => {
         {state.vehicles
           .sort(() => Math.random() - 0.5)
           .map((vehicle) => (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} />
+            <VehicleCard key={vehicle.productId} vehicle={vehicle} />
           ))}
       </div>
     </>
