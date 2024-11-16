@@ -11,6 +11,7 @@ import LoginForm from "./Components/LogIn.jsx";
 import { SignIn } from "./Components/SignIn.jsx";
 import { useContextGlobal } from "./Components/utils/global.context.jsx";
 import Page403 from "./Components/Page403.jsx";
+import { AdminCategories } from "./Components/admin/AdminCategories.jsx";
 
 function App() {
   const { state } = useContextGlobal();
@@ -53,6 +54,16 @@ function App() {
           element={
             isAuth && user.roles.includes("ROLE_ADMIN") ? (
               <AdminVehicles />
+            ) : (
+              <Page403 />
+            )
+          }
+        />
+        <Route
+          path="/admin/categories"
+          element={
+            isAuth && user.roles.includes("ROLE_ADMIN") ? (
+              <AdminCategories />
             ) : (
               <Page403 />
             )
