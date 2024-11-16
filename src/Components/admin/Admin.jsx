@@ -2,51 +2,20 @@ import {
   CalendarIcon,
   CogIcon,
   HomeIcon,
+  SwatchIcon,
+  TruckIcon,
   UsersIcon,
+  WalletIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { AdminDashboard } from "./AdminDashboard";
-import { useEffect, useState } from "react";
-
-// Hook personalizado para verificar si el dispositivo es móvil
-const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); // Ajusta el tamaño según tus necesidades
-    };
-
-    // Chequear el tamaño inicial y añadir event listener
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  return isMobile;
-};
+import useIsMobile from "../../hooks/useIsMobile";
+import MobileMessage from "../../Components/MobileMessage";
 
 export const Admin = () => {
   const isMobile = useIsMobile();
-
-  if (isMobile) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="text-center p-4 bg-white shadow-md rounded-lg">
-          <h2 className="text-xl font-semibold text-red-600">
-            Acceso no disponible
-          </h2>
-          <p className="text-gray-700">
-            La página de administración no está disponible en dispositivos
-            móviles.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  if (isMobile) return <MobileMessage />;
+  
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="flex h-[calc(100vh-64px)]">
@@ -64,7 +33,7 @@ export const Admin = () => {
               to="/admin/vehicles"
               className="mt-1 group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
             >
-              <HomeIcon className="mr-3 h-5 w-5" />
+              <TruckIcon className="mr-3 h-5 w-5" />
               Vehículos
             </Link>
             <Link
@@ -78,8 +47,15 @@ export const Admin = () => {
               to="/admin/categories"
               className="mt-1 group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
             >
-              <UsersIcon className="mr-3 h-5 w-5" />
+              <SwatchIcon className="mr-3 h-5 w-5" />
               Categorías
+            </Link>
+            <Link
+              to="/admin/characteristics"
+              className="mt-1 group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+            >
+              <WalletIcon className="mr-3 h-5 w-5" />
+              Características
             </Link>
             <a
               href="#"

@@ -6,39 +6,18 @@ import {
   Select,
   Option,
 } from "@material-tailwind/react";
-// import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useContextGlobal } from "../utils/global.context";
 import Swal from "sweetalert2";
+import useIsMobile from "../../hooks/useIsMobile";
+import MobileMessage from "../../Components/MobileMessage";
 
-const TABLE_HEAD = ["ID", "Nombre", "Correo Electrónico", "Rol"]; //,"Acciones"
-
-// Hook personalizado para verificar si el dispositivo es móvil
-const useIsMobile = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  return isMobile;
-};
+const TABLE_HEAD = ["ID", "Nombre", "Correo Electrónico", "Rol"];
 
 export const AdminUsers = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const { state } = useContextGlobal();
   const { accessToken } = state;
-
-  const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -126,21 +105,8 @@ export const AdminUsers = () => {
     }
   };
 
-  if (isMobile) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="text-center p-4 bg-white shadow-md rounded-lg">
-          <h2 className="text-xl font-semibold text-red-600">
-            Acceso no disponible
-          </h2>
-          <p className="text-gray-700">
-            La página de administración no está disponible en dispositivos
-            móviles.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const isMobile = useIsMobile();
+  if (isMobile) return <MobileMessage />;
 
   return (
     <div className="h-full w-full flex flex-col items-center justify-center px-10">
@@ -216,20 +182,6 @@ export const AdminUsers = () => {
                           <Option value="user">User</Option>
                         </Select>
                       </td>
-                      {/* <td className={classes}>
-                      <div className="flex space-x-2">
-                        <Tooltip content="Editar usuario">
-                          <IconButton variant="text">
-                            <PencilIcon className="h-4 w-4" />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip content="Eliminar usuario">
-                          <IconButton variant="text">
-                            <TrashIcon className="h-4 w-4" />
-                          </IconButton>
-                        </Tooltip>
-                      </div>
-                    </td> */}
                     </tr>
                   );
                 })}
@@ -237,19 +189,6 @@ export const AdminUsers = () => {
             </table>
           )}
         </CardBody>
-        {/* <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-          <Typography variant="small" color="blue-gray" className="font-normal">
-            Page 1 of 10
-          </Typography>
-          <div className="flex gap-2">
-            <Button variant="outlined" size="sm">
-              Previous
-            </Button>
-            <Button variant="outlined" size="sm">
-              Next
-            </Button>
-          </div>
-        </CardFooter> */}
       </Card>
     </div>
   );
