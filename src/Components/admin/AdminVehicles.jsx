@@ -110,6 +110,21 @@ export const AdminVehicles = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Verificar si ya existe un vehículo con el mismo nombre
+    const vehicleExists = vehicleList.some(
+      (vehicle) => vehicle.name.toLowerCase() === vehicleData.name.toLowerCase()
+    );
+
+    if (vehicleExists) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Ya existe un vehículo con el mismo nombre.",
+        confirmButtonColor: "#32CEB1",
+      });
+      return; // Si existe, no continuar con la creación del vehículo
+    }
+
     const newVehicle = {
       name: vehicleData.name,
       type_product: vehicleData.type_product,
