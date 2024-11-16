@@ -8,6 +8,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useContextGlobal } from "./utils/global.context";
 import Swal from "sweetalert2";
+import { StarIcon } from "@heroicons/react/24/outline";
 
 const truncateText = (text, maxLength) => {
   return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
@@ -38,6 +39,11 @@ export function StickyNavbar() {
 
   const handleRegisterNavigation = () => {
     navigate("/singIn");
+  };
+
+  const handleMisFavoritos = () => {
+    setOpenSubMenu(false); // Cierra el submenú
+    navigate("/favorites");
   };
 
   const handleMiCuenta = () => {
@@ -219,11 +225,20 @@ export function StickyNavbar() {
                         Mi Cuenta
                       </span>
                     </div>
+                    <div className="pl-2.5 pr-5 py-2.5 justify-start items-center gap-2.5 flex">
+                      <StarIcon className="h-4 w-4" />
+                      <span
+                        onClick={handleMisFavoritos}
+                        className="text-black text-lg font-medium cursor-pointer"
+                      >
+                        Mis Favoritos
+                      </span>
+                    </div>
                     {state.user.roles.includes("ROLE_ADMIN") ? (
                       <>
                         <button
                           className="self-stretch pl-2.5 pr-5 py-2.5 bg-[#32ceb1] rounded-lg justify-center items-center gap-2.5 flex text-white text-lg font-medium font-['Roboto']"
-                          onClick={() =>  {
+                          onClick={() => {
                             navigate("/admin");
                             setOpenSubMenu(false); // Cierra el submenú
                           }}
