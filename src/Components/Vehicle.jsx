@@ -1,26 +1,53 @@
-import { Card, CardBody, Typography, Button } from "@material-tailwind/react";
-import AutoPlata from "../assets/icons/auto-plata.svg";
+import { useState } from "react";
+import { Card, Typography, Button } from "@material-tailwind/react";
 import AutoBlack from "../assets/icons/auto-black.svg";
 import dolar from "../assets/icons/dolar.svg";
 import { useContextGlobal } from "../Components/utils/global.context";
 import { Link } from "react-router-dom";
+import { HeartIcon as FilledHeart } from "@heroicons/react/24/solid";
+import { HeartIcon as OutlineHeart } from "@heroicons/react/24/outline";
 
 export const VehicleCard = (props) => {
   const vehicle = props.vehicle;
   console.log(vehicle);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const { state } = useContextGlobal();
+
+  const toggleFavorite = () => {
+    setIsFavorite(!isFavorite);
+    // Aquí puedes manejar la lógica para actualizar el estado en el backend o en el contexto global si es necesario
+  };
 
   return (
     <Card className="p-4 rounded-lg shadow-lg border">
-      <Typography
-        variant="h6"
-        color="blue-gray"
-        className="text-center font-bold mb-2"
-      >
-        {vehicle.name}
-      </Typography>
+      <div className="flex justify-between items-center mb-2">
+        <div className="flex justify-center w-full">
+          <Typography
+            variant="h6"
+            color="blue-gray"
+            className="text-center font-bold w-full"
+          >
+            {vehicle.name}
+          </Typography>
+        </div>
+
+        {/* Mostrar el botón de favorito solo si el usuario está autenticado */}
+        {state.isAuth && (
+          <button
+            onClick={toggleFavorite}
+            className="text-red-500 hover:text-red-700"
+          >
+            {isFavorite ? (
+              <FilledHeart className="h-6 w-6" />
+            ) : (
+              <OutlineHeart className="h-6 w-6" />
+            )}
+          </button>
+        )}
+      </div>
       <div className="flex justify-center mb-4">
         <img
-          src={vehicle.images[0]?.url} // Reemplaza con la ruta de tu imagen
+          src={vehicle.images[0]?.url}
           alt="Vehículo eléctrico"
           className="h-36 w-full object-contain"
         />
