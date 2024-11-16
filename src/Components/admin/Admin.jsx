@@ -74,13 +74,13 @@ export const Admin = () => {
               <UsersIcon className="mr-3 h-5 w-5" />
               Usuarios
             </Link>
-            <a
-              href="#"
+            <Link
+              to="/admin/categories"
               className="mt-1 group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
             >
               <UsersIcon className="mr-3 h-5 w-5" />
               Categorías
-            </a>
+            </Link>
             <a
               href="#"
               className="mt-1 group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
