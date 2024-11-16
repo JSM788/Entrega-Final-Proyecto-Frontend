@@ -1,8 +1,12 @@
-import { Card, CardHeader, CardBody, Avatar } from "@material-tailwind/react";
+import { Card, CardHeader, CardBody, Avatar, Tooltip, IconButton } from "@material-tailwind/react";
 import useIsMobile from "../../hooks/useIsMobile";
 import MobileMessage from "../../Components/MobileMessage";
+import { useEffect, useState } from "react";
+import { useContextGlobal } from "../utils/global.context";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import Swal from "sweetalert2";
 
-const TABLE_HEAD = ["ID", "Título", "Descripción"];
+const TABLE_HEAD = ["ID", "Título", "Descripción", "Acciones"];
 const fakeCategories = [
   {
     id: 1,
@@ -25,6 +29,72 @@ const fakeCategories = [
 ];
 
 export const AdminCategories = () => {
+  const [categoriesList, setCategoriesList] = useState([]);
+  const { state } = useContextGlobal();
+
+  useEffect(() => {
+    console.log("Categorias en el contexto global:", fakeCategories);//pintarlos del GET API
+    setCategoriesList(fakeCategories || []);
+  }, [fakeCategories]);
+
+  const handleDeleteCategories = async (id, title) => {
+    const result = await Swal.fire({
+      title: `¿Eliminar la categoría "${title}"?`,
+      html: `
+        <p>Estás a punto de eliminar la categoría <strong>"${title}"</strong>.</p>
+        <p>Esto podría eliminar todos los productos asociados a esta categoría.</p>
+        <p>¿Estás seguro de que deseas continuar?</p>
+      `,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#32CEB1",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/api/categories/${id}`,//reemplazar API
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${state.accessToken}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          setCategoriesList(
+            categoriesList.filter((category) => category.id !== id)
+          );
+          Swal.fire({
+            icon: "success",
+            title: "¡Eliminado!",
+            text: `La categoría "${title}" ha sido eliminada.`,
+            confirmButtonColor: "#32CEB1",
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "No se pudo eliminar la categoría.",
+            confirmButtonColor: "#32CEB1",
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un problema al eliminar la categoría.",
+          confirmButtonColor: "#32CEB1",
+        });
+        console.error("Error en la solicitud:", error);
+      }
+    }
+  };
+
   const isMobile = useIsMobile();
   if (isMobile) return <MobileMessage />;
 
@@ -55,8 +125,8 @@ export const AdminCategories = () => {
               </tr>
             </thead>
             <tbody>
-              {fakeCategories.map((category, index) => {
-                const isLast = index === fakeCategories.length - 1;
+              {categoriesList.map((category, index) => {
+                const isLast = index === categoriesList.length - 1;
                 const classes = isLast
                   ? "p-4"
                   : "p-4 border-b border-blue-gray-50";
@@ -79,6 +149,18 @@ export const AdminCategories = () => {
                     <td className={classes}>
                       <p className="font-normal">{category.description}</p>
                     </td>
+                    <td className={classes}>
+                        <Tooltip content="Eliminar favorito">
+                          <IconButton
+                            variant="text"
+                            onClick={() =>
+                              handleDeleteCategories(category.id, category.title)
+                            }
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </IconButton>
+                        </Tooltip>
+                      </td>
                   </tr>
                 );
               })}
