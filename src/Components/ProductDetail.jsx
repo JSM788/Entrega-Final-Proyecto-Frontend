@@ -4,6 +4,24 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useContextGlobal } from "../Components/utils/global.context";
 
+const policies = [
+  {
+    title: "Cuidado del producto",
+    description:
+      "Mantenga el producto en un lugar seco y evite la exposición prolongada al sol para preservar su calidad.",
+  },
+  {
+    title: "Precauciones de uso",
+    description:
+      "No utilizar el producto en condiciones extremas de temperatura para evitar daños.",
+  },
+  {
+    title: "Garantía",
+    description:
+      "El producto tiene una garantía de 1 año que cubre defectos de fabricación.",
+  },
+];
+
 const ProductDetail = () => {
   const { state } = useContextGlobal(); // Acceder al estado global
   const { id } = useParams();
@@ -250,6 +268,25 @@ const ProductDetail = () => {
                     {caracteristica.featureDescription}
                   </p>
                 </div>
+              </div>
+            ))}
+          </div>
+        </section>
+        <section className="w-full bg-gray-100 p-6">
+          <h3
+            className="text-2xl font-semibold my-4 text-black underline"
+            style={{ textDecorationColor: "#6adcc7" }}
+          >
+            POLITICA DE USO:
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {policies.map((policy, index) => (
+              <div
+                key={index}
+                className="bg-white p-4 border rounded-lg shadow-md"
+              >
+                <h3 className="text-xl font-semibold mb-2">{policy.title}</h3>
+                <p className="text-gray-700">{policy.description}</p>
               </div>
             ))}
           </div>
