@@ -97,58 +97,66 @@ export const FavoritesProducts = () => {
   };
 
   return (
-    <div className="h-full w-full flex flex-col items-center justify-center px-10">
-      <Card className="h-full w-full">
-        <CardHeader floated={false} shadow={false} className="rounded-none">
-          <h1 className="font-semibold">Lista de Favoritos</h1>
-          <h2 className="mt-1 font-normal">
+    <div className="h-full w-full flex flex-col items-center justify-center px-4 sm:px-6 lg:px-10">
+      <Card className="w-full max-w-4xl">
+        <CardHeader
+          floated={false}
+          shadow={false}
+          className="rounded-none text-center"
+        >
+          <h1 className="font-semibold text-lg sm:text-xl">
+            Lista de Favoritos
+          </h1>
+          <h2 className="mt-1 font-normal text-sm sm:text-base">
             Información sobre todos los favoritos
           </h2>
         </CardHeader>
 
-        <CardBody className="overflow-auto px-0">
-          <table className="mt-4 w-full min-w-max table-auto text-left">
-            <thead>
-              <tr>
-                {TABLE_HEAD.map((head) => (
-                  <th
-                    key={head}
-                    className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
-                  >
-                    <h3 className="flex items-center justify-between gap-2 font-normal leading-none opacity-70">
-                      {head}
-                    </h3>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {vehicleList.map((vehicle, index) => {
-                const isLast = index === vehicleList.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
-                return (
-                  <tr key={vehicle.productId}>
-                    <td className={classes}>
-                      <p className="font-normal">{index + 1}</p>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        <Avatar
-                          src={vehicle.imageUrl}
-                          alt=""
-                          size="sm"
-                          className="rounded-full border border-aquaTeal"
-                        />
-                        <p className="font-normal">{vehicle.title}</p>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <p className="font-normal">{vehicle.description}</p>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex space-x-2">
+        <CardBody className="overflow-hidden px-2 sm:px-4">
+          {/* Tabla para pantallas medianas o más grandes */}
+          <div className="hidden sm:block overflow-x-auto">
+            <table className="mt-4 w-full table-auto text-left">
+              <thead>
+                <tr>
+                  {TABLE_HEAD.map((head) => (
+                    <th
+                      key={head}
+                      className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4 text-sm"
+                    >
+                      <span className="font-normal leading-none opacity-70">
+                        {head}
+                      </span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {vehicleList.map((vehicle, index) => {
+                  const isLast = index === vehicleList.length - 1;
+                  const classes = isLast
+                    ? "p-4"
+                    : "p-4 border-b border-blue-gray-50";
+
+                  return (
+                    <tr key={vehicle.productId}>
+                      <td className={classes}>
+                        <p className="font-normal">{index + 1}</p>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          <Avatar
+                            src={vehicle.imageUrl}
+                            alt={vehicle.title}
+                            size="sm"
+                            className="rounded-full border border-aquaTeal"
+                          />
+                          <p className="font-normal">{vehicle.title}</p>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <p className="font-normal">{vehicle.description}</p>
+                      </td>
+                      <td className={classes}>
                         <Tooltip content="Eliminar favorito">
                           <IconButton
                             variant="text"
@@ -159,13 +167,48 @@ export const FavoritesProducts = () => {
                             <TrashIcon className="h-4 w-4" />
                           </IconButton>
                         </Tooltip>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Tarjetas para pantallas pequeñas */}
+          <div className="block sm:hidden">
+            {vehicleList.map((vehicle) => (
+              <div
+                key={vehicle.productId}
+                className="mb-4 border border-gray-200 rounded-lg p-4 shadow-sm"
+              >
+                <div className="flex items-center gap-4">
+                  <Avatar
+                    src={vehicle.imageUrl}
+                    alt={vehicle.title}
+                    size="md"
+                    className="rounded-full border border-aquaTeal"
+                  />
+                  <div>
+                    <h3 className="text-sm font-medium">{vehicle.title}</h3>
+                    <p className="text-xs text-gray-500">
+                      {vehicle.description}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <Tooltip content="Eliminar favorito">
+                    <IconButton
+                      variant="text"
+                      onClick={() => handleDeleteVehicle(vehicle.productId)}
+                    >
+                      <TrashIcon className="h-5 w-5" />
+                    </IconButton>
+                  </Tooltip>
+                </div>
+              </div>
+            ))}
+          </div>
         </CardBody>
       </Card>
     </div>
