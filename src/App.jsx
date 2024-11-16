@@ -13,6 +13,7 @@ import { useContextGlobal } from "./Components/utils/global.context.jsx";
 import Page403 from "./Components/Page403.jsx";
 import { AdminCategories } from "./Components/admin/AdminCategories.jsx";
 import { AdminCharacteristics } from "./Components/admin/AdminCharacteristics.jsx";
+import { FavoritesProducts } from "./Components/user/FavoritesProducts.jsx";
 
 function App() {
   const { state } = useContextGlobal();
@@ -70,7 +71,7 @@ function App() {
             )
           }
         />
-         <Route
+        <Route
           path="/admin/characteristics"
           element={
             isAuth && user.roles.includes("ROLE_ADMIN") ? (
@@ -79,6 +80,10 @@ function App() {
               <Page403 />
             )
           }
+        />
+        <Route
+          path="/favorites"
+          element={isAuth ? <FavoritesProducts /> : <Page403 />}
         />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/singIn" element={<SignIn />} />
