@@ -1,4 +1,11 @@
-import { Card, CardHeader, CardBody, Avatar, Tooltip, IconButton } from "@material-tailwind/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  Avatar,
+  Tooltip,
+  IconButton,
+} from "@material-tailwind/react";
 import useIsMobile from "../../hooks/useIsMobile";
 import MobileMessage from "../../Components/MobileMessage";
 import { useEffect, useState } from "react";
@@ -7,35 +14,47 @@ import { TrashIcon } from "@heroicons/react/24/outline";
 import Swal from "sweetalert2";
 
 const TABLE_HEAD = ["ID", "Título", "Descripción", "Acciones"];
-const fakeCategories = [
-  {
-    id: 1,
-    title: "Scooter",
-    description: "Categoría relacionada con gadgets y software.",
-    imageUrl: "https://via.placeholder.com/50",
-  },
-  {
-    id: 2,
-    title: "Motos",
-    description: "Recursos y cursos educativos.",
-    imageUrl: "https://via.placeholder.com/50",
-  },
-  {
-    id: 3,
-    title: "Autos",
-    description: "Todo sobre deportes y actividades físicas.",
-    imageUrl: "https://via.placeholder.com/50",
-  },
-];
 
 export const AdminCategories = () => {
   const [categoriesList, setCategoriesList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { state } = useContextGlobal();
 
   useEffect(() => {
-    console.log("Categorias en el contexto global:", fakeCategories);//pintarlos del GET API
-    setCategoriesList(fakeCategories || []);
-  }, [fakeCategories]);
+    const fetchCategories = async () => {
+      try {
+        setIsLoading(true); // Activa el estado de carga
+        const response = await fetch("http://localhost:8080/api/categories", {
+          headers: {
+            Authorization: `Bearer ${state.accessToken}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const formattedCategories = data.map((category) => ({
+            id: category.categoryId,
+            title: category.categoryName,
+            description: category.categoryDescription || "Sin descripción",
+            imageUrl:
+              category.categoryImageUrl || "https://via.placeholder.com/50", // Imagen por defecto si no hay URL
+          }));
+          setCategoriesList(formattedCategories);
+        } else {
+          console.error(
+            "Error al obtener las categorías:",
+            response.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error en la solicitud:", error);
+      } finally {
+        setIsLoading(false); // Desactiva el estado de carga
+      }
+    };
+
+    fetchCategories();
+  }, [state.accessToken]);
 
   const handleDeleteCategories = async (id, title) => {
     const result = await Swal.fire({
@@ -45,7 +64,6 @@ export const AdminCategories = () => {
         <p>Esto podría eliminar todos los productos asociados a esta categoría.</p>
         <p>¿Estás seguro de que deseas continuar?</p>
       `,
-      icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#32CEB1",
       cancelButtonColor: "#d33",
@@ -56,7 +74,7 @@ export const AdminCategories = () => {
     if (result.isConfirmed) {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/categories/${id}`,//reemplazar API
+          `http://localhost:8080/api/categoriesXX/${id}`,//reemplazar API
           {
             method: "DELETE",
             headers: {
@@ -97,6 +115,14 @@ export const AdminCategories = () => {
 
   const isMobile = useIsMobile();
   if (isMobile) return <MobileMessage />;
+
+  if (isLoading) {
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        <p className="text-blue-gray-500">Cargando categorías...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="h-full w-full flex flex-col items-center justify-center px-10">
@@ -150,17 +176,17 @@ export const AdminCategories = () => {
                       <p className="font-normal">{category.description}</p>
                     </td>
                     <td className={classes}>
-                        <Tooltip content="Eliminar favorito">
-                          <IconButton
-                            variant="text"
-                            onClick={() =>
-                              handleDeleteCategories(category.id, category.title)
-                            }
-                          >
-                            <TrashIcon className="h-4 w-4" />
-                          </IconButton>
-                        </Tooltip>
-                      </td>
+                      <Tooltip content="Eliminar categoría">
+                        <IconButton
+                          variant="text"
+                          onClick={() =>
+                            handleDeleteCategories(category.id, category.title)
+                          }
+                        >
+                          <TrashIcon className="h-4 w-4" />
+                        </IconButton>
+                      </Tooltip>
+                    </td>
                   </tr>
                 );
               })}
