@@ -38,26 +38,26 @@ export const FavoritesProducts = () => {
   const { state } = useContextGlobal();
 
   useEffect(() => {
-    console.log("Productos en el contexto global:", mockvehicleList);//pintarlos del GET API
+    console.log("Productos en el contexto global:", mockvehicleList); //pintarlos del GET API
     setVehicleList(mockvehicleList || []);
   }, [mockvehicleList]);
 
-  const handleDeleteVehicle = async (productId) => {
+  const handleDeleteVehicle = async (productId, vehicleTitle) => {
     const result = await Swal.fire({
-      title: "¿Estás seguro?",
-      text: "No podrás revertir esta acción.",
-      icon: "warning",
+      title: "Eliminar de favoritos",
+      html: `¿Desea eliminar <strong>${vehicleTitle}</strong> de tu lista de favoritos?`,
+      showCloseButton: true,
       showCancelButton: true,
       confirmButtonColor: "#32CEB1",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
+      cancelButtonColor: "#D9534F",
+      confirmButtonText: "Confirmar",
       cancelButtonText: "Cancelar",
     });
 
     if (result.isConfirmed) {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/favorites/${productId}`,//reemplazar API
+          `http://localhost:8080/api/favorites/${productId}`, //reemplazar API
           {
             method: "DELETE",
             headers: {
@@ -73,14 +73,14 @@ export const FavoritesProducts = () => {
           Swal.fire({
             icon: "success",
             title: "¡Eliminado!",
-            text: "El vehículo ha sido eliminado de favoritos.",
+            html: `El vehículo <strong>${vehicleTitle}</strong> ha sido eliminado de favoritos.`,
             confirmButtonColor: "#32CEB1",
           });
         } else {
           Swal.fire({
             icon: "error",
             title: "Error",
-            text: "No se pudo eliminar el vehículo de favoritos.",
+            html: `No se pudo eliminar el vehículo <strong>${vehicleTitle}</strong> de favoritos.`,
             confirmButtonColor: "#32CEB1",
           });
         }
@@ -88,7 +88,7 @@ export const FavoritesProducts = () => {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Hubo un problema al eliminar el vehículo de favoritos.",
+          html: `Hubo un problema al eliminar el vehículo <strong>${vehicleTitle}</strong> de favoritos.`,
           confirmButtonColor: "#32CEB1",
         });
         console.error("Error en la solicitud:", error);
@@ -161,7 +161,10 @@ export const FavoritesProducts = () => {
                           <IconButton
                             variant="text"
                             onClick={() =>
-                              handleDeleteVehicle(vehicle.productId)
+                              handleDeleteVehicle(
+                                vehicle.productId,
+                                vehicle.title
+                              )
                             }
                           >
                             <TrashIcon className="h-4 w-4" />
