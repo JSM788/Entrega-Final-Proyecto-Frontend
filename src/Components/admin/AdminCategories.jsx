@@ -17,13 +17,12 @@ const TABLE_HEAD = ["ID", "Título", "Descripción", "Acciones"];
 
 export const AdminCategories = () => {
   const [categoriesList, setCategoriesList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const { state } = useContextGlobal();
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        setIsLoading(true); // Activa el estado de carga
         const response = await fetch("http://localhost:8080/api/categories", {
           headers: {
             Authorization: `Bearer ${state.accessToken}`,
@@ -49,7 +48,7 @@ export const AdminCategories = () => {
       } catch (error) {
         console.error("Error en la solicitud:", error);
       } finally {
-        setIsLoading(false); // Desactiva el estado de carga
+        setLoading(false); // Set loading to false after data is fetched
       }
     };
 
@@ -58,16 +57,17 @@ export const AdminCategories = () => {
 
   const handleDeleteCategories = async (id, title) => {
     const result = await Swal.fire({
-      title: `¿Eliminar la categoría "${title}"?`,
+      title: `Eliminar la categoría`,
       html: `
         <p>Estás a punto de eliminar la categoría <strong>"${title}"</strong>.</p>
         <p>Esto podría eliminar todos los productos asociados a esta categoría.</p>
         <p>¿Estás seguro de que deseas continuar?</p>
       `,
+      showCloseButton: true,
       showCancelButton: true,
       confirmButtonColor: "#32CEB1",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
+      cancelButtonColor: "#D9534F",
+      confirmButtonText: "Confirmar",
       cancelButtonText: "Cancelar",
     });
 
@@ -91,22 +91,19 @@ export const AdminCategories = () => {
             icon: "success",
             title: "¡Eliminado!",
             text: `La categoría "${title}" ha sido eliminada.`,
-            confirmButtonColor: "#32CEB1",
+            showConfirmButton: false,
+            timer: 2000,
           });
         } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "No se pudo eliminar la categoría.",
-            confirmButtonColor: "#32CEB1",
-          });
+          throw new Error("Error al eliminar la categoría.");
         }
       } catch (error) {
         Swal.fire({
           icon: "error",
           title: "Error",
           text: "Hubo un problema al eliminar la categoría.",
-          confirmButtonColor: "#32CEB1",
+          showConfirmButton: false,
+          timer: 2000,
         });
         console.error("Error en la solicitud:", error);
       }
@@ -115,14 +112,6 @@ export const AdminCategories = () => {
 
   const isMobile = useIsMobile();
   if (isMobile) return <MobileMessage />;
-
-  if (isLoading) {
-    return (
-      <div className="h-full w-full flex items-center justify-center">
-        <p className="text-blue-gray-500">Cargando categorías...</p>
-      </div>
-    );
-  }
 
   return (
     <div className="h-full w-full flex flex-col items-center justify-center px-10">
@@ -135,63 +124,72 @@ export const AdminCategories = () => {
         </CardHeader>
 
         <CardBody className="overflow-auto px-0">
-          <table className="mt-4 w-full min-w-max table-auto text-left">
-            <thead>
-              <tr>
-                {TABLE_HEAD.map((head) => (
-                  <th
-                    key={head}
-                    className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
-                  >
-                    <h3 className="flex items-center justify-between gap-2 font-normal leading-none opacity-70">
-                      {head}
-                    </h3>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {categoriesList.map((category, index) => {
-                const isLast = index === categoriesList.length - 1;
-                const classes = isLast
-                  ? "p-4"
-                  : "p-4 border-b border-blue-gray-50";
-                return (
-                  <tr key={category.id}>
-                    <td className={classes}>
-                      <p className="font-normal">{index + 1}</p>
-                    </td>
-                    <td className={classes}>
-                      <div className="flex items-center gap-3">
-                        <Avatar
-                          src={category.imageUrl}
-                          alt=""
-                          size="sm"
-                          className="rounded-full border border-aquaTeal"
-                        />
-                        <p className="font-normal">{category.title}</p>
-                      </div>
-                    </td>
-                    <td className={classes}>
-                      <p className="font-normal">{category.description}</p>
-                    </td>
-                    <td className={classes}>
-                      <Tooltip content="Eliminar categoría">
-                        <IconButton
-                          variant="text"
-                          onClick={() =>
-                            handleDeleteCategories(category.id, category.title)
-                          }
-                        >
-                          <TrashIcon className="h-4 w-4" />
-                        </IconButton>
-                      </Tooltip>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          {loading ? (
+            <div className="text-center p-4">
+              <h2>Cargando...</h2>
+            </div>
+          ) : (
+            <table className="mt-4 w-full min-w-max table-auto text-left">
+              <thead>
+                <tr>
+                  {TABLE_HEAD.map((head) => (
+                    <th
+                      key={head}
+                      className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
+                    >
+                      <h3 className="flex items-center justify-between gap-2 font-normal leading-none opacity-70">
+                        {head}
+                      </h3>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {categoriesList.map((category, index) => {
+                  const isLast = index === categoriesList.length - 1;
+                  const classes = isLast
+                    ? "p-4"
+                    : "p-4 border-b border-blue-gray-50";
+                  return (
+                    <tr key={category.id}>
+                      <td className={classes}>
+                        <p className="font-normal">{index + 1}</p>
+                      </td>
+                      <td className={classes}>
+                        <div className="flex items-center gap-3">
+                          <Avatar
+                            src={category.imageUrl}
+                            alt=""
+                            size="sm"
+                            className="rounded-full border border-aquaTeal"
+                          />
+                          <p className="font-normal">{category.title}</p>
+                        </div>
+                      </td>
+                      <td className={classes}>
+                        <p className="font-normal">{category.description}</p>
+                      </td>
+                      <td className={classes}>
+                        <Tooltip content="Eliminar categoría">
+                          <IconButton
+                            variant="text"
+                            onClick={() =>
+                              handleDeleteCategories(
+                                category.id,
+                                category.title
+                              )
+                            }
+                          >
+                            <TrashIcon className="h-4 w-4" />
+                          </IconButton>
+                        </Tooltip>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          )}
         </CardBody>
       </Card>
     </div>
