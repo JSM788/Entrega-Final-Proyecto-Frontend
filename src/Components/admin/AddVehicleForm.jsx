@@ -714,7 +714,7 @@ const AddVehicleForm = ({
               type="submit"
               className="bg-[#2A606E] text-white px-6 py-3 rounded-md shadow-md transition-all"
             >
-              Añadir Vehículo
+              Guardar Vehículo
             </button>
           </div>
         </form>

@@ -5,19 +5,23 @@ import {
   Avatar,
   Tooltip,
   IconButton,
+  Button,
 } from "@material-tailwind/react";
 import useIsMobile from "../../hooks/useIsMobile";
 import MobileMessage from "../../Components/MobileMessage";
 import { useEffect, useState } from "react";
 import { useContextGlobal } from "../utils/global.context";
 import { TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon } from "@heroicons/react/24/solid";
 import Swal from "sweetalert2";
+import AddCategoryForm from "./AddCategoryForm";
 
 const TABLE_HEAD = ["ID", "Título", "Descripción", "Acciones"];
 
 export const AdminCategories = () => {
   const [categoriesList, setCategoriesList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
   const { state } = useContextGlobal();
 
   useEffect(() => {
@@ -55,6 +59,52 @@ export const AdminCategories = () => {
     fetchCategories();
   }, [state.accessToken]);
 
+  const handleAddCategory = (newCategory) => {
+    fetch("http://localhost:8080/api/categories", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${state.accessToken}`,
+      },
+      body: JSON.stringify({
+        categoryName: newCategory.title,
+        categoryDescription: newCategory.description,
+        categoryImageUrl: newCategory.imageUrl,
+      }),
+    })
+      .then((response) => response.json())
+      .then((addedCategory) => {
+        setCategoriesList([
+          ...categoriesList,
+          {
+            id: addedCategory.categoryId,
+            title: addedCategory.categoryName,
+            description: addedCategory.categoryDescription,
+            imageUrl:
+              addedCategory.categoryImageUrl ||
+              "https://via.placeholder.com/50",
+          },
+        ]);
+        setShowForm(false); // Cerrar formulario al agregar categoría
+        Swal.fire({
+          icon: "success",
+          title: "Categoría agregada",
+          text: `La categoría "${newCategory.title}" ha sido agregada.`,
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Hubo un problema al agregar la categoría.",
+          showConfirmButton: false,
+          timer: 2000,
+        });
+      });
+  };
+
   const handleDeleteCategories = async (id, title) => {
     const result = await Swal.fire({
       title: `Eliminar la categoría`,
@@ -74,7 +124,7 @@ export const AdminCategories = () => {
     if (result.isConfirmed) {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/categoriesXX/${id}`,//reemplazar API
+          `http://localhost:8080/api/categories/${id}`,
           {
             method: "DELETE",
             headers: {
@@ -110,11 +160,28 @@ export const AdminCategories = () => {
     }
   };
 
+  const handleAddClick = () => {
+    setShowForm(!showForm); // Alterna entre mostrar y ocultar el formulario
+  };
+
   const isMobile = useIsMobile();
   if (isMobile) return <MobileMessage />;
 
   return (
-    <div className="h-full w-full flex flex-col items-center justify-center px-10">
+    <div className="flex flex-col px-10">
+      <div className="flex justify-between items-center mb-4">
+        <div></div>
+        <Button
+          onClick={handleAddClick}
+          variant="filled"
+          className="bg-[#32CEB1]"
+        >
+          {showForm ? "Cancelar" : "Agregar Categoría"}
+        </Button>
+      </div>
+
+      {showForm && <AddCategoryForm onAddCategory={handleAddCategory} />}
+
       <Card className="h-full w-full">
         <CardHeader floated={false} shadow={false} className="rounded-none">
           <h1 className="font-semibold">Lista de Categorías</h1>
@@ -170,6 +237,11 @@ export const AdminCategories = () => {
                         <p className="font-normal">{category.description}</p>
                       </td>
                       <td className={classes}>
+                        <Tooltip content="Editar categoría">
+                          <IconButton variant="text">
+                            <PencilIcon className="h-4 w-4" />
+                          </IconButton>
+                        </Tooltip>
                         <Tooltip content="Eliminar categoría">
                           <IconButton
                             variant="text"
