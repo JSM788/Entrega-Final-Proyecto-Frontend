@@ -93,14 +93,15 @@ export const AdminUsers = () => {
           newRole === "admin" ? "Admin" : "User"
         }</strong>.`,
         showConfirmButton: false,
-        timer: 1500,
+        timer: 2000,
       });
     } catch (error) {
-      console.error("Error updating role:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
         text: "Hubo un problema al actualizar el rol.",
+        showConfirmButton: false,
+        timer: 2000,
       });
     }
   };
