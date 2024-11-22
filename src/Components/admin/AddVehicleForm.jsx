@@ -598,8 +598,8 @@ const AddVehicleForm = ({
                     name="featureName"
                     value={characteristic.featureName}
                     onChange={(e) => handleCharacteristicChange(e, index)}
-                    placeholder={`Nombre ${index + 1}`}
-                    className="border border-gray-300 rounded-md p-2"
+                    placeholder={`Nombre de la característica ${index + 1}`}
+                    className="border border-gray-300 rounded-md p-2 w-full"
                   />
                   {formErrors[`characteristic-${index}-name`] && (
                     <p className="text-red-500 text-sm mt-1">
@@ -651,7 +651,7 @@ const AddVehicleForm = ({
               Item Products del Vehículo
             </legend>
             {vehicleData.itemProducts.map((item, index) => (
-              <div key={index} className="mb-4 p-4 border rounded-md">
+              <div key={index} className="mb-4 p-4 border border-[#2A606E] rounded-md">
                 <h3 className="font-semibold mb-2">Producto {index + 1}</h3>
                 <input
                   name="nro_serial"
