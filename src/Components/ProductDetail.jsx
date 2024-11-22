@@ -1,26 +1,80 @@
-import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowLeftIcon,
+  ExclamationCircleIcon, ClockIcon,
+  KeyIcon,
+  LockClosedIcon
+} from "@heroicons/react/24/outline";
 import { Button } from "@material-tailwind/react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useContextGlobal } from "../Components/utils/global.context";
+import Swal from "sweetalert2";
+import ReactDOMServer from 'react-dom/server';
 
 const policies = [
   {
-    title: "Cuidado del producto",
-    description:
-      "Mantenga el producto en un lugar seco y evite la exposición prolongada al sol para preservar su calidad.",
+    icon: <ClockIcon className="h-6 w-6 text-[#32ceb1] mr-2" />,
+    title: "Política de reembolso",
+    description: [
+      "Si cancelas antes de 48 horas, recibirás un reembolso completo.",
+      "Cancelaciones dentro de las 48 horas previas tendrán un cargo del 20%.",
+      "El reembolso será procesado en un plazo máximo de 5 días hábiles.",
+    ],
   },
   {
-    title: "Precauciones de uso",
-    description:
-      "No utilizar el producto en condiciones extremas de temperatura para evitar daños.",
+    icon: <KeyIcon className="h-6 w-6 text-[#32ceb1] mr-2" />,
+    title: "Política de devolución",
+    description: [
+      "Devuelve el vehículo en el mismo estado en el que lo recibiste.",
+      "Asegúrate de que esté cargado al menos al 50% al momento de la devolución.",
+      "Cargos adicionales pueden aplicar por daños o accesorios faltantes.",
+    ],
   },
   {
-    title: "Garantía",
-    description:
-      "El producto tiene una garantía de 1 año que cubre defectos de fabricación.",
+    icon: <LockClosedIcon  className="h-6 w-6 text-[#32ceb1] mr-2" />,
+    title: "Política de recojo",
+    description: [
+      "El recojo del vehículo debe ser programado con al menos 24 horas de anticipación.",
+      "Presenta tu documento de identidad al momento del recojo.",
+      "El vehículo será entregado completamente cargado y listo para usar.",
+    ],
   },
 ];
+
+const showPoliciesModal = () => {
+  const policiesHTML = ReactDOMServer.renderToString(
+    <div className="text-left">
+       <h1 className="text-xl font-bold text-[#32ceb1]">
+        ¡Queremos que tu experiencia sea increíble!
+      </h1>
+      <p className="font-semibold text-lg mt-4">Nuestras políticas:</p>
+      <div className="mt-4">
+        {policies.map((policy, index) => (
+          <div key={index} className="flex items-start mb-4">
+             {policy.icon}
+            <div>
+              <h3 className="font-bold">{policy.title}</h3>
+              <ul className="list-disc list-inside text-sm text-gray-700 mt-1">
+                {policy.description.map((item, i) => (
+                  <li key={i}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  Swal.fire({
+    html: policiesHTML,
+    showCloseButton: true,
+    showConfirmButton: false,
+    customClass: {
+      popup: "bg-white rounded-lg shadow-lg p-6 max-w-xl",
+    },
+  });
+};
 
 const ProductDetail = () => {
   const { state } = useContextGlobal(); // Acceder al estado global
@@ -58,6 +112,12 @@ const ProductDetail = () => {
             {product.name}
           </h3>
         </div>
+        <button
+          className="ml-auto border border-[#2A606E] rounded-lg p-2"
+          onClick={showPoliciesModal}
+        >
+          <ExclamationCircleIcon className="h-5 w-6 text-deepTeal" />
+        </button>
       </header>
       <main className="m-auto mt-8">
         <section className="flex justify-between gap-5 xl:flex-row  flex-col">
@@ -216,7 +276,7 @@ const ProductDetail = () => {
               </label>
             </div>
             <button className="bg-[#32ceb1] text-white px-4 py-2 mt-1 rounded-md w-full">
-              RESERVA AHORA
+              INICIAR RESERVA
             </button>
           </div>
         </section>
@@ -241,56 +301,41 @@ const ProductDetail = () => {
         </section>
 
         {/* Characteristics */}
-        <h3
-          className="text-2xl font-semibold my-4 text-black underline"
-          style={{ textDecorationColor: "#6adcc7" }}
-        >
-          CARACTERÍSTICAS:
-        </h3>
-        <section className="my-8 bg-customGray py-4 w-auto">
-          <div className="flex overflow-x-auto whitespace-nowrap space-x-4">
-            {/* Características dinámicas */}
-            {product.characteristics?.map((caracteristica, index) => (
-              <div
-                key={index}
-                className="flex items-center min-w-[530px] first:!ml-8"
-              >
-                <img
-                  src={caracteristica.featureImageUrl}
-                  alt={caracteristica.featureName}
-                  className="w-[223px] h-[174px] object-cover rounded-lg"
-                />
-                <div className="bg-mintTeal2 rounded-l-none rounded-r-lg min-w-[280px] text-start p-7">
-                  <p className="mt-2 font-medium text-lg text-black">
-                    {caracteristica.featureName}
-                  </p>
-                  <p className="text-[11px] text-black">
-                    {caracteristica.featureDescription}
-                  </p>
-                </div>
+        {product.characteristics?.length > 0 && (
+          <>
+            <h3
+              className="text-2xl font-semibold my-4 text-black underline"
+              style={{ textDecorationColor: "#6adcc7" }}
+            >
+              CARACTERÍSTICAS:
+            </h3>
+            <section className="my-8 bg-customGray py-4 w-auto">
+              <div className="flex overflow-x-auto whitespace-nowrap space-x-4">
+                {/* Características dinámicas */}
+                {product.characteristics.map((caracteristica, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center min-w-[530px] first:!ml-8"
+                  >
+                    <img
+                      src={caracteristica.featureImageUrl}
+                      alt={caracteristica.featureName}
+                      className="w-[223px] h-[174px] object-cover rounded-lg"
+                    />
+                    <div className="bg-mintTeal2 rounded-l-none rounded-r-lg min-w-[280px] text-start p-7">
+                      <p className="mt-2 font-medium text-lg text-black">
+                        {caracteristica.featureName}
+                      </p>
+                      <p className="text-[11px] text-black">
+                        {caracteristica.featureDescription}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
-        <section className="w-full bg-gray-100 p-6">
-          <h3
-            className="text-2xl font-semibold my-4 text-black underline"
-            style={{ textDecorationColor: "#6adcc7" }}
-          >
-            POLITICA DE USO:
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {policies.map((policy, index) => (
-              <div
-                key={index}
-                className="bg-white p-4 border rounded-lg shadow-md"
-              >
-                <h3 className="text-xl font-semibold mb-2">{policy.title}</h3>
-                <p className="text-gray-700">{policy.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+            </section>
+          </>
+        )}
       </main>
     </div>
   );
