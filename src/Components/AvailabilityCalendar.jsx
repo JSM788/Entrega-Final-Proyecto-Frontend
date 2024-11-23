@@ -12,12 +12,14 @@ const AvailabilityCalendar = ({ productId }) => {
       setLoading(true);
       setError(null);
 
+      // Obtener el token del localStorage
+      const token = localStorage.getItem("accessToken");
+
       const response = await fetch(`http://localhost:8080/api/reservations/calendar/${productId}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiZW1haWwiOiJ1c2VyQGdtYWlsLmNvbSIsInVzZXJuYW1lIjoidXNlciIsImlhdCI6MTczMjEzNzA5OCwiZXhwIjoxNzMyMjIzNDk4fQ.AUFQINXBvnG1YIvjb4HyCJCA230960jtYT-n2mnIqtE",
+          Authorization: `Bearer ${token}`, // Usar el token aquí
         },
       });
 
