@@ -13,35 +13,10 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 
 const TABLE_HEAD = ["ID", "Título", "Descripción", "Acciones"]
-// const mockvehicleList = [
-//   {
-//     productId: 1,
-//     title: "Scooter",
-//     description: "Categoría relacionada con gadgets y software.",
-//     imageUrl: "https://via.placeholder.com/50",
-//   },
-//   {
-//     productId: 2,
-//     title: "Motos",
-//     description: "Recursos y cursos educativos.",
-//     imageUrl: "https://via.placeholder.com/50",
-//   },
-//   {
-//     productId: 3,
-//     title: "Autos",
-//     description: "Todo sobre deportes y actividades físicas.",
-//     imageUrl: "https://via.placeholder.com/50",
-//   },
-// ];
 
 export const FavoritesProducts = () => {
   const [vehicleList, setVehicleList] = useState([])
   const { state } = useContextGlobal()
-
-  // useEffect(() => {
-  //   console.log("Productos en el contexto global:", mockvehicleList);//pintarlos del GET API
-  //   // setVehicleList(mockvehicleList || []);
-  // }, [mockvehicleList]);
 
   const fetchFavorites = async () => {
     try {
@@ -67,15 +42,16 @@ export const FavoritesProducts = () => {
     fetchFavorites()
   }, [])
 
-  const handleDeleteVehicle = async (productId) => {
+
+  const handleDeleteVehicle = async (productId, vehicleTitle) => {
     const result = await Swal.fire({
-      title: "¿Estás seguro?",
-      text: "No podrás revertir esta acción.",
-      icon: "warning",
+      title: "Eliminar de favoritos",
+      html: `¿Desea eliminar <strong>${vehicleTitle}</strong> de tu lista de favoritos?`,
+      showCloseButton: true,
       showCancelButton: true,
       confirmButtonColor: "#32CEB1",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
+      cancelButtonColor: "#D9534F",
+      confirmButtonText: "Confirmar",
       cancelButtonText: "Cancelar",
     });
   
@@ -100,7 +76,7 @@ export const FavoritesProducts = () => {
           Swal.fire({
             icon: "success",
             title: "¡Eliminado!",
-            text: "El vehículo ha sido eliminado de favoritos.",
+            html: `El vehículo <strong>${vehicleTitle}</strong> ha sido eliminado de favoritos.`,
             confirmButtonColor: "#32CEB1",
           });
         } else {
@@ -108,7 +84,7 @@ export const FavoritesProducts = () => {
           Swal.fire({
             icon: "error",
             title: "Error",
-            text: "No se pudo eliminar el vehículo de favoritos.",
+            html: `No se pudo eliminar el vehículo <strong>${vehicleTitle}</strong> de favoritos.`,
             confirmButtonColor: "#32CEB1",
           });
         }
@@ -117,7 +93,7 @@ export const FavoritesProducts = () => {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Hubo un problema al eliminar el vehículo de favoritos.",
+          html: `Hubo un problema al eliminar el vehículo <strong>${vehicleTitle}</strong> de favoritos.`,
           confirmButtonColor: "#32CEB1",
         });
         console.error("Error en la solicitud:", error);
@@ -192,7 +168,10 @@ export const FavoritesProducts = () => {
                           <IconButton
                             variant="text"
                             onClick={() =>
-                              handleDeleteVehicle(vehicle.productId)
+                              handleDeleteVehicle(
+                                vehicle.productId,
+                                vehicle.title
+                              )
                             }
                           >
                             <TrashIcon className="h-4 w-4" />

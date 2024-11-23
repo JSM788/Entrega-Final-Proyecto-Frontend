@@ -21,26 +21,28 @@ const TABLE_HEAD = ["ID", "Nombre", "Categoría", "Precio por hora", "Acciones"]
 export const AdminVehicles = () => {
   const { state } = useContextGlobal();
   const [vehicleList, setVehicleList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false); // Controla si se muestra el formulario
 
   useEffect(() => {
     console.log("Productos en el contexto global:", state.vehicles);
     setVehicleList(state.vehicles || []);
+    setLoading(false); // Update loading state
   }, [state.vehicles]);
 
   const handleAddClick = () => {
     setIsAdding(!isAdding); // Alterna entre mostrar y ocultar el formulario
   };
 
-  const handleDeleteVehicle = async (productId) => {
+  const handleDeleteVehicle = async (productId, name) => {
     const result = await Swal.fire({
-      title: "¿Estás seguro?",
-      text: "No podrás revertir esta acción.",
-      icon: "warning",
+      title: "Eliminar el vehículo",
+      html: `¿Desea eliminar <strong>${name}</strong> de tu lista de vehículos?`,
+      showCloseButton: true,
       showCancelButton: true,
       confirmButtonColor: "#32CEB1",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
+      cancelButtonColor: "#D9534F",
+      confirmButtonText: "Confirmar",
       cancelButtonText: "Cancelar",
     });
 
@@ -64,24 +66,20 @@ export const AdminVehicles = () => {
             icon: "success",
             title: "¡Eliminado!",
             text: "El vehículo ha sido eliminado.",
-            confirmButtonColor: "#32CEB1",
+            showConfirmButton: false,
+            timer: 2000,
           });
         } else {
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "No se pudo eliminar el vehículo.",
-            confirmButtonColor: "#32CEB1",
-          });
+          throw new Error("No se pudo eliminar el vehículo.");
         }
       } catch (error) {
         Swal.fire({
           icon: "error",
           title: "Error",
           text: "Hubo un problema al eliminar el vehículo.",
-          confirmButtonColor: "#32CEB1",
+          showConfirmButton: false,
+          timer: 2000,
         });
-        console.error("Error en la solicitud:", error);
       }
     }
   };
@@ -119,77 +117,90 @@ export const AdminVehicles = () => {
           </p>
         </CardHeader>
         <CardBody className="overflow-auto px-0">
-          <table className="mt-4 w-full min-w-max table-auto text-left">
-            <thead>
-              <tr>
-                {TABLE_HEAD.map((head) => (
-                  <th
-                    key={head}
-                    className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
-                  >
-                    <h3 className="flex items-center justify-between gap-2 font-normal leading-none opacity-70">
-                      {head}
-                      <ChevronUpDownIcon strokeWidth={2} className="h-4 w-4" />
-                    </h3>
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {vehicleList.map(
-                (
-                  { productId, name, category, pricePerHour, images },
-                  index
-                ) => {
-                  const isLast = index === vehicleList.length - 1;
-                  const classes = isLast
-                    ? "p-4"
-                    : "p-4 border-b border-blue-gray-50";
-                  return (
-                    <tr key={productId}>
-                      <td className={classes}>
-                        <p className="font-normal">{index + 1}</p>
-                      </td>
-                      <td className={classes}>
-                        <div className="flex items-center gap-3">
-                          <Avatar
-                            src={images[0]?.url}
-                            alt={name}
-                            size="sm"
-                            className="rounded-full border border-aquaTeal"
-                          />
-                          <p className="font-normal">{name}</p>
-                        </div>
-                      </td>
-                      <td className={classes}>
-                        <p className="font-normal">{category?.categoryName}</p>
-                      </td>
-                      <td className={classes}>
-                        <p className="font-normal">${pricePerHour}/hora</p>
-                      </td>
-                      <td className={classes}>
-                        <div className="flex space-x-2">
-                          <Tooltip content="Editar vehículo">
-                            <IconButton variant="text">
-                              <PencilIcon className="h-4 w-4" />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip content="Eliminar vehículo">
-                            <IconButton
-                              variant="text"
-                              onClick={() => handleDeleteVehicle(productId)}
-                            >
-                              <TrashIcon className="h-4 w-4" />
-                            </IconButton>
-                          </Tooltip>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                }
-              )}
-            </tbody>
-          </table>
+          {loading ? (
+            <div className="text-center p-4">
+              <h2>Cargando...</h2>
+            </div>
+          ) : (
+            <table className="mt-4 w-full min-w-max table-auto text-left">
+              <thead>
+                <tr>
+                  {TABLE_HEAD.map((head) => (
+                    <th
+                      key={head}
+                      className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-4"
+                    >
+                      <h3 className="flex items-center justify-between gap-2 font-normal leading-none opacity-70">
+                        {head}
+                        <ChevronUpDownIcon
+                          strokeWidth={2}
+                          className="h-4 w-4"
+                        />
+                      </h3>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {vehicleList.map(
+                  (
+                    { productId, name, category, pricePerHour, images },
+                    index
+                  ) => {
+                    const isLast = index === vehicleList.length - 1;
+                    const classes = isLast
+                      ? "p-4"
+                      : "p-4 border-b border-blue-gray-50";
+                    return (
+                      <tr key={productId}>
+                        <td className={classes}>
+                          <p className="font-normal">{index + 1}</p>
+                        </td>
+                        <td className={classes}>
+                          <div className="flex items-center gap-3">
+                            <Avatar
+                              src={images[0]?.url}
+                              alt={name}
+                              size="sm"
+                              className="rounded-full border border-aquaTeal"
+                            />
+                            <p className="font-normal">{name}</p>
+                          </div>
+                        </td>
+                        <td className={classes}>
+                          <p className="font-normal">
+                            {category?.categoryName}
+                          </p>
+                        </td>
+                        <td className={classes}>
+                          <p className="font-normal">${pricePerHour}/hora</p>
+                        </td>
+                        <td className={classes}>
+                          <div className="flex space-x-2">
+                            <Tooltip content="Editar vehículo">
+                              <IconButton variant="text">
+                                <PencilIcon className="h-4 w-4" />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip content="Eliminar vehículo">
+                              <IconButton
+                                variant="text"
+                                onClick={() =>
+                                  handleDeleteVehicle(productId, name)
+                                }
+                              >
+                                <TrashIcon className="h-4 w-4" />
+                              </IconButton>
+                            </Tooltip>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }
+                )}
+              </tbody>
+            </table>
+          )}
         </CardBody>
         {/* <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
             <Typography variant="small" color="blue-gray" className="font-normal">
