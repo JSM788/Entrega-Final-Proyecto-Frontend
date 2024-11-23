@@ -1,15 +1,28 @@
 import {
   ArrowLeftIcon,
-  ExclamationCircleIcon, ClockIcon,
+  ExclamationCircleIcon,
+  ClockIcon,
   KeyIcon,
-  LockClosedIcon
+  LockClosedIcon,
+  ShareIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "@material-tailwind/react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useContextGlobal } from "../Components/utils/global.context";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+} from "react-share";
+import { FacebookIcon, TwitterIcon, WhatsappIcon } from "react-share";
+import ReactModal from "react-modal";
 import Swal from "sweetalert2";
-import ReactDOMServer from 'react-dom/server';
+import ReactDOMServer from "react-dom/server";
+
+import styles from "../Components/Styles/Share.module.css";
+
+ReactModal.setAppElement("#root");
 
 const policies = [
   {
@@ -31,7 +44,7 @@ const policies = [
     ],
   },
   {
-    icon: <LockClosedIcon  className="h-6 w-6 text-[#32ceb1] mr-2" />,
+    icon: <LockClosedIcon className="h-6 w-6 text-[#32ceb1] mr-2" />,
     title: "Política de recojo",
     description: [
       "El recojo del vehículo debe ser programado con al menos 24 horas de anticipación.",
@@ -44,14 +57,14 @@ const policies = [
 const showPoliciesModal = () => {
   const policiesHTML = ReactDOMServer.renderToString(
     <div className="text-left">
-       <h1 className="text-xl font-bold text-[#32ceb1]">
+      <h1 className="text-xl font-bold text-[#32ceb1]">
         ¡Queremos que tu experiencia sea increíble!
       </h1>
       <p className="font-semibold text-lg mt-4">Nuestras políticas:</p>
       <div className="mt-4">
         {policies.map((policy, index) => (
           <div key={index} className="flex items-start mb-4">
-             {policy.icon}
+            {policy.icon}
             <div>
               <h3 className="font-bold">{policy.title}</h3>
               <ul className="list-disc list-inside text-sm text-gray-700 mt-1">
@@ -77,6 +90,10 @@ const showPoliciesModal = () => {
 };
 
 const ProductDetail = () => {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const openModal = () => setModalIsOpen(true);
+  const closeModal = () => setModalIsOpen(false);
+
   const { state } = useContextGlobal(); // Acceder al estado global
   const { id } = useParams();
   const [activeImage, setActiveImage] = useState(null);
@@ -90,12 +107,14 @@ const ProductDetail = () => {
       setActiveImage(product.images[0].url); // Primera imagen como activa
     }
   }, [product]);
+  // url para compartir link del producto
+  const title = "¡Mira este sitio web!"; // Título o mensaje a compartir
+  const url = "http://localhost:5173/product/" + product.productId;
 
   if (!product) return <div>Producto no encontrado</div>;
-
   return (
     <div className="w-full min-h-screen">
-      <header className="m-auto flex items-center py-4 px-7 w-full">
+      <header className="m-auto flex sm:flex-row flex-col items-start sm:items-center py-4 px-7 w-full">
         <Button
           size="sm"
           variant="text"
@@ -104,7 +123,7 @@ const ProductDetail = () => {
         >
           <ArrowLeftIcon className="h-6 w-6 text-deepTeal" />
         </Button>
-        <div className="flex flex-col items-start ml-0 sm:ml-12">
+        <div className="flex flex-col w-full items-start ml-0 sm:ml-12">
           <h4 className="text-lg	text-customBlack">
             {product.category.categoryName.toUpperCase()}
           </h4>
@@ -112,12 +131,71 @@ const ProductDetail = () => {
             {product.name}
           </h3>
         </div>
-        <button
-          className="ml-auto border border-[#2A606E] rounded-lg p-2"
-          onClick={showPoliciesModal}
+        <div className="flex gap-3">
+          <button
+            className="ml-auto border bg-[#2A606E] text-white rounded-lg p-2 flex gap-1"
+            onClick={openModal}
+          >
+            <ShareIcon className="h-6 w-6 text-white" /> COMPARTIR
+          </button>
+          <button
+            className="ml-auto border border-[#2A606E] rounded-lg p-2"
+            onClick={showPoliciesModal}
+          >
+            <ExclamationCircleIcon className="h-5 w-6 text-deepTeal" />
+          </button>
+        </div>
+        {/* Modal */}
+        <ReactModal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          contentLabel="Compartir en redes sociales"
+          className={styles.modal}
+          style={{
+            content: {
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexDirection: "column",
+              width: "400px", // Ancho del modal
+              height: "400px", // Alto automático
+              maxWidth: "90%", // Ancho máximo relativo a la pantalla
+              margin: "auto", // Centrado
+              padding: "20px", // Espaciado interno
+              borderRadius: "10px", // Bordes redondeados
+              backgroundColor: "#fff", // Color de fondo
+              zIndex: -1, //overlay
+              gap: "20px",
+            },
+            overlay: {
+              backgroundColor: "rgba(0, 0, 0, 0.5)", // Color del fondo del overlay
+            },
+          }}
         >
-          <ExclamationCircleIcon className="h-5 w-6 text-deepTeal" />
-        </button>
+          <div className="modal-content">
+            <p>Compartir este enlace</p>
+            <p>Elige una red social para compartir:</p>
+            <div className={styles.buttons}>
+              <FacebookShareButton url={url} quote={title} onClick={closeModal}>
+                <FacebookIcon size={32} round={true} />
+              </FacebookShareButton>
+
+              <TwitterShareButton url={url} title={title} onClick={closeModal}>
+                <TwitterIcon size={32} round={true} />
+              </TwitterShareButton>
+
+              <WhatsappShareButton url={url} title={title} onClick={closeModal}>
+                <WhatsappIcon size={32} round={true} />
+              </WhatsappShareButton>
+            </div>
+            <button
+              onClick={closeModal}
+              className="mt-4 bg-red-500 text-white p-2 rounded"
+            >
+              Cerrar
+            </button>
+          </div>
+        </ReactModal>
       </header>
       <main className="m-auto mt-8">
         <section className="flex justify-between gap-5 xl:flex-row  flex-col">
@@ -223,6 +301,7 @@ const ProductDetail = () => {
           </section>
 
           {/* Price and Plan */}
+
           <div className="bg-customGray p-6 rounded-2xl shadow-md w-[80%] lg:w-[40%] m-auto xl:mx-0 xl:w-[338px] h-[447px] xl:mr-[8%]">
             <h3 className="text-lg font-semibold text-start">
               PRECIOS Y PLANES
