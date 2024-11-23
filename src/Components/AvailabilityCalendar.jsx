@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import axios from "axios";
 
 const AvailabilityCalendar = ({ productId }) => {
   const [reservations, setReservations] = useState([]);
@@ -12,23 +13,19 @@ const AvailabilityCalendar = ({ productId }) => {
       setLoading(true);
       setError(null);
 
-      // Obtener el token del localStorage
       const token = localStorage.getItem("accessToken");
 
-      const response = await fetch(`http://localhost:8080/api/reservations/calendar/${productId}`, {
-        method: "GET",
+      console.log(`Requesting reservations for product ${productId}...`);
+
+      const response = await axios.get(`http://localhost:8080/api/reservations/calendar/${productId}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Usar el token aquí
+          Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!response.ok) {
-        throw new Error("No se pudo obtener la disponibilidad. Intenta más tarde.");
-      }
-
-      const data = await response.json();
-      setReservations(data.reservations);
+      console.log("Response received: ", response.data);
+      setReservations(response.data.reservations);
     } catch (err) {
       console.error("Error fetching reservations:", err.message);
       setError(err.message);
