@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useContextGlobal } from "../Components/utils/global.context";
 import Swal from "sweetalert2";
 import ReactDOMServer from 'react-dom/server';
+import AvailabilityCalendar from './AvailabilityCalendar';
 
 const policies = [
   {
@@ -336,6 +337,7 @@ const ProductDetail = () => {
             </section>
           </>
         )}
+        <AvailabilityCalendar productId={product.productId} />
       </main>
     </div>
   );
