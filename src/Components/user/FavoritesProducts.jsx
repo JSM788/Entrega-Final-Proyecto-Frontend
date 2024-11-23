@@ -1,4 +1,4 @@
-import { TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon } from "@heroicons/react/24/outline"
 import {
   Card,
   CardHeader,
@@ -6,41 +6,42 @@ import {
   Avatar,
   Tooltip,
   IconButton,
-} from "@material-tailwind/react";
-import Swal from "sweetalert2";
-import { useContextGlobal } from "../../Components/utils/global.context.jsx";
-import { useEffect, useState } from "react";
+} from "@material-tailwind/react"
+import Swal from "sweetalert2"
+import { useContextGlobal } from "../../Components/utils/global.context.jsx"
+import { useEffect, useState } from "react"
+import axios from "axios"
 
-const TABLE_HEAD = ["ID", "Título", "Descripción", "Acciones"];
-const mockvehicleList = [
-  {
-    productId: 1,
-    title: "Scooter",
-    description: "Categoría relacionada con gadgets y software.",
-    imageUrl: "https://via.placeholder.com/50",
-  },
-  {
-    productId: 2,
-    title: "Motos",
-    description: "Recursos y cursos educativos.",
-    imageUrl: "https://via.placeholder.com/50",
-  },
-  {
-    productId: 3,
-    title: "Autos",
-    description: "Todo sobre deportes y actividades físicas.",
-    imageUrl: "https://via.placeholder.com/50",
-  },
-];
+const TABLE_HEAD = ["ID", "Título", "Descripción", "Acciones"]
 
 export const FavoritesProducts = () => {
-  const [vehicleList, setVehicleList] = useState([]);
-  const { state } = useContextGlobal();
+  const [vehicleList, setVehicleList] = useState([])
+  const { state } = useContextGlobal()
+
+  const fetchFavorites = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/favorites/${state.user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${state.accessToken}`,
+          },
+        }
+      )
+
+      if (response.status === 200) {
+        console.log("Favoritos: ", response.data)
+        setVehicleList(response.data || [])
+      }
+    } catch (error) {
+      console.error("Hubo un error al traer favoritos:", error)
+    }
+  }
 
   useEffect(() => {
-    console.log("Productos en el contexto global:", mockvehicleList); //pintarlos del GET API
-    setVehicleList(mockvehicleList || []);
-  }, [mockvehicleList]);
+    fetchFavorites()
+  }, [])
+
 
   const handleDeleteVehicle = async (productId, vehicleTitle) => {
     const result = await Swal.fire({
@@ -53,23 +54,25 @@ export const FavoritesProducts = () => {
       confirmButtonText: "Confirmar",
       cancelButtonText: "Cancelar",
     });
-
+  
     if (result.isConfirmed) {
       try {
-        const response = await fetch(
-          `http://localhost:8080/api/favorites/${productId}`, //reemplazar API
+        const response = await axios.delete(
+          `http://localhost:8080/api/favorites/${state.user.id}/${productId}`,
           {
-            method: "DELETE",
             headers: {
-              Authorization: `Bearer ${state.accessToken}`,
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${state.accessToken}`, // Agregar token de autenticación
             },
           }
         );
-
-        if (response.ok) {
-          setVehicleList(
-            vehicleList.filter((vehicle) => vehicle.productId !== productId)
-          );
+  
+        // Verifica que la respuesta sea exitosa
+        if (response.status === 200) {
+          // Actualiza la lista de vehículos eliminando el vehículo
+          setVehicleList(vehicleList.filter((vehicle) => vehicle.productId !== productId));
+  
+          // Muestra el mensaje de éxito
           Swal.fire({
             icon: "success",
             title: "¡Eliminado!",
@@ -77,6 +80,7 @@ export const FavoritesProducts = () => {
             confirmButtonColor: "#32CEB1",
           });
         } else {
+          // Muestra mensaje de error si la respuesta no fue exitosa
           Swal.fire({
             icon: "error",
             title: "Error",
@@ -85,6 +89,7 @@ export const FavoritesProducts = () => {
           });
         }
       } catch (error) {
+        // Muestra el mensaje de error en caso de que falle la solicitud
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -132,10 +137,10 @@ export const FavoritesProducts = () => {
               </thead>
               <tbody>
                 {vehicleList.map((vehicle, index) => {
-                  const isLast = index === vehicleList.length - 1;
+                  const isLast = index === vehicleList.length - 1
                   const classes = isLast
                     ? "p-4"
-                    : "p-4 border-b border-blue-gray-50";
+                    : "p-4 border-b border-blue-gray-50"
 
                   return (
                     <tr key={vehicle.productId}>
@@ -145,16 +150,18 @@ export const FavoritesProducts = () => {
                       <td className={classes}>
                         <div className="flex items-center gap-3">
                           <Avatar
-                            src={vehicle.imageUrl}
-                            alt={vehicle.title}
+                            src={vehicle.productImage}
+                            alt={vehicle.productName}
                             size="sm"
                             className="rounded-full border border-aquaTeal"
                           />
-                          <p className="font-normal">{vehicle.title}</p>
+                          <p className="font-normal">{vehicle.productName}</p>
                         </div>
                       </td>
                       <td className={classes}>
-                        <p className="font-normal">{vehicle.description}</p>
+                        <p className="font-normal">
+                          {vehicle.productDescription}
+                        </p>
                       </td>
                       <td className={classes}>
                         <Tooltip content="Eliminar favorito">
@@ -172,7 +179,7 @@ export const FavoritesProducts = () => {
                         </Tooltip>
                       </td>
                     </tr>
-                  );
+                  )
                 })}
               </tbody>
             </table>
@@ -188,14 +195,16 @@ export const FavoritesProducts = () => {
                 <div className="flex items-center gap-4">
                   <Avatar
                     src={vehicle.imageUrl}
-                    alt={vehicle.title}
+                    alt={vehicle.productName}
                     size="md"
                     className="rounded-full border border-aquaTeal"
                   />
                   <div>
-                    <h3 className="text-sm font-medium">{vehicle.title}</h3>
+                    <h3 className="text-sm font-medium">
+                      {vehicle.productName}
+                    </h3>
                     <p className="text-xs text-gray-500">
-                      {vehicle.description}
+                      {vehicle.productDescription}
                     </p>
                   </div>
                 </div>
@@ -215,5 +224,5 @@ export const FavoritesProducts = () => {
         </CardBody>
       </Card>
     </div>
-  );
-};
+  )
+}
