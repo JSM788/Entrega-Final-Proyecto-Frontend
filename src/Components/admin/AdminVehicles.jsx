@@ -25,7 +25,6 @@ export const AdminVehicles = () => {
   const [isAdding, setIsAdding] = useState(false); // Controla si se muestra el formulario
 
   useEffect(() => {
-    console.log("Productos en el contexto global:", state.vehicles);
     setVehicleList(state.vehicles || []);
     setLoading(false); // Update loading state
   }, [state.vehicles]);

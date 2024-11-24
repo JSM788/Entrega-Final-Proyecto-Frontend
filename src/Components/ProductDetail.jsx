@@ -109,7 +109,7 @@ const ProductDetail = () => {
   }, [product]);
   // url para compartir link del producto
   const title = "¡Mira este sitio web!"; // Título o mensaje a compartir
-  const url = "http://localhost:5173/product/" + product.productId;
+  const url = "http://localhost:5173/product/" + product?.productId;
 
   if (!product) return <div>Producto no encontrado</div>;
   return (
