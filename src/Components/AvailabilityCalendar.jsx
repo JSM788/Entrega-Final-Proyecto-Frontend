@@ -1,89 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import Swal from 'sweetalert2';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import React, { useState, useEffect } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
 
 const AvailabilityCalendar = ({ productId }) => {
-  const [availableDates, setAvailableDates] = useState([]);
-  const [occupiedDates, setOccupiedDates] = useState([]);
+  const [reservations, setReservations] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+
+  const fetchReservations = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await fetch(`http://localhost:8080/api/reservations/calendar/${productId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization:
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VyIiwiZW1haWwiOiJ1c2VyQGdtYWlsLmNvbSIsInVzZXJuYW1lIjoidXNlciIsImlhdCI6MTczMjEzNzA5OCwiZXhwIjoxNzMyMjIzNDk4fQ.AUFQINXBvnG1YIvjb4HyCJCA230960jtYT-n2mnIqtE",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("No se pudo obtener la disponibilidad. Intenta más tarde.");
+      }
+
+      const data = await response.json();
+      setReservations(data.reservations);
+    } catch (err) {
+      console.error("Error fetching reservations:", err.message);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchAvailability = async () => {
-      try {
-        const response = await fetch(`/api/reservations/availability/${productId}`);
-        if (!response.ok) throw new Error('Error al obtener la disponibilidad');
-        const data = await response.json();
-        setAvailableDates(data.available);
-        setOccupiedDates(data.occupied);
-      } catch (err) {
-        setError(err.message);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'No se puede obtener la información de disponibilidad en este momento.',
-        });
-      }
-    };
-
-    fetchAvailability();
+    fetchReservations();
   }, [productId]);
 
-  const isDateOccupied = (date) => {
-    return occupiedDates.some(occupiedDate => 
-      new Date(occupiedDate).toDateString() === date.toDateString()
-    );
-  };
+  const events = reservations.flatMap((reservation) =>
+    reservation.bookings.map((booking) => ({
+      title: `Reservado (${booking.client})`,
+      start: booking.start_date,
+      end: booking.end_date,
+    }))
+  );
 
   return (
     <div>
-      {error && <p className="text-red-500">{error}</p>}
-      <h3>Disponibilidad</h3>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <h4>Fecha de Inicio</h4>
-          <DatePicker
-            selected={startDate}
-            onChange={date => {
-              setStartDate(date);
-              // Limitar las fechas de finalización a las fechas disponibles después de la fecha de inicio
-              if (endDate && date > endDate) {
-                setEndDate(null); // Reiniciar la fecha de finalización si es anterior a la nueva fecha de inicio
-              }
-            }}
-            inline
-            filterDate={date => availableDates.some(availableDate => 
-              new Date(availableDate).toDateString() === date.toDateString()
-            )}
-            dayClassName={date => 
-              isDateOccupied(date) ? 'bg-red-500 text-white' : 
-              availableDates.some(availableDate => 
-                new Date(availableDate).toDateString() === date.toDateString()
-              ) ? 'bg-green-500 text-white' : undefined
-            }
-          />
-        </div>
-        <div>
-          <h4>Fecha de Finalización</h4>
-          <DatePicker
-            selected={endDate}
-            onChange={date => setEndDate(date)}
-            inline
-            filterDate={date => availableDates.some(availableDate => 
-              new Date(availableDate).toDateString() === date.toDateString() && 
-              date > startDate // Asegurarse de que la fecha de finalización sea posterior a la de inicio
-            )}
-            dayClassName={date => 
-              isDateOccupied(date) ? 'bg-red-500 text-white' : 
-              availableDates.some(availableDate => 
-                new Date(availableDate).toDateString() === date.toDateString()
-              ) ? 'bg-green-500 text-white' : undefined
-            }
-          />
-        </div>
-      </div>
+      {loading && <p>Cargando disponibilidad...</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {!loading && !error && (
+        <FullCalendar plugins={[dayGridPlugin]} initialView="dayGridMonth" events={events} locale="es" />
+      )}
     </div>
   );
 };
