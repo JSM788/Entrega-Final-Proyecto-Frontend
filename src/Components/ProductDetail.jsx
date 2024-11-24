@@ -10,9 +10,6 @@ import { Button } from "@material-tailwind/react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useContextGlobal } from "../Components/utils/global.context";
-<<<<<<< HEAD
-import AvailabilityCalendar from "./AvailabilityCalendar"; // Componente para el calendario
-=======
 import {
   FacebookShareButton,
   TwitterShareButton,
@@ -26,7 +23,6 @@ import ReactDOMServer from "react-dom/server";
 import styles from "../Components/Styles/Share.module.css";
 
 ReactModal.setAppElement("#root");
->>>>>>> 5c2c8798105046e26357796c983250da6322d6e4
 
 const policies = [
   {
@@ -48,17 +44,6 @@ const policies = [
     ],
   },
   {
-<<<<<<< HEAD
-    title: "Precauciones de uso",
-    description: "No utilizar el producto en condiciones extremas de temperatura para evitar daños.",
-  },
-  {
-    title: "Garantía",
-    description: "El producto tiene una garantía de 1 año que cubre defectos de fabricación.",
-  },
-];
-
-=======
     icon: <LockClosedIcon className="h-6 w-6 text-[#32ceb1] mr-2" />,
     title: "Política de recojo",
     description: [
@@ -104,7 +89,6 @@ const showPoliciesModal = () => {
   });
 };
 
->>>>>>> 5c2c8798105046e26357796c983250da6322d6e4
 const ProductDetail = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const openModal = () => setModalIsOpen(true);
@@ -131,16 +115,6 @@ const ProductDetail = () => {
   if (!product) return <div>Producto no encontrado</div>;
   return (
     <div className="w-full min-h-screen">
-<<<<<<< HEAD
-      {/* Encabezado */}
-      <header className="m-auto flex items-center py-4 px-7 w-full">
-        <Button size="sm" variant="text" className="flex items-center justify-end" onClick={() => navigate(-1)}>
-          <ArrowLeftIcon className="h-6 w-6 text-deepTeal" />
-        </Button>
-        <div className="flex flex-col items-start ml-0 sm:ml-12">
-          <h4 className="text-lg text-customBlack">{product.category.categoryName.toUpperCase()}</h4>
-          <h3 className="text-2xl text-black font-semibold text-left flex-grow">{product.name}</h3>
-=======
       <header className="m-auto flex sm:flex-row flex-col items-start sm:items-center py-4 px-7 w-full">
         <Button
           size="sm"
@@ -157,7 +131,6 @@ const ProductDetail = () => {
           <h3 className="text-2xl text-black font-semibold text-left flex-grow">
             {product.name}
           </h3>
->>>>>>> 5c2c8798105046e26357796c983250da6322d6e4
         </div>
         <div className="flex gap-3">
           <button
@@ -306,11 +279,6 @@ const ProductDetail = () => {
               ))}
             </div>
           </section>
-<<<<<<< HEAD
-          {/* Precio, plan y botón de reservar */}
-          <div className="bg-customGray p-6 rounded-2xl shadow-md w-[80%] lg:w-[40%] m-auto xl:mx-0 xl:w-[338px] h-auto xl:mr-[8%]">
-            <h3 className="text-lg font-semibold text-start">PRECIOS Y PLANES</h3>
-=======
 
           {/* Price and Plan */}
 
@@ -318,7 +286,6 @@ const ProductDetail = () => {
             <h3 className="text-lg font-semibold text-start">
               PRECIOS Y PLANES
             </h3>
->>>>>>> 5c2c8798105046e26357796c983250da6322d6e4
             <p className="text-base mt-2 text-start font-semibold">
               {product.category.categoryName.toUpperCase()}
               <span className="text-deepTeal"> {product.name}</span>
