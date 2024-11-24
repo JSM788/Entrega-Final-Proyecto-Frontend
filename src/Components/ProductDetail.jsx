@@ -21,6 +21,7 @@ import Swal from "sweetalert2";
 import ReactDOMServer from "react-dom/server";
 
 import styles from "../Components/Styles/Share.module.css";
+import DoubleCalendar from "./AvailableVehicle";
 
 ReactModal.setAppElement("#root");
 
@@ -197,6 +198,7 @@ const ProductDetail = () => {
           </div>
         </ReactModal>
       </header>
+      <DoubleCalendar />
       <main className="m-auto mt-8">
         <section className="flex justify-between gap-5 xl:flex-row  flex-col">
           {/* Product Information */}
