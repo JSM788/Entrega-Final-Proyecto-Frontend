@@ -13,7 +13,7 @@ import {
   HeartIcon,
   IdentificationIcon,
   UserCircleIcon,
-} from "@heroicons/react/24/outline";
+} from "@heroicons/react/24/solid";
 
 const truncateText = (text, maxLength) => {
   return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;

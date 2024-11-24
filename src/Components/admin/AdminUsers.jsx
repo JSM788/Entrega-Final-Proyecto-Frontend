@@ -28,7 +28,6 @@ export const AdminUsers = () => {
           },
         });
         const data = await response.json();
-        console.log("data", data);
         if (Array.isArray(data)) {
           setUsers(data);
         } else {
@@ -55,7 +54,6 @@ export const AdminUsers = () => {
     // Detecta el rol actual y define los IDs de rol correspondientes
     const currentRole = currentUser.roles.includes(1) ? 1 : 2;
     const newRoleId = newRole === "admin" ? 1 : 2;
-    console.log(currentRole, newRoleId);
     try {
       // Remove the current role
       await fetch("http://localhost:8080/api/user/removeRole", {
