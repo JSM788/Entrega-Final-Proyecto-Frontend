@@ -198,7 +198,7 @@ const ProductDetail = () => {
           </div>
         </ReactModal>
       </header>
-      <DoubleCalendar />
+      <DoubleCalendar productId={product?.productId} />
       <main className="m-auto mt-8">
         <section className="flex justify-between gap-5 xl:flex-row  flex-col">
           {/* Product Information */}
