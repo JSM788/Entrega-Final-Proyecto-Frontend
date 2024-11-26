@@ -27,3 +27,9 @@ input[type="date"]::-moz-calendar-picker-indicator {
   opacity: 0;
   pointer-events: auto;
 }
+
+.error-message {
+  height: 1.5rem; /* Ajusta según la altura estimada del mensaje */
+  margin-top: 0.25rem;
+  color: red;
+}

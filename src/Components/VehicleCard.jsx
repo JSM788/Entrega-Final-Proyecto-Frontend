@@ -154,7 +154,7 @@ export const VehicleCard = (props) => {
       <div className="flex justify-between items-center mb-2">
         <div className="flex">
           <Typography
-            variant="h6"
+            variant="small"
             color="blue-gray"
             className="font-bold w-full uppercase"
           >
