@@ -5,30 +5,33 @@ import { initialState, reducer } from "./reducer";
 const ContextGlobal = createContext();
 
 const ContextProvider = ({ children }) => {
-  
   const [state, dispatch] = useReducer(reducer, initialState);
   const endpointProducts = "http://localhost:8080/api/products";
 
-  useEffect( ()=> {
-
-    axios(endpointProducts).then( (response) => {
-      console.log("en axios")
-      console.log(response)
-      dispatch({ type: "SET_VEHICLES", payload: response.data });      
-    
-    }).catch((error) => {
-      console.error("Error obteniendo vehículos:", error);
-    });
+  useEffect(() => {
+    dispatch({ type: "SET_IS_LOADING_VEHICLES", payload: true });
+    axios(endpointProducts)
+      .then((response) => {
+        console.log("en axios");
+        console.log(response);
+        dispatch({ type: "SET_VEHICLES", payload: response.data });
+        dispatch({ type: "SET_FILTERED_VEHICLES", payload: response.data });
+        dispatch({ type: "SET_IS_LOADING_VEHICLES", payload: false });
+      })
+      .catch((error) => {
+        console.error("Error obteniendo vehículos:", error);
+        dispatch({ type: "SET_IS_LOADING_VEHICLES", payload: false });
+      });
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('login', JSON.stringify(state.isAuth));
-    localStorage.setItem('user', JSON.stringify(state.user));
-    localStorage.setItem('accessToken', state.accessToken || "");
+    localStorage.setItem("login", JSON.stringify(state.isAuth));
+    localStorage.setItem("user", JSON.stringify(state.user));
+    localStorage.setItem("accessToken", state.accessToken || "");
   }, [state.isAuth, state.user, state.accessToken]);
 
   return (
-    <ContextGlobal.Provider value = {{state, dispatch}}>
+    <ContextGlobal.Provider value={{ state, dispatch }}>
       {children}
     </ContextGlobal.Provider>
   );

@@ -13,6 +13,7 @@ export const FavoritesProducts = () => {
   const navigate = useNavigate();
 
   const fetchFavorites = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(
         `http://localhost:8080/api/favorites/${state.user.id}`,
@@ -26,9 +27,9 @@ export const FavoritesProducts = () => {
       if (response.status === 200) {
         setVehicleList(response.data || []);
       }
+      setLoading(false);
     } catch (error) {
       console.error("Hubo un error al traer favoritos:", error);
-    } finally {
       setLoading(false);
     }
   };
@@ -71,7 +72,7 @@ export const FavoritesProducts = () => {
                   sm:grid-cols-1 
                   lg:grid-cols-3"
       >
-        {loading ? (
+        {state.isLoadingVehicles || loading ? (
           <p>Cargando tus favoritos...</p>
         ) : filteredVehicles.length > 0 ? (
           filteredVehicles.map((vehicle) => (
