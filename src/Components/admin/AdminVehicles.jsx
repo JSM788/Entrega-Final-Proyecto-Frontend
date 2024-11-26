@@ -8,6 +8,8 @@ import {
   IconButton,
   Tooltip,
   Button,
+  Select,
+  Option,
 } from "@material-tailwind/react";
 import { useEffect, useState } from "react";
 import { useContextGlobal } from "../utils/global.context";
@@ -22,15 +24,36 @@ export const AdminVehicles = () => {
   const { state } = useContextGlobal();
   const [vehicleList, setVehicleList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isAdding, setIsAdding] = useState(false); // Controla si se muestra el formulario
+  const [isAdding, setIsAdding] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    setVehicleList(state.vehicles || []);
-    setLoading(false); // Update loading state
-  }, [state.vehicles]);
+    const fetchVehicles = async () => {
+      console.log("Productos en el contexto global:", state.vehicles);
+      setVehicleList(state.vehicles || []);
+      setLoading(false);
+    };
+
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/categories", {
+          headers: {
+            Authorization: `Bearer ${state.accessToken}`,
+          },
+        });
+        const data = await response.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error al obtener las categorías:", error);
+      }
+    };
+
+    fetchVehicles();
+    fetchCategories();
+  }, [state.vehicles, state.accessToken]);
 
   const handleAddClick = () => {
-    setIsAdding(!isAdding); // Alterna entre mostrar y ocultar el formulario
+    setIsAdding(!isAdding);
   };
 
   const handleDeleteVehicle = async (productId, name) => {
@@ -80,6 +103,40 @@ export const AdminVehicles = () => {
           timer: 2000,
         });
       }
+    }
+  };
+
+  const updateCategory = async (vehicleId, newCategoryId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/products/${vehicleId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${state.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ categoryId: newCategoryId }),
+      });
+
+      if (response.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Categoría actualizada",
+          text: "La categoría del vehículo ha sido actualizada.",
+        });
+        setVehicleList((prev) =>
+          prev.map((vehicle) =>
+            vehicle.productId === vehicleId ? { ...vehicle, categoryId: newCategoryId } : vehicle
+          )
+        );
+      } else {
+        throw new Error("Error al actualizar la categoría.");
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un problema al actualizar la categoría.",
+      });
     }
   };
 
@@ -167,9 +224,16 @@ export const AdminVehicles = () => {
                           </div>
                         </td>
                         <td className={classes}>
-                          <p className="font-normal">
-                            {category?.categoryName}
-                          </p>
+                          <Select
+                            value={category?.categoryId}
+                            onChange={(value) => updateCategory(productId, value)}
+                          >
+                            {categories.map((cat) => (
+                              <Option key={cat.categoryId} value={cat.categoryId}>
+                                {cat.categoryName}
+                              </Option>
+                            ))}
+                          </Select>
                         </td>
                         <td className={classes}>
                           <p className="font-normal">${pricePerHour}/hora</p>
@@ -201,15 +265,6 @@ export const AdminVehicles = () => {
             </table>
           )}
         </CardBody>
-        {/* <CardFooter className="flex items-center justify-between border-t border-blue-gray-50 p-4">
-            <Typography variant="small" color="blue-gray" className="font-normal">
-              Page 1 of 10
-            </Typography>
-            <div className="flex gap-2">
-              <Button variant="outlined" size="sm">Previous</Button>
-              <Button variant="outlined" size="sm">Next</Button>
-            </div>
-          </CardFooter> */}
       </Card>
     </div>
   );
