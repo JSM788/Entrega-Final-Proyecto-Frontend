@@ -11,7 +11,7 @@ import {
   Select,
   Option,
 } from "@material-tailwind/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useContextGlobal } from "../utils/global.context";
 import Swal from "sweetalert2";
 import useIsMobile from "../../hooks/useIsMobile";
@@ -51,6 +51,14 @@ export const AdminVehicles = () => {
     fetchVehicles();
     fetchCategories();
   }, [state.vehicles, state.accessToken]);
+
+  // Usar useMemo para memorizar el mapa de categorías
+  const categoriesMap = useMemo(() => {
+    return categories.reduce((acc, cat) => {
+      acc[cat.categoryId] = cat.categoryName;
+      return acc;
+    }, {});
+  }, [categories]); // Solo se recalcula cuando las categorías cambian
 
   const handleAddClick = () => {
     setIsAdding(!isAdding);
@@ -108,24 +116,31 @@ export const AdminVehicles = () => {
 
   const updateCategory = async (vehicleId, newCategoryId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/products/${vehicleId}`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${state.accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ categoryId: newCategoryId }),
-      });
+      const response = await fetch(
+        `http://localhost:8080/api/products/${vehicleId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${state.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ categoryId: newCategoryId }),
+        }
+      );
 
       if (response.ok) {
         Swal.fire({
           icon: "success",
-          title: "Categoría actualizada",
+          title: "¡Actualizada!",
           text: "La categoría del vehículo ha sido actualizada.",
+          showConfirmButton: false,
+          timer: 2000,
         });
         setVehicleList((prev) =>
           prev.map((vehicle) =>
-            vehicle.productId === vehicleId ? { ...vehicle, categoryId: newCategoryId } : vehicle
+            vehicle.productId === vehicleId
+              ? { ...vehicle, categoryId: newCategoryId }
+              : vehicle
           )
         );
       } else {
@@ -136,12 +151,18 @@ export const AdminVehicles = () => {
         icon: "error",
         title: "Error",
         text: "Hubo un problema al actualizar la categoría.",
+        showConfirmButton: false,
+        timer: 2000,
       });
     }
   };
 
   const isMobile = useIsMobile();
   if (isMobile) return <MobileMessage />;
+
+  if (loading || categories.length === 0) {
+    return <div>Cargando...</div>; // O cualquier otro indicador de carga
+  }
 
   return (
     <div className="flex flex-col px-10">
@@ -225,12 +246,17 @@ export const AdminVehicles = () => {
                         </td>
                         <td className={classes}>
                           <Select
-                            value={category?.categoryId}
-                            onChange={(value) => updateCategory(productId, value)}
+                            value={String(category?.categoryId)}
+                            onChange={(value) =>
+                              updateCategory(productId, value)
+                            }
                           >
-                            {categories.map((cat) => (
-                              <Option key={cat.categoryId} value={cat.categoryId}>
-                                {cat.categoryName}
+                            {categories.map(({ categoryId, categoryName }) => (
+                              <Option
+                                key={categoryId}
+                                value={String(categoryId)}
+                              >
+                                {categoryName}
                               </Option>
                             ))}
                           </Select>
