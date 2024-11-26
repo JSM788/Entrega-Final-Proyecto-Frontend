@@ -228,7 +228,7 @@ export const SearchBar = () => {
     <div className="p-4 bg-[#DEECEC] rounded-lg mt-5 mx-auto w-[90%]">
       <form>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-1 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-y-1">
-          <div class="flex flex-col lg:relative">
+          <div className="flex flex-col lg:relative">
             <Typography variant="small" className="text-left">
               Recoge el vehículo en
             </Typography>
@@ -281,7 +281,7 @@ export const SearchBar = () => {
             </div>
           </div>
 
-          <div class="flex flex-col lg:relative">
+          <div className="flex flex-col lg:relative">
             <Typography variant="small" className="text-left">
               Fecha de recogida
             </Typography>
@@ -308,7 +308,7 @@ export const SearchBar = () => {
             </div>
           </div>
 
-          <div class="flex flex-col lg:relative">
+          <div className="flex flex-col lg:relative">
             <Typography variant="small" className="text-left">
               Fecha de devolución
             </Typography>
@@ -335,7 +335,7 @@ export const SearchBar = () => {
             </div>
           </div>
 
-          <div class="flex flex-col col-span-1 md:col-span-3 lg:col-span-1 lg:justify-end">
+          <div className="flex flex-col col-span-1 md:col-span-3 lg:col-span-1 lg:justify-end">
             <Button
               onClick={handleSearch}
               className="w-full bg-[#2A606E] hover:bg-[#2A606E] focus:ring-4 focus:outline-none focus:ring-blue-300"
