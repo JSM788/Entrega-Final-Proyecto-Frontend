@@ -44,18 +44,14 @@ export const FavoritesProducts = () => {
     );
   };
 
-  if (loading) {
-    return <p>Cargando tus favoritos...</p>;
-  }
-
   // Filtramos la lista de vehículos para que solo contenga los favoritos
   const filteredVehicles = state.vehicles.filter((vehicle) =>
     vehicleList.some((favorite) => favorite.productId === vehicle.productId)
   );
 
   return (
-    <div>
-    <header className="m-auto flex sm:flex-row flex-col items-start sm:items-center py-4 px-7 w-full">
+    <div className="h-[70vh]">
+      <header className="m-auto flex sm:flex-row flex-col items-start sm:items-center py-4 px-7 w-full">
         <Button
           size="sm"
           variant="text"
@@ -64,7 +60,9 @@ export const FavoritesProducts = () => {
         >
           <ArrowLeftIcon className="h-6 w-6 text-deepTeal" />
         </Button>
-      <h1 className="font-semibold text-lg sm:text-xl">VEHÍCULOS FAVORITOS</h1>
+        <h1 className="font-semibold text-lg sm:text-xl">
+          VEHÍCULOS FAVORITOS
+        </h1>
       </header>
       <div
         className="mx-auto w-full max-w-[1113px]
@@ -73,22 +71,21 @@ export const FavoritesProducts = () => {
                   sm:grid-cols-1 
                   lg:grid-cols-3"
       >
-        {filteredVehicles.length > 0
-          ? filteredVehicles.map((vehicle) => (
-              <VehicleCard
-                key={vehicle.productId}
-                vehicle={vehicle}
-                state={state}
-                favoriteList={vehicleList}
-                onRemoveVehicle={handleRemoveVehicle}
-              />
-            ))
-          : (() => {
-              setTimeout(() => {
-                <p>No tienes vehículos favoritos aún.</p>;
-              }, 2000);
-              return null;
-            })()}
+        {loading ? (
+          <p>Cargando tus favoritos...</p>
+        ) : filteredVehicles.length > 0 ? (
+          filteredVehicles.map((vehicle) => (
+            <VehicleCard
+              key={vehicle.productId}
+              vehicle={vehicle}
+              state={state}
+              favoriteList={vehicleList}
+              onRemoveVehicle={handleRemoveVehicle}
+            />
+          ))
+        ) : (
+          <p>No tienes vehículos favoritos aún.</p>
+        )}
       </div>
     </div>
   );
