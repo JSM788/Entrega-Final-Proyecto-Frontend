@@ -21,9 +21,8 @@ import Swal from "sweetalert2";
 import ReactDOMServer from "react-dom/server";
 // Importa el componente AvailableVehicle
 import DoubleCalendar from './AvailableVehicle';
-
 import styles from "../Components/Styles/Share.module.css";
-import DoubleCalendar from "./AvailableVehicle";
+
 
 ReactModal.setAppElement("#root");
 
