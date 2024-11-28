@@ -19,6 +19,8 @@ import { FacebookIcon, TwitterIcon, WhatsappIcon } from "react-share";
 import ReactModal from "react-modal";
 import Swal from "sweetalert2";
 import ReactDOMServer from "react-dom/server";
+// Importa el componente AvailableVehicle
+import DoubleCalendar from './AvailableVehicle';
 
 import styles from "../Components/Styles/Share.module.css";
 
@@ -131,6 +133,7 @@ const ProductDetail = () => {
           <h3 className="text-2xl text-black font-semibold text-left flex-grow">
             {product.name}
           </h3>
+          
         </div>
         <div className="flex gap-3">
           <button
@@ -146,6 +149,7 @@ const ProductDetail = () => {
             <ExclamationCircleIcon className="h-5 w-6 text-deepTeal" />
           </button>
         </div>
+        
         {/* Modal */}
         <ReactModal
           isOpen={modalIsOpen}
@@ -198,7 +202,7 @@ const ProductDetail = () => {
           </div>
         </ReactModal>
       </header>
-
+      <DoubleCalendar productId={product?.productId} />
       {/* Contenido principal */}
       <main className="m-auto mt-8">
         <section className="flex justify-between gap-5 xl:flex-row flex-col">
