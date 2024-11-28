@@ -47,8 +47,6 @@ export const VehicleCard = (props) => {
         );
 
         if (response.status === 200) {
-          setIsFavorite(false);
-          handleRemoveVehicle();
           Swal.fire({
             position: "top-end",
             html: `
@@ -61,6 +59,10 @@ export const VehicleCard = (props) => {
               popup: "max-w-sm w-full p-4",
             },
           });
+          setIsFavorite(false);
+          if (onRemoveVehicle) {
+            handleRemoveVehicle();
+          }
         } else {
           throw new Error("No se pudo eliminar de favoritos");
         }
@@ -152,7 +154,7 @@ export const VehicleCard = (props) => {
       <div className="flex justify-between items-center mb-2">
         <div className="flex">
           <Typography
-            variant="h6"
+            variant="small"
             color="blue-gray"
             className="font-bold w-full uppercase"
           >

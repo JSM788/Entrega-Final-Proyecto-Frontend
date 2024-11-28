@@ -23,6 +23,7 @@ import ReactDOMServer from "react-dom/server";
 import DoubleCalendar from './AvailableVehicle';
 
 import styles from "../Components/Styles/Share.module.css";
+import DoubleCalendar from "./AvailableVehicle";
 
 ReactModal.setAppElement("#root");
 
