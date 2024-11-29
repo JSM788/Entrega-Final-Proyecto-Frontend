@@ -1,0 +1,33 @@
+/* DoubleCalendar.css */
+
+/* Estilo para las flechas de navegación */
+.rdp-prev,
+.rdp-next {
+  color: #2A606E !important;
+}
+
+/* Estilo para las fechas de inicio y fin del rango */
+.rdp-range_start .rdp-day_button,
+.rdp-range_end .rdp-day_button {
+  background-color: #2A606E !important;
+  border: #2A606E !important;
+  color: white !important;
+}
+
+/* Estilo para las fechas intermedias del rango */
+/* .rdp-range_middle .rdp-day_button {
+  background-color: #DEECEC !important;
+  border: #DEECEC !important;
+  border-radius: 100% !important;
+  color: black !important;
+} */
+
+/* Estilo para las flechas de navegación */
+.rdp-chevron {
+  fill: #2A606E !important; /* Cambiar el color de las flechas a verde */
+}
+
+/* Cambiar el color del texto del día actual */
+.rdp-today:not(.rdp-outside) {
+  color: #79747E !important; /* Cambiar el color a verde */
+}

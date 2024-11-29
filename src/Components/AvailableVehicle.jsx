@@ -4,6 +4,8 @@ import { DayPicker } from 'react-day-picker';
 import Swal from 'sweetalert2';
 import 'react-day-picker/style.css';
 import { es } from 'date-fns/locale'; // Importa el idioma español desde date-fns
+import '../Components/Styles/DoubleCalendar.css';
+import { useContextGlobal } from '../Components/utils/global.context';
 
 // Función para normalizar las fechas al inicio del día en UTC estrictamente
 const getStartOfDayUTC = (dateString) => {
@@ -12,10 +14,13 @@ const getStartOfDayUTC = (dateString) => {
 };
 
 const DoubleCalendar = ({ productId }) => {
+  const { state } = useContextGlobal(); // Extrae el estado global
+  const { isAuth } = state; // Verifica la autenticación
   const [showCalendar, setShowCalendar] = useState(false);
   const [bookedRanges, setBookedRanges] = useState([]);
   const [errorLoading, setErrorLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedRange, setSelectedRange] = useState({ from: null, to: null });
   const calendarRef = useRef(null);
 
   const tomorrow = new Date();
@@ -81,7 +86,7 @@ const DoubleCalendar = ({ productId }) => {
         didOpen: () => {
           const progressBar = document.querySelector('.swal2-timer-progress-bar');
           if (progressBar) {
-            progressBar.style.backgroundColor = 'red';
+            progressBar.style.backgroundColor = '#D9534F';
           }
         },
       });
@@ -104,7 +109,7 @@ const DoubleCalendar = ({ productId }) => {
         if (progressBar && errorLoading) {
           progressBar.style.backgroundColor = 'blue';
         } else {
-          progressBar.style.backgroundColor = 'green';
+          progressBar.style.backgroundColor = '#58B368';
         }
       },
     });
@@ -123,11 +128,37 @@ const DoubleCalendar = ({ productId }) => {
         didOpen: () => {
           const progressBar = document.querySelector('.swal2-timer-progress-bar');
           if (progressBar) {
-            progressBar.style.backgroundColor = 'green';
+            progressBar.style.backgroundColor = '#58B368';
           }
         },
       });
     }, 2000);
+  };
+
+  const handleDateSelect = (range) => {
+    if (!isAuth) {
+      Swal.fire({
+        title: 'Inicia sesión para seleccionar fechas',
+        icon: 'info',
+        toast: true,
+        position: 'top-right',
+        timer: 2000,
+        showConfirmButton: false,
+      });
+      return;
+    }
+    if (range?.from && range?.to) {
+      setSelectedRange(range); // Actualiza el estado con el rango seleccionado
+      console.log('Rango de fechas seleccionado:', range);
+    } else if (range?.from) {
+      setSelectedRange({ from: range.from, to: null }); // Selecciona solo la fecha de inicio
+    }
+  };
+
+  const formatRange = (range) => {
+    if (!range.from && !range.to) return 'Visualizar disponibilidad';
+    if (range.from && !range.to) return `Desde: ${range.from.toLocaleDateString()}`;
+    return `Desde: ${range.from.toLocaleDateString()} - Hasta: ${range.to.toLocaleDateString()}`;
   };
 
   useEffect(() => {
@@ -142,14 +173,14 @@ const DoubleCalendar = ({ productId }) => {
   }, []);
 
   return (
-    <div className="relative flex flex-col ml-20 md:ml-32" ref={calendarRef}>
+    <div className="relative flex flex-col ml-7 mr-7 md:ml-32" ref={calendarRef}>
       <h4 className="text-left text-black font-bold">Disponibilidad:</h4>
-      <div className="relative flex flex-col lg:flex-row items-center w-3/4 lg:w-1/4">
+      <div className="relative flex flex-col lg:flex-row items-center lg:w-2/4 w-full ">
         <div className="relative w-full">
           <input
             type="text"
             readOnly
-            value={errorLoading ? 'Fecha no disponible' : 'Visualizar disponibilidad'}
+            value={errorLoading ? 'Fecha no disponible' : formatRange(selectedRange)}
             onClick={handleInputClick}
             className="w-full p-2 pr-10 border-4 border-gray-500 rounded-lg cursor-pointer text-left"
           />
@@ -174,21 +205,26 @@ const DoubleCalendar = ({ productId }) => {
       </div>
       {showCalendar && (
         <div
-          className="absolute z-10 bg-white border border-gray-300 shadow-lg rounded-lg p-6 mt-4 w-[700px]" // Ajustamos el ancho
+          className="absolute z-10 bg-[#E3E3E3] border border-gray-300 shadow-lg rounded-lg p-6 mt-6 w-[700px]" // Ajustamos el ancho
         >
           <DayPicker
             numberOfMonths={2}
-            mode="default"
+            mode="range"
             locale={es} // Configura el calendario en español
+            selected={selectedRange}
+            onSelect={handleDateSelect} // Llama a la función cuando el usuario selecciona un rango
             modifiers={{
               reserved: bookedRanges,
+              selectedRange, // Agrega el rango seleccionado como modificador
               available: (date) =>
                 isFutureRange(date) && !bookedRanges.some((range) => date >= range.from && date <= range.to),
             }}
             modifiersClassNames={{
-              reserved: 'bg-red-100 text-red-600 rounded-full font-bold', // Clases de Material Tailwind
+              reserved: 'bg-[#79747E] text-white rounded-full font-bold', // Clases de Material Tailwind
+              selectedRange: '!bg-mintTeal !text-customBlack rounded-full font-bold', // Estilo verde para el rango seleccionado
               available: '', // Opcional, para fechas disponibles
-              disabled: 'bg-gray-300 text-gray-500', // Para fechas deshabilitadas
+              // disabled: 'bg-[#79747E] text-white rounded-full font-bold', // Para fechas deshabilitadas
+              disabled: 'text-[#79747E] rounded-full font-bold', // Para fechas deshabilitadas
             }}
             disabled={(date) => !isFutureRange(date)}
           />

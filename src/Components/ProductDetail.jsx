@@ -90,10 +90,21 @@ const ProductDetail = () => {
   const closeModal = () => setModalIsOpen(false);
 
   const { state } = useContextGlobal(); // Acceder al estado global
+  const { isAuth } = state; // Extrae la información de autenticación
   const { id } = useParams();
   const [activeImage, setActiveImage] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false); // Estado para mostrar el calendario
   const navigate = useNavigate();
+
+  const handleReservationClick = () => {
+    if (!isAuth) {
+      // Si el usuario no está autenticado, redirige al login
+      navigate('/login');
+    } else {
+      // Si está autenticado, continúa con el proceso de reserva
+      console.log('Usuario autenticado, iniciar reserva...');
+    }
+  };
 
   // Filtrar el producto específico desde el array vehicles en el contexto global
   const product = state.vehicles.find((vehicle) => vehicle.productId === Number(id));
@@ -305,7 +316,7 @@ const ProductDetail = () => {
 
             {/* Botón de reservar */}
             <div className="mt-2">
-              <button className="bg-[#32ceb1] text-white px-4 py-2 rounded-md w-full">INICIAR RESERVA</button>
+              <button className="bg-[#32ceb1] text-white px-4 py-2 rounded-md w-full" onClick={handleReservationClick}>INICIAR RESERVA</button>
             </div>
           </div>
         </section>
