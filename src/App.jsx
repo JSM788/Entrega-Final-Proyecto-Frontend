@@ -3,7 +3,7 @@ import Footer from "./Components/Footer.jsx";
 import { HomeContainer } from "./Components/HomeContainer.jsx";
 import StickyNavbar from "./Components/StickyNavbar.jsx";
 import ProductDetail from "./Components/ProductDetail.jsx";
-import { Link, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import { Admin } from "./Components/admin/Admin.jsx";
 import { AdminUsers } from "./Components/admin/AdminUsers.jsx";
 import { AdminVehicles } from "./Components/admin/AdminVehicles.jsx";
@@ -14,6 +14,7 @@ import Page403 from "./Components/Page403.jsx";
 import { AdminCategories } from "./Components/admin/AdminCategories.jsx";
 import { AdminCharacteristics } from "./Components/admin/AdminCharacteristics.jsx";
 import { FavoritesProducts } from "./Components/user/FavoritesProducts.jsx";
+import { Reservations } from "./Components/user/Reservations.jsx";
 
 function App() {
   const { state } = useContextGlobal();
@@ -84,6 +85,10 @@ function App() {
         <Route
           path="/favorites"
           element={isAuth ? <FavoritesProducts /> : <Page403 />}
+        />
+        <Route
+          path="/reservations"
+          element={isAuth ? <Reservations /> : <Page403 />}
         />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/singIn" element={<SignIn />} />

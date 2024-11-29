@@ -13,6 +13,7 @@ import {
   HeartIcon,
   IdentificationIcon,
   UserCircleIcon,
+  CalendarIcon,
 } from "@heroicons/react/24/solid";
 
 const truncateText = (text, maxLength) => {
@@ -51,6 +52,11 @@ export function StickyNavbar() {
   const handleMisFavoritos = () => {
     setOpenSubMenu(false); // Cierra el submenú
     navigate("/favorites");
+  };
+
+  const handleMisReservas = () => {
+    setOpenSubMenu(false); // Cierra el submenú
+    navigate("/reservations");
   };
 
   const handleMiCuenta = () => {
@@ -246,6 +252,25 @@ export function StickyNavbar() {
                         }`}
                       />
                       Mis Favoritos
+                    </div>
+                    <div
+                      className={`pl-2.5 pr-5 py-2.5 w-full flex items-center gap-2.5 rounded-lg cursor-pointer ${
+                        isActive === "misReservas"
+                          ? "bg-[#32ceb1] text-white"
+                          : "bg-transparent text-black hover:bg-[#32ceb1] hover:text-white"
+                      }`}
+                      onMouseEnter={() => setIsActive("misReservas")}
+                      onMouseLeave={() => setIsActive("")}
+                      onClick={handleMisReservas}
+                    >
+                      <CalendarIcon
+                        className={`h-4 w-4 ${
+                          isActive === "misReservas"
+                            ? "text-white"
+                            : "text-black"
+                        }`}
+                      />
+                      Mis Reservas
                     </div>
                     {state.user.roles.includes("ROLE_ADMIN") ? (
                       <>
