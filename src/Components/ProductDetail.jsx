@@ -305,12 +305,7 @@ const ProductDetail = () => {
 
             {/* Botón de reservar */}
             <div className="mt-2">
-              <button
-                onClick={() => setShowCalendar(true)} // Mostrar calendario al hacer clic
-                className="bg-[#32ceb1] text-white px-4 py-2 rounded-md w-full"
-              >
-                INICIAR RESERVA
-              </button>
+              <button className="bg-[#32ceb1] text-white px-4 py-2 rounded-md w-full">INICIAR RESERVA</button>
             </div>
           </div>
         </section>
