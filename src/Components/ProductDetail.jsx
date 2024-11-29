@@ -5,53 +5,48 @@ import {
   KeyIcon,
   LockClosedIcon,
   ShareIcon,
-} from "@heroicons/react/24/outline";
-import { Button } from "@material-tailwind/react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useContextGlobal } from "../Components/utils/global.context";
-import {
-  FacebookShareButton,
-  TwitterShareButton,
-  WhatsappShareButton,
-} from "react-share";
-import { FacebookIcon, TwitterIcon, WhatsappIcon } from "react-share";
-import ReactModal from "react-modal";
-import Swal from "sweetalert2";
-import ReactDOMServer from "react-dom/server";
+} from '@heroicons/react/24/outline';
+import { Button } from '@material-tailwind/react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useContextGlobal } from '../Components/utils/global.context';
+import { FacebookShareButton, TwitterShareButton, WhatsappShareButton } from 'react-share';
+import { FacebookIcon, TwitterIcon, WhatsappIcon } from 'react-share';
+import ReactModal from 'react-modal';
+import Swal from 'sweetalert2';
+import ReactDOMServer from 'react-dom/server';
 // Importa el componente AvailableVehicle
 import DoubleCalendar from './AvailableVehicle';
-import styles from "../Components/Styles/Share.module.css";
+import styles from '../Components/Styles/Share.module.css';
 
-
-ReactModal.setAppElement("#root");
+ReactModal.setAppElement('#root');
 
 const policies = [
   {
     icon: <ClockIcon className="h-6 w-6 text-[#32ceb1] mr-2" />,
-    title: "Política de reembolso",
+    title: 'Política de reembolso',
     description: [
-      "Si cancelas antes de 48 horas, recibirás un reembolso completo.",
-      "Cancelaciones dentro de las 48 horas previas tendrán un cargo del 20%.",
-      "El reembolso será procesado en un plazo máximo de 5 días hábiles.",
+      'Si cancelas antes de 48 horas, recibirás un reembolso completo.',
+      'Cancelaciones dentro de las 48 horas previas tendrán un cargo del 20%.',
+      'El reembolso será procesado en un plazo máximo de 5 días hábiles.',
     ],
   },
   {
     icon: <KeyIcon className="h-6 w-6 text-[#32ceb1] mr-2" />,
-    title: "Política de devolución",
+    title: 'Política de devolución',
     description: [
-      "Devuelve el vehículo en el mismo estado en el que lo recibiste.",
-      "Asegúrate de que esté cargado al menos al 50% al momento de la devolución.",
-      "Cargos adicionales pueden aplicar por daños o accesorios faltantes.",
+      'Devuelve el vehículo en el mismo estado en el que lo recibiste.',
+      'Asegúrate de que esté cargado al menos al 50% al momento de la devolución.',
+      'Cargos adicionales pueden aplicar por daños o accesorios faltantes.',
     ],
   },
   {
     icon: <LockClosedIcon className="h-6 w-6 text-[#32ceb1] mr-2" />,
-    title: "Política de recojo",
+    title: 'Política de recojo',
     description: [
-      "El recojo del vehículo debe ser programado con al menos 24 horas de anticipación.",
-      "Presenta tu documento de identidad al momento del recojo.",
-      "El vehículo será entregado completamente cargado y listo para usar.",
+      'El recojo del vehículo debe ser programado con al menos 24 horas de anticipación.',
+      'Presenta tu documento de identidad al momento del recojo.',
+      'El vehículo será entregado completamente cargado y listo para usar.',
     ],
   },
 ];
@@ -59,9 +54,7 @@ const policies = [
 const showPoliciesModal = () => {
   const policiesHTML = ReactDOMServer.renderToString(
     <div className="text-left">
-      <h1 className="text-xl font-bold text-[#32ceb1]">
-        ¡Queremos que tu experiencia sea increíble!
-      </h1>
+      <h1 className="text-xl font-bold text-[#32ceb1]">¡Queremos que tu experiencia sea increíble!</h1>
       <p className="font-semibold text-lg mt-4">Nuestras políticas:</p>
       <div className="mt-4">
         {policies.map((policy, index) => (
@@ -78,7 +71,7 @@ const showPoliciesModal = () => {
           </div>
         ))}
       </div>
-    </div>
+    </div>,
   );
 
   Swal.fire({
@@ -86,7 +79,7 @@ const showPoliciesModal = () => {
     showCloseButton: true,
     showConfirmButton: false,
     customClass: {
-      popup: "bg-white rounded-lg shadow-lg p-6 max-w-xl",
+      popup: 'bg-white rounded-lg shadow-lg p-6 max-w-xl',
     },
   });
 };
@@ -111,45 +104,29 @@ const ProductDetail = () => {
     }
   }, [product]);
   // url para compartir link del producto
-  const title = "¡Mira este sitio web!"; // Título o mensaje a compartir
-  const url = "http://localhost:5173/product/" + product?.productId;
+  const title = '¡Mira este sitio web!'; // Título o mensaje a compartir
+  const url = 'http://localhost:5173/product/' + product?.productId;
 
   if (!product) return <div>Producto no encontrado</div>;
   return (
     <div className="w-full min-h-screen">
       <header className="m-auto flex sm:flex-row flex-col items-start sm:items-center py-4 px-7 w-full">
-        <Button
-          size="sm"
-          variant="text"
-          className="flex items-center justify-end"
-          onClick={() => navigate(-1)}
-        >
+        <Button size="sm" variant="text" className="flex items-center justify-end" onClick={() => navigate(-1)}>
           <ArrowLeftIcon className="h-6 w-6 text-deepTeal" />
         </Button>
         <div className="flex flex-col w-full items-start ml-0 sm:ml-12">
-          <h4 className="text-lg	text-customBlack">
-            {product.category.categoryName.toUpperCase()}
-          </h4>
-          <h3 className="text-2xl text-black font-semibold text-left flex-grow">
-            {product.name}
-          </h3>
-          
+          <h4 className="text-lg	text-customBlack">{product.category.categoryName.toUpperCase()}</h4>
+          <h3 className="text-2xl text-black font-semibold text-left flex-grow">{product.name}</h3>
         </div>
         <div className="flex gap-3">
-          <button
-            className="ml-auto border bg-[#2A606E] text-white rounded-lg p-2 flex gap-1"
-            onClick={openModal}
-          >
+          <button className="ml-auto border bg-[#2A606E] text-white rounded-lg p-2 flex gap-1" onClick={openModal}>
             <ShareIcon className="h-6 w-6 text-white" /> COMPARTIR
           </button>
-          <button
-            className="ml-auto border border-[#2A606E] rounded-lg p-2"
-            onClick={showPoliciesModal}
-          >
+          <button className="ml-auto border border-[#2A606E] rounded-lg p-2" onClick={showPoliciesModal}>
             <ExclamationCircleIcon className="h-5 w-6 text-deepTeal" />
           </button>
         </div>
-        
+
         {/* Modal */}
         <ReactModal
           isOpen={modalIsOpen}
@@ -158,22 +135,22 @@ const ProductDetail = () => {
           className={styles.modal}
           style={{
             content: {
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexDirection: "column",
-              width: "400px", // Ancho del modal
-              height: "400px", // Alto automático
-              maxWidth: "90%", // Ancho máximo relativo a la pantalla
-              margin: "auto", // Centrado
-              padding: "20px", // Espaciado interno
-              borderRadius: "10px", // Bordes redondeados
-              backgroundColor: "#fff", // Color de fondo
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column',
+              width: '400px', // Ancho del modal
+              height: '400px', // Alto automático
+              maxWidth: '90%', // Ancho máximo relativo a la pantalla
+              margin: 'auto', // Centrado
+              padding: '20px', // Espaciado interno
+              borderRadius: '10px', // Bordes redondeados
+              backgroundColor: '#fff', // Color de fondo
               zIndex: -1, //overlay
-              gap: "20px",
+              gap: '20px',
             },
             overlay: {
-              backgroundColor: "rgba(0, 0, 0, 0.5)", // Color del fondo del overlay
+              backgroundColor: 'rgba(0, 0, 0, 0.5)', // Color del fondo del overlay
             },
           }}
         >
@@ -193,10 +170,7 @@ const ProductDetail = () => {
                 <WhatsappIcon size={32} round={true} />
               </WhatsappShareButton>
             </div>
-            <button
-              onClick={closeModal}
-              className="mt-4 bg-red-500 text-white p-2 rounded"
-            >
+            <button onClick={closeModal} className="mt-4 bg-red-500 text-white p-2 rounded">
               Cerrar
             </button>
           </div>
@@ -276,7 +250,7 @@ const ProductDetail = () => {
                   src={image.url}
                   alt={`${product.name} - imagen ${index + 1}`}
                   className={`h-24 w-32 object-cover cursor-pointer rounded-lg border first:!ml-8 ${
-                    activeImage === image.url ? "border-aquaTeal" : "border-customGrayTransparent opacity-50"
+                    activeImage === image.url ? 'border-aquaTeal' : 'border-customGrayTransparent opacity-50'
                   }`}
                   onClick={() => setActiveImage(image.url)} // Cambiar imagen activa al hacer clic
                 />
@@ -287,9 +261,7 @@ const ProductDetail = () => {
           {/* Price and Plan */}
 
           <div className="bg-customGray p-6 rounded-2xl shadow-md w-[80%] lg:w-[40%] m-auto xl:mx-0 xl:w-[338px] h-[447px] xl:mr-[8%]">
-            <h3 className="text-lg font-semibold text-start">
-              PRECIOS Y PLANES
-            </h3>
+            <h3 className="text-lg font-semibold text-start">PRECIOS Y PLANES</h3>
             <p className="text-base mt-2 text-start font-semibold">
               {product.category.categoryName.toUpperCase()}
               <span className="text-deepTeal"> {product.name}</span>
@@ -332,11 +304,12 @@ const ProductDetail = () => {
             </div>
 
             {/* Botón de reservar */}
-            <div className="mt-8">
+            <div className="mt-2">
               <button
                 onClick={() => setShowCalendar(true)} // Mostrar calendario al hacer clic
-                className="bg-[#32ceb1] text-white px-4 py-2 rounded-md w-full">
-                RESERVAR AHORA
+                className="bg-[#32ceb1] text-white px-4 py-2 rounded-md w-full"
+              >
+                INICIAR RESERVA
               </button>
             </div>
           </div>
@@ -350,7 +323,8 @@ const ProductDetail = () => {
               <div className="flex justify-end mt-4">
                 <button
                   onClick={() => setShowCalendar(false)} // Cerrar el modal
-                  className="text-red-600 font-bold">
+                  className="text-red-600 font-bold"
+                >
                   Cerrar
                 </button>
               </div>
@@ -367,7 +341,7 @@ const ProductDetail = () => {
                 src={image.url}
                 alt={`${product.name} - imagen ${index + 1}`}
                 className={`h-24 w-32 object-cover cursor-pointer rounded-lg border ${
-                  activeImage === image.url ? "border-aquaTeal" : "border-customGrayTransparent opacity-50"
+                  activeImage === image.url ? 'border-aquaTeal' : 'border-customGrayTransparent opacity-50'
                 }`}
                 onClick={() => setActiveImage(image.url)}
               />
@@ -376,41 +350,31 @@ const ProductDetail = () => {
         </section>
 
         {/* Characteristics */}
-        <h3 className="text-2xl font-semibold my-4 text-black underline" style={{ textDecorationColor: "#6adcc7" }}>
-          CARACTERÍSTICAS:
-        </h3>
-        <section className="my-8 bg-customGray py-4 w-auto">
-          <div className="flex overflow-x-auto whitespace-nowrap space-x-4">
-            {/* Características dinámicas */}
-            {product.characteristics?.map((caracteristica, index) => (
-              <div key={index} className="flex items-center min-w-[530px] first:!ml-8">
-                <img
-                  src={caracteristica.featureImageUrl}
-                  alt={caracteristica.featureName}
-                  className="w-[223px] h-[174px] object-cover rounded-lg"
-                />
-                <div className="bg-mintTeal2 rounded-l-none rounded-r-lg min-w-[280px] text-start p-7">
-                  <p className="mt-2 font-medium text-lg text-black">{caracteristica.featureName}</p>
-                  <p className="text-[11px] text-black">{caracteristica.featureDescription}</p>
-                </div>
+        {product.characteristics && product.characteristics.length > 0 && (
+          <>
+            <h3 className="text-2xl font-semibold my-4 text-black underline" style={{ textDecorationColor: '#6adcc7' }}>
+              CARACTERÍSTICAS:
+            </h3>
+            <section className="my-8 bg-customGray py-4 w-auto">
+              <div className="flex overflow-x-auto whitespace-nowrap space-x-4">
+                {/* Características dinámicas */}
+                {product.characteristics?.map((caracteristica, index) => (
+                  <div key={index} className="flex items-center min-w-[530px] first:!ml-8">
+                    <img
+                      src={caracteristica.featureImageUrl}
+                      alt={caracteristica.featureName}
+                      className="w-[223px] h-[174px] object-cover rounded-lg"
+                    />
+                    <div className="bg-mintTeal2 rounded-l-none rounded-r-lg min-w-[280px] text-start p-7">
+                      <p className="mt-2 font-medium text-lg text-black">{caracteristica.featureName}</p>
+                      <p className="text-[11px] text-black">{caracteristica.featureDescription}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
-        {/* Políticas */}
-        <section className="w-full bg-gray-100 p-6">
-          <h3 className="text-2xl font-semibold my-4 text-black underline" style={{ textDecorationColor: "#6adcc7" }}>
-            POLITICA DE USO:
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {policies.map((policy, index) => (
-              <div key={index} className="bg-white p-4 border rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold mb-2">{policy.title}</h3>
-                <p className="text-gray-700">{policy.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+            </section>
+          </>
+        )}
       </main>
     </div>
   );

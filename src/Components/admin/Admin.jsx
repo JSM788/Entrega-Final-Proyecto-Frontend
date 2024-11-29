@@ -1,6 +1,4 @@
 import {
-  CalendarIcon,
-  CogIcon,
   HomeIcon,
   SwatchIcon,
   TruckIcon,
@@ -57,20 +55,6 @@ export const Admin = () => {
               <WalletIcon className="mr-3 h-5 w-5" />
               Características
             </Link>
-            <a
-              href="#"
-              className="mt-1 group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              <CalendarIcon className="mr-3 h-5 w-5" />
-              Reservas
-            </a>
-            <a
-              href="#"
-              className="mt-1 group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            >
-              <CogIcon className="mr-3 h-6 w-6" />
-              Configuración
-            </a>
           </nav>
         </aside>
 
