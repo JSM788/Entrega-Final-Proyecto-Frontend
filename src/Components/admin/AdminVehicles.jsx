@@ -21,7 +21,7 @@ import AddVehicleForm from "./AddVehicleForm";
 const TABLE_HEAD = ["ID", "Nombre", "Categoría", "Precio por hora", "Acciones"];
 
 export const AdminVehicles = () => {
-  const { state } = useContextGlobal();
+  const { state, reloadVehicles } = useContextGlobal();
   const [vehicleList, setVehicleList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAdding, setIsAdding] = useState(false);
@@ -92,6 +92,7 @@ export const AdminVehicles = () => {
           setVehicleList(
             vehicleList.filter((vehicle) => vehicle.productId !== productId)
           );
+          reloadVehicles(); // Actualiza el contexto global tras eliminar
           Swal.fire({
             icon: "success",
             title: "¡Eliminado!",
@@ -143,6 +144,7 @@ export const AdminVehicles = () => {
               : vehicle
           )
         );
+        reloadVehicles(); // Actualiza el contexto global tras actualizar
       } else {
         throw new Error("Error al actualizar la categoría.");
       }
@@ -182,6 +184,7 @@ export const AdminVehicles = () => {
           vehicleList={vehicleList}
           setVehicleList={setVehicleList}
           state={state}
+          reloadVehicles={reloadVehicles}
           setIsAdding={setIsAdding}
         />
       )}

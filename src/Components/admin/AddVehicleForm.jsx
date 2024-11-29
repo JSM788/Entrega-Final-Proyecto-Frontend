@@ -6,6 +6,7 @@ const AddVehicleForm = ({
   vehicleList,
   setVehicleList,
   state,
+  reloadVehicles,
   setIsAdding,
 }) => {
   const [vehicleData, setVehicleData] = useState({
@@ -313,6 +314,7 @@ const AddVehicleForm = ({
       if (response.ok) {
         const addedProduct = await response.json();
         setVehicleList([...vehicleList, addedProduct]);
+        reloadVehicles(); // Actualiza el contexto global tras actualizar
         Swal.fire({
           icon: "success",
           title: "¡Agregado!",
