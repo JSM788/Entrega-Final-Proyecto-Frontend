@@ -8,33 +8,28 @@ const ContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const endpointProducts = "http://localhost:8080/api/products";
 
-  useEffect(() => {
+  const reloadVehicles = () => {
     dispatch({ type: "SET_IS_LOADING_VEHICLES", payload: true });
     axios(endpointProducts)
       .then((response) => {
-        console.log("en axios");
-        console.log(response);
         dispatch({ type: "SET_VEHICLES", payload: response.data });
         dispatch({ type: "SET_FILTERED_VEHICLES", payload: response.data });
         dispatch({ type: "SET_IS_LOADING_VEHICLES", payload: false });
       })
       .catch((error) => {
-        console.error("Error obteniendo vehículos:", error);
+        console.error("Error recargando vehículos:", error);
         dispatch({ type: "SET_IS_LOADING_VEHICLES", payload: false });
       });
-  }, []);
+  };
 
   useEffect(() => {
+    reloadVehicles(); // Carga inicial
     localStorage.setItem("login", JSON.stringify(state.isAuth));
     localStorage.setItem("user", JSON.stringify(state.user));
     localStorage.setItem("accessToken", state.accessToken || "");
   }, [state.isAuth, state.user, state.accessToken]);
 
-  return (
-    <ContextGlobal.Provider value={{ state, dispatch }}>
-      {children}
-    </ContextGlobal.Provider>
-  );
+  return <ContextGlobal.Provider value={{ state, dispatch, reloadVehicles }}>{children}</ContextGlobal.Provider>;
 };
 
 export default ContextProvider;
