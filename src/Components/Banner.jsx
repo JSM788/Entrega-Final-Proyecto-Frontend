@@ -53,10 +53,10 @@ const BannerHome = () => {
               </div>
             </div>
 
-            <button className="hidden sm:block mt-4 w-full sm:w-[160px] md:w-[202px] h-[45px] md:h-[51px] bg-[#6adcc7] text-white 
+            {/* <button className="hidden sm:block mt-4 w-full sm:w-[160px] md:w-[202px] h-[45px] md:h-[51px] bg-[#6adcc7] text-white 
               uppercase font-bold py-2 px-6 rounded-lg shadow-xl hover:bg-[#32ceb1] transition-all">
               Reserva ahora
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -94,10 +94,10 @@ const BannerHome = () => {
               </div>
             </div>
 
-            <button className="hidden sm:block mt-4 w-full sm:w-[160px] md:w-[202px] h-[45px] md:h-[51px] bg-[#6adcc7] text-white 
+            {/* <button className="hidden sm:block mt-4 w-full sm:w-[160px] md:w-[202px] h-[45px] md:h-[51px] bg-[#6adcc7] text-white 
               uppercase font-bold py-2 px-6 rounded-lg shadow-xl hover:bg-[#32ceb1] transition-all">
               Reserva ahora
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -135,20 +135,20 @@ const BannerHome = () => {
               </div>
             </div>
 
-            <button className="hidden sm:block mt-4 w-full sm:w-[160px] md:w-[202px] h-[45px] md:h-[51px] bg-[#6adcc7] text-white 
+            {/* <button className="hidden sm:block mt-4 w-full sm:w-[160px] md:w-[202px] h-[45px] md:h-[51px] bg-[#6adcc7] text-white 
               uppercase font-bold py-2 px-6 rounded-lg shadow-xl hover:bg-[#32ceb1] transition-all">
               Reserva ahora
-            </button>
+            </button> */}
           </div>
         </div>
       </Carousel>
       {/* Botón para pantallas pequeñas */}
-      <div className="block sm:hidden mt-2 w-full">
+      {/* <div className="block sm:hidden mt-2 w-full">
         <button className="w-[90%] h-[45px] bg-[#6adcc7] text-white uppercase font-bold mb-4 py-2 px-4 
           rounded-lg shadow-xl hover:bg-[#32ceb1] transition-all">
           Reserva ahora
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

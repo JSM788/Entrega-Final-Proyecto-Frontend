@@ -31,3 +31,14 @@
 .rdp-today:not(.rdp-outside) {
   color: #79747E !important; /* Cambiar el color a verde */
 }
+
+/* Asegúrate de que los calendarios se apilen verticalmente en pantallas pequeñas */
+@media (max-width: 768px) {
+  .rdp-months {
+    display: flex;
+    flex-direction: column;
+  }
+  .container-calendar{
+    width: 100%;
+  }
+}

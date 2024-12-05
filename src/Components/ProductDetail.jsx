@@ -94,20 +94,136 @@ const ProductDetail = () => {
   const { id } = useParams();
   const [activeImage, setActiveImage] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false); // Estado para mostrar el calendario
+  const [selectedCity, setSelectedCity] = useState('');// Estado para almacenar la ciudad seleccionada
+  const [selectedProductId, setSelectedProductId] = useState(null); // Mantener el ID del itemProduct
+  const [selectedProduct, setSelectedProduct] = useState(null); // Estado para guardar el producto seleccionado
+  const [selectedRange, setSelectedRange] = useState({ from: null, to: null });
   const navigate = useNavigate();
 
+  const handleDateSelect = (range) => {
+    if (range?.from && range?.to) {
+      setSelectedRange(range); // Actualiza el estado con el rango seleccionado
+      console.log('Rango de fechas seleccionado:', range);
+    } else if (range?.from) {
+      setSelectedRange({ from: range.from, to: null }); // Selecciona solo la fecha de inicio
+    }
+  };
+
+  const handleCityChange = (event) => {
+    const cityId = event.target.value;
+    setSelectedCity(cityId);
+    console.log("cityId",cityId)
+    // Filtrar los productos por la ciudad seleccionada
+    console.log("product.itemProducts",product.itemProducts)
+    const selectedProduct = product.itemProducts.find((product) => product.city.idCity === parseInt(cityId));
+    console.log("selectedProduct",selectedProduct)
+    // Si hay un producto correspondiente, actualizar el id del producto
+    if (selectedProduct) {
+      console.log("selectedProduct*",selectedProduct)
+      setSelectedProductId(selectedProduct.id);
+      setSelectedProduct(selectedProduct);
+    } else {
+      setSelectedProductId(null); // Si no hay producto, poner null
+      setSelectedProduct(null);
+    }
+  };
+
   const handleReservationClick = () => {
+    console.log('Selected Range:', selectedRange);
     if (!isAuth) {
       // Si el usuario no está autenticado, redirige al login
       navigate('/login');
     } else {
       // Si está autenticado, continúa con el proceso de reserva
       console.log('Usuario autenticado, iniciar reserva...');
+      if (!selectedCity || !selectedProductId || !selectedRange.from || !selectedRange.to) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Selecciona una ciudad y un rango de fechas antes de continuar.',
+          showConfirmButton: false,
+          timer: 2000,
+        });
+        return;
+      }
+
+      // Calcular el monto total de la reserva
+      const daysBooked = (selectedRange.to - selectedRange.from) / (1000 * 3600 * 24); // Diferencia en días
+      const totalAmount = daysBooked * product.pricePerHour * 24; // Asumiendo que el precio es por hora
+
+      Swal.fire({
+        title: 'Detalles de la Reserva',
+        html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6">
+          <div style="display: flex; align-items: center; margin-bottom: 20px">
+            <!-- Imagen del producto a la izquierda -->
+            <div style="flex-shrink: 0; margin-right: 20px">
+              <img
+                src="${product.images[0].url}"
+                alt="${product.name}"
+                style="max-width: 150px; border-radius: 10px"
+              />
+            </div>
+
+            <!-- Información del producto a la derecha -->
+            <div>
+              <p>
+                <strong>Producto:</strong>
+                <span style="color: #2980b9">${product.productId}</span>
+              </p>
+              <p>
+                <strong>Nombre del Producto:</strong>
+                <span style="color: #2980b9">${product.name}</span>
+              </p>
+              <p><strong>Fecha:</strong> <span style="color: #2980b9">${selectedRange.from.toLocaleDateString()} - ${selectedRange.to.toLocaleDateString()}</span></p>
+              <p><strong>Total:</strong> <span style="color: #2980b9">$${totalAmount.toFixed(2)}</span></p>
+            </div>
+          </div>
+
+          <hr style="border: 1px solid #ddd" />
+
+          <div style="margin-bottom: 15px">
+            <p><strong>Nombre del Usuario:</strong> ${state.user.fullName}</p>
+            <p><strong>Correo:</strong> ${state.user.email}</p>
+          </div>
+
+          <div style="margin-bottom: 15px">
+            <p>
+              <strong>Ubicación del Producto:</strong> ${selectedProduct.city.cityName}
+              - ${selectedProduct.city.countryName}
+            </p>
+            <p><strong>Serial del Producto:</strong> ${selectedProduct.nro_serial}</p>
+            <p><strong>Color:</strong> ${selectedProduct.color}</p>
+            <p><strong>ID del Producto:</strong> ${selectedProduct.id}</p>
+          </div>
+        </div>
+
+      `,
+        //mostrar la fecha seleccionada
+        // mostrar calcular segun los dias seleccionados el monto total de la reserva
+        confirmButtonText: 'Confirmar Reserva',
+        confirmButtonColor: '#32CEB1',
+        showCancelButton: true,
+        cancelButtonText: 'Cancelar',
+        cancelButtonColor: '#D9534F',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Lógica para procesar la reserva (hacer una llamada a la API de reservas POST)
+          Swal.fire({
+            icon: 'success',
+            title: '¡Reserva Confirmada!',
+            text: 'Tu reserva ha sido realizada con éxito.',
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        }
+      });
     }
   };
 
   // Filtrar el producto específico desde el array vehicles en el contexto global
   const product = state.vehicles.find((vehicle) => vehicle.productId === Number(id));
+  console.log(product);
 
   useEffect(() => {
     if (product?.images?.length > 0) {
@@ -121,13 +237,38 @@ const ProductDetail = () => {
   if (!product) return <div>Producto no encontrado</div>;
   return (
     <div className="w-full min-h-screen">
-      <header className="m-auto flex sm:flex-row flex-col items-start sm:items-center py-4 px-7 w-full">
+      <header className="m-auto flex sm:flex-row flex-col gap-4 items-start sm:items-center py-4 px-7 w-full">
         <Button size="sm" variant="text" className="flex items-center justify-end" onClick={() => navigate(-1)}>
           <ArrowLeftIcon className="h-6 w-6 text-deepTeal" />
         </Button>
         <div className="flex flex-col w-full items-start ml-0 sm:ml-12">
           <h4 className="text-lg	text-customBlack">{product.category.categoryName.toUpperCase()}</h4>
           <h3 className="text-2xl text-black font-semibold text-left flex-grow">{product.name}</h3>
+          <div className="flex flex-col w-full">
+            <h4 className="text-left text-black font-bold">Disponibilidad:</h4>
+            <div className="flex gap-2 w-full flex-col lg:flex-row">
+              <select
+                name="cities"
+                id="cities"
+                className="w-full lg:w-1/2 border border-gray-300 rounded-lg p-3"
+                onChange={handleCityChange}
+                value={selectedCity}
+              >
+                <option value="">Selecciona una ciudad</option>
+                {product.itemProducts.map((item) => (
+                  <option key={item.city.idCity} value={item.city.idCity}>
+                    {item.city.cityName} - {item.city.countryName}
+                  </option>
+                ))}
+              </select>
+              {selectedCity && (
+                <DoubleCalendar
+                  productId={selectedProductId}
+                  onDateSelect={handleDateSelect}
+                />
+              )}
+            </div>
+          </div>
         </div>
         <div className="flex gap-3">
           <button className="ml-auto border bg-[#2A606E] text-white rounded-lg p-2 flex gap-1" onClick={openModal}>
@@ -187,7 +328,6 @@ const ProductDetail = () => {
           </div>
         </ReactModal>
       </header>
-      <DoubleCalendar productId={product?.productId} />
       {/* Contenido principal */}
       <main className="m-auto mt-8">
         <section className="flex justify-between gap-5 xl:flex-row flex-col">
@@ -277,46 +417,59 @@ const ProductDetail = () => {
               {product.category.categoryName.toUpperCase()}
               <span className="text-deepTeal"> {product.name}</span>
             </p>
-            <div className="mt-4 space-y-2">
-              {/* Opciones de precios dinámicas */}
-              <label className="flex space-x-2 items-start max-w-[251px] h-[66px]">
-                <input type="radio" name="price" className="mt-4 ml-4" />
-                <span className="py-[10px] m-0 text-start">
-                  <span className="text-sm font-semibold">Alquiler por hora</span>
-                  <br />
-                  <span className="text-lg">${product.pricePerHour}/</span>
-                  <span className="font-semibold text-[11px]">por hora</span>
-                </span>
-              </label>
-              <label className="flex space-x-2 items-start max-w-[251px] h-[66px]">
-                <input type="radio" name="price" className="mt-4 ml-4" />
-                <span className="py-[10px] m-0 text-start">
-                  <span className="text-sm font-semibold">Alquiler diario</span>
-                  <br /> <span className="text-lg"> ${product.pricePerDay}/</span>
-                  <span className="font-semibold text-[11px]"> por día</span>
-                </span>
-              </label>
-              <label className="flex space-x-2 items-start max-w-[251px] h-[66px]">
-                <input type="radio" name="price" className="mt-4 ml-4" />
-                <span className="py-[10px] m-0 text-start">
-                  <span className="text-sm font-semibold">Suscripción mensual</span>
-                  <br /> <span className="text-lg">${product.pricePerMonth}/</span>
-                  <span className="font-semibold text-[11px]"> por mes</span>
-                </span>
-              </label>
-              <label className="flex space-x-2 items-start max-w-[251px] h-[66px]">
-                <input type="radio" name="price" className="mt-4 ml-4" />
-                <span className="py-[10px] m-0 text-start">
-                  <span className="text-sm font-semibold">Suscripción anual</span>
-                  <br /> <span className="text-lg">${product.pricePerYear}/</span>
-                  <span className="font-semibold text-[11px]"> anual</span>
-                </span>
-              </label>
+            <div className="mt-4">
+              <ul className="space-y-2">
+                <li className="flex space-x-2 items-start max-w-[251px] h-[66px]">
+                  <div className="mt-4 ml-4">
+                    <span className="block w-4 h-4 bg-deepTeal rounded-full"></span>
+                  </div>
+                  <span className="py-[10px] m-0 text-start">
+                    <span className="text-sm font-semibold">Alquiler por hora</span>
+                    <br />
+                    <span className="text-lg">${product.pricePerHour}/</span>
+                    <span className="font-semibold text-[11px]">por hora</span>
+                  </span>
+                </li>
+                <li className="flex space-x-2 items-start max-w-[251px] h-[66px]">
+                  <div className="mt-4 ml-4">
+                    <span className="block w-4 h-4 bg-deepTeal rounded-full"></span>
+                  </div>
+                  <span className="py-[10px] m-0 text-start">
+                    <span className="text-sm font-semibold">Alquiler diario</span>
+                    <br />
+                    <span className="text-lg">${product.pricePerDay}/</span>
+                    <span className="font-semibold text-[11px]">por día</span>
+                  </span>
+                </li>
+                <li className="flex space-x-2 items-start max-w-[251px] h-[66px]">
+                  <div className="mt-4 ml-4">
+                    <span className="block w-4 h-4 bg-deepTeal rounded-full"></span>
+                  </div>
+                  <span className="py-[10px] m-0 text-start">
+                    <span className="text-sm font-semibold">Suscripción mensual</span>
+                    <br />
+                    <span className="text-lg">${product.pricePerMonth}/</span>
+                    <span className="font-semibold text-[11px]">por mes</span>
+                  </span>
+                </li>
+                <li className="flex space-x-2 items-start max-w-[251px] h-[66px]">
+                  <div className="mt-4 ml-4">
+                    <span className="block w-4 h-4 bg-deepTeal rounded-full"></span>
+                  </div>
+                  <span className="py-[10px] m-0 text-start">
+                    <span className="text-sm font-semibold">Suscripción anual</span>
+                    <br />
+                    <span className="text-lg">${product.pricePerYear}/</span>
+                    <span className="font-semibold text-[11px]">anual</span>
+                  </span>
+                </li>
+              </ul>
             </div>
 
-            {/* Botón de reservar */}
             <div className="mt-2">
-              <button className="bg-[#32ceb1] text-white px-4 py-2 rounded-md w-full" onClick={handleReservationClick}>INICIAR RESERVA</button>
+              <button className="bg-[#32ceb1] text-white px-4 py-2 rounded-md w-full" onClick={handleReservationClick}>
+                INICIAR RESERVA
+              </button>
             </div>
           </div>
         </section>
@@ -325,7 +478,7 @@ const ProductDetail = () => {
         {showCalendar && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white rounded-lg p-6 shadow-lg max-w-3xl w-full">
-              <AvailabilityCalendar productId={product.productId} Pasar ID del producto al calendario />
+              <AvailabilityCalendar productId={product.productId} />
               <div className="flex justify-end mt-4">
                 <button
                   onClick={() => setShowCalendar(false)} // Cerrar el modal

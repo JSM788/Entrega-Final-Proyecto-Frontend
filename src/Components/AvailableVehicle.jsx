@@ -13,7 +13,7 @@ const getStartOfDayUTC = (dateString) => {
   return new Date(Date.UTC(year, month - 1, day));
 };
 
-const DoubleCalendar = ({ productId }) => {
+const DoubleCalendar = ({ productId, onDateSelect }) => {
   const { state } = useContextGlobal(); // Extrae el estado global
   const { isAuth } = state; // Verifica la autenticación
   const [showCalendar, setShowCalendar] = useState(false);
@@ -33,26 +33,28 @@ const DoubleCalendar = ({ productId }) => {
     return normalizedDate >= tomorrow;
   };
 
-  // *** Validación del productId ***
-  if (!productId) {
-    return (
-      <div className="text-red-600 font-bold">No se puede cargar el calendario porque falta el ID del producto.</div>
-    );
-  }
+  const getCalendar = async () => {
+    setLoading(true);
+    setErrorLoading(false); // Reinicia el estado de error al intentar de nuevo
+    // Limpia las reservas cuando no hay calendario
+    if (!productId) {
+      setBookedRanges([]);
+    }
 
-  useEffect(() => {
-    const getCalendar = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `http://localhost:8080/api/reservations/calendar/${productId}`, // URL dinámica
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/reservations/calendar/${productId}`, // URL dinámica
+        {
+          headers: {
+            'Content-Type': 'application/json',
           },
-        );
+        },
+      );
 
+      // Si no hay calendario, limpia las reservas
+      if (!response.data || !response.data.calendar) {
+        setBookedRanges([]);
+      } else {
         const allBookings = response.data.calendar.flatMap((monthData) =>
           monthData.reservations.map((reservation) => ({
             from: new Date(getStartOfDayUTC(reservation.startDate).getTime() + 24 * 60 * 60 * 1000),
@@ -61,21 +63,9 @@ const DoubleCalendar = ({ productId }) => {
         );
 
         setBookedRanges(allBookings);
-        setErrorLoading(false);
-      } catch (error) {
-        console.error('Error fetching calendar data:', error);
-        setErrorLoading(true);
-      } finally {
-        setLoading(false);
       }
-    };
-
-    if (productId) {
-      getCalendar(); // Llama a la API solo si `productId` está definido
-    }
-  }, [productId]); // Escucha cambios en `productId`
-  const handleInputClick = () => {
-    if (errorLoading) {
+    } catch (error) {
+      console.error('Error fetching calendar data:', error);
       Swal.fire({
         title: 'Hubo un problema al cargar las fechas. \n Intenta de nuevo más tarde.',
         toast: true,
@@ -90,14 +80,25 @@ const DoubleCalendar = ({ productId }) => {
           }
         },
       });
-    } else {
-      setShowCalendar((prev) => !prev);
+      setErrorLoading(true); // Marca el estado como error
+      setBookedRanges([]); // Limpia las reservas si hay un error
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleRetry = async () => {
+  useEffect(() => {
+    if (productId) {
+      getCalendar(); // Llama a la API solo si `productId` está definido
+    }
+  }, [productId]);
+  const handleInputClick = () => {
+    setShowCalendar((prev) => !prev);
+  };
+
+  const handleRetry = () => {
     Swal.fire({
-      title: errorLoading ? 'Recargando calendario...' : 'Calendario recargado con exito.',
+      title: 'Intentando obtener las fechas de reservas',
       toast: true,
       position: 'top-right',
       showConfirmButton: false,
@@ -106,33 +107,14 @@ const DoubleCalendar = ({ productId }) => {
       timerProgressBar: true,
       didOpen: () => {
         const progressBar = document.querySelector('.swal2-timer-progress-bar');
-        if (progressBar && errorLoading) {
+        if (progressBar) {
           progressBar.style.backgroundColor = 'blue';
         } else {
           progressBar.style.backgroundColor = '#58B368';
         }
       },
     });
-
-    await getCalendar();
-
-    setTimeout(() => {
-      Swal.fire({
-        title: 'Calendario recargado exitosamente.',
-        icon: 'success',
-        toast: true,
-        position: 'top-right',
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
-        didOpen: () => {
-          const progressBar = document.querySelector('.swal2-timer-progress-bar');
-          if (progressBar) {
-            progressBar.style.backgroundColor = '#58B368';
-          }
-        },
-      });
-    }, 2000);
+    getCalendar();
   };
 
   const handleDateSelect = (range) => {
@@ -150,8 +132,11 @@ const DoubleCalendar = ({ productId }) => {
     if (range?.from && range?.to) {
       setSelectedRange(range); // Actualiza el estado con el rango seleccionado
       console.log('Rango de fechas seleccionado:', range);
+      // Llamar a la función del padre para pasar el rango seleccionado
+      if (onDateSelect) onDateSelect(range);
     } else if (range?.from) {
       setSelectedRange({ from: range.from, to: null }); // Selecciona solo la fecha de inicio
+      if (onDateSelect) onDateSelect({ from: range.from, to: null });
     }
   };
 
@@ -173,14 +158,13 @@ const DoubleCalendar = ({ productId }) => {
   }, []);
 
   return (
-    <div className="relative flex flex-col ml-7 mr-7 md:ml-32" ref={calendarRef}>
-      <h4 className="text-left text-black font-bold">Disponibilidad:</h4>
-      <div className="relative flex flex-col lg:flex-row items-center lg:w-2/4 w-full ">
+    <div className="relative flex flex-col w-full" ref={calendarRef}>
+      <div className="relative flex flex-col lg:flex-row items-center">
         <div className="relative w-full">
           <input
             type="text"
             readOnly
-            value={errorLoading ? 'Fecha no disponible' : formatRange(selectedRange)}
+            value={formatRange(selectedRange)}
             onClick={handleInputClick}
             className="w-full p-2 pr-10 border-4 border-gray-500 rounded-lg cursor-pointer text-left"
           />
@@ -199,13 +183,15 @@ const DoubleCalendar = ({ productId }) => {
             />
           </svg>
         </div>
-        <p onClick={handleRetry} className="ml-2 text-blue-500 text-base font-medium underline cursor-pointer">
-          Reintentar
-        </p>
+        {errorLoading && (
+          <p onClick={handleRetry} className="ml-2 text-blue-500 text-base font-medium underline cursor-pointer">
+            Reintentar
+          </p>
+        )}
       </div>
       {showCalendar && (
         <div
-          className="absolute z-10 bg-[#E3E3E3] border border-gray-300 shadow-lg rounded-lg p-6 mt-6 w-[700px]" // Ajustamos el ancho
+          className="container-calendar absolute z-10 bg-[#E3E3E3] border border-gray-300 shadow-lg rounded-lg p-6 mt-6 w-[700px]" // Ajustamos el ancho
         >
           <DayPicker
             numberOfMonths={2}

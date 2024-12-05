@@ -193,9 +193,9 @@ export const VehicleCard = (props) => {
             VER MÁS
           </Button>
         </Link>
-        <Button size="sm" className="bg-[#32CEB1] w-full">
+        {/* <Button size="sm" className="bg-[#32CEB1] w-full">
           RESERVAR
-        </Button>
+        </Button> */}
       </div>
 
       <div className="flex justify-around text-gray-600 text-sm">
