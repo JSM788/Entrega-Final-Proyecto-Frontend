@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { Typography, Input, Button } from "@material-tailwind/react";
-import map from "../assets/icons/map.svg";
-import calendario from "../assets/icons/calendario.svg";
-import "./Styles/SearchBar.css"; // Asegúrate de importar el CSS
-import Swal from "sweetalert2";
-import { useContextGlobal } from "../Components/utils/global.context"; // Importar el contexto global
-import axios from "axios";
+import React, { useState, useEffect } from 'react';
+import { Typography, Input, Button } from '@material-tailwind/react';
+import map from '../assets/icons/map.svg';
+import calendario from '../assets/icons/calendario.svg';
+import './Styles/SearchBar.css'; // Asegúrate de importar el CSS
+import Swal from 'sweetalert2';
+import { useContextGlobal } from '../Components/utils/global.context'; // Importar el contexto global
+import axios from 'axios';
 
 export const SearchBar = () => {
   const [cities, setCities] = useState([]);
   const [filteredCities, setFilteredCities] = useState([]);
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
   const [selectedCity, setSelectedCity] = useState(null);
   const [cityError, setCityError] = useState(false); // Estado para el error de ciudad
-  const [startDate, setStartDate] = useState(""); // Fecha de recogida
-  const [endDate, setEndDate] = useState(""); // Fecha de devolución
-  const [startDateError, setStartDateError] = useState("");
-  const [endDateError, setEndDateError] = useState("");
+  const [startDate, setStartDate] = useState(''); // Fecha de recogida
+  const [endDate, setEndDate] = useState(''); // Fecha de devolución
+  const [startDateError, setStartDateError] = useState('');
+  const [endDateError, setEndDateError] = useState('');
   const [touchedStartDate, setTouchedStartDate] = useState(false);
   const [touchedEndDate, setTouchedEndDate] = useState(false);
 
@@ -25,18 +25,18 @@ export const SearchBar = () => {
   const today = new Date();
   const tomorrow = new Date(today);
   tomorrow.setDate(today.getDate() + 1);
-  const formattedTomorrow = tomorrow.toISOString().split("T")[0];
+  const formattedTomorrow = tomorrow.toISOString().split('T')[0];
 
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/cities");
+        const response = await axios.get('http://localhost:8080/api/cities');
         setCities(response.data); // Asignar las ciudades recibidas
       } catch (error) {
         Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "Hubo un problema al cargar las ciudades.",
+          icon: 'error',
+          title: 'Error',
+          text: 'Hubo un problema al cargar las ciudades.',
           showConfirmButton: false,
           timer: 2000,
         });
@@ -49,12 +49,10 @@ export const SearchBar = () => {
     const value = e.target.value;
     setInputValue(value);
 
-    if (value === "") {
+    if (value === '') {
       setFilteredCities([]);
     } else {
-      const filtered = cities.filter((city) =>
-        city?.cityName?.toLowerCase().includes(value.toLowerCase())
-      );
+      const filtered = cities.filter((city) => city?.cityName?.toLowerCase().includes(value.toLowerCase()));
       setFilteredCities(filtered.slice(0, 5)); // Mostrar solo los primeros 5 resultados
     }
   };
@@ -63,7 +61,7 @@ export const SearchBar = () => {
   const highlightMatch = (text, searchTerm) => {
     if (!searchTerm) return text;
 
-    const regex = new RegExp(`(${searchTerm})`, "gi");
+    const regex = new RegExp(`(${searchTerm})`, 'gi');
     const parts = text.split(regex);
 
     return parts.map((part, index) =>
@@ -73,7 +71,7 @@ export const SearchBar = () => {
         </strong>
       ) : (
         part
-      )
+      ),
     );
   };
 
@@ -84,29 +82,19 @@ export const SearchBar = () => {
     setCityError(false); // Resetear el error al seleccionar la ciudad
   };
 
-  const formatDate = (date) => {
-    const d = new Date(date);
-    const year = d.getFullYear().toString().slice(2, 4);
-    const month = (d.getMonth() + 1).toString().padStart(2, "0");
-    const day = d.getDate().toString().padStart(2, "0");
-
-    return `${year}.${month}.${day}`;
-  };
-
   const validateStartDate = (date) => {
-    if (!date) return "La fecha de recogida es obligatoria.";
-    if (new Date(date) <= today)
-      return "Debe ser al menos un día después de hoy.";
-    return "";
+    if (!date) return 'La fecha de recogida es obligatoria.';
+    if (new Date(date) <= today) return 'Debe ser al menos un día después de hoy.';
+    return '';
   };
 
   const validateEndDate = (startDate, endDate) => {
-    if (!endDate) return "La fecha de devolución es obligatoria.";
+    if (!endDate) return 'La fecha de devolución es obligatoria.';
     if (new Date(endDate) <= new Date(startDate))
-      return "La fecha de devolución debe ser posterior a la fecha de recogida.";
+      return 'La fecha de devolución debe ser posterior a la fecha de recogida.';
     if (new Date(endDate).getTime() === new Date(startDate).getTime())
-      return "La fecha de devolución no puede ser la misma que la fecha de recogida.";
-    return "";
+      return 'La fecha de devolución no puede ser la misma que la fecha de recogida.';
+    return '';
   };
 
   // Validar dinámicamente las fechas
@@ -139,18 +127,16 @@ export const SearchBar = () => {
     // Verificar si todos los campos están mal
     if (!valid) {
       Swal.fire({
-        title: "Algo salió mal con la búsqueda. Intenta de nuevo.",
+        title: 'Algo salió mal con la búsqueda. Intenta de nuevo.',
         toast: true,
-        position: "top-right",
+        position: 'top-right',
         showConfirmButton: false,
         timer: 2000,
         timerProgressBar: true,
         didOpen: () => {
-          const progressBar = document.querySelector(
-            ".swal2-timer-progress-bar"
-          );
+          const progressBar = document.querySelector('.swal2-timer-progress-bar');
           if (progressBar) {
-            progressBar.style.backgroundColor = "red";
+            progressBar.style.backgroundColor = 'red';
           }
         },
       });
@@ -160,34 +146,29 @@ export const SearchBar = () => {
     // Si hay errores individuales, detener la ejecución sin Swal
     //if (!valid) return;
 
-    const formattedStartDate = formatDate(startDate);
-    const formattedEndDate = formatDate(endDate);
     const city = selectedCity.cityName;
 
-    dispatch({ type: "SET_IS_LOADING_VEHICLES", payload: true });
+    dispatch({ type: 'SET_IS_LOADING_VEHICLES', payload: true });
     try {
-      const response = await axios.get(
-        `http://localhost:8080/api/products/search/${formattedStartDate}/${formattedEndDate}/${city}`
-      );
-      dispatch({ type: "SET_FILTERED_VEHICLES", payload: response.data });
-      dispatch({ type: "SET_SEARCH_QUERY", payload: city });
+      const response = await axios.get(`http://localhost:8080/api/products/search/${startDate}/${endDate}/${city}`);
+      dispatch({ type: 'SET_FILTERED_VEHICLES', payload: response.data });
     } catch (error) {
       Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "No se pudieron obtener los vehículos.",
+        icon: 'error',
+        title: 'Error',
+        text: 'No se pudieron obtener los vehículos.',
         showConfirmButton: false,
         timer: 2000,
       });
-      dispatch({ type: "SET_FILTERED_VEHICLES", payload: [] });
+      dispatch({ type: 'SET_FILTERED_VEHICLES', payload: [] });
     } finally {
       // Detener el estado de carga después de la búsqueda
-      dispatch({ type: "SET_IS_LOADING_VEHICLES", payload: false });
+      dispatch({ type: 'SET_IS_LOADING_VEHICLES', payload: false });
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === "Tab" && filteredCities.length > 0) {
+    if (e.key === 'Tab' && filteredCities.length > 0) {
       e.preventDefault(); // Prevenir el comportamiento predeterminado de tabulación
       const firstCity = filteredCities[0];
       setInputValue(`${firstCity.cityName}, ${firstCity.countryName}`);
@@ -197,7 +178,7 @@ export const SearchBar = () => {
   };
 
   const clearCityInput = () => {
-    setInputValue("");
+    setInputValue('');
     setFilteredCities([]);
     setSelectedCity(null);
     setCityError(false);
@@ -205,9 +186,7 @@ export const SearchBar = () => {
 
   const handleBlur = () => {
     const matchedCity = cities.find(
-      (city) =>
-        `${city.cityName}, ${city.countryName}`.toLowerCase() ===
-        inputValue.toLowerCase()
+      (city) => `${city.cityName}, ${city.countryName}`.toLowerCase() === inputValue.toLowerCase(),
     );
     if (matchedCity) {
       setSelectedCity(matchedCity);
@@ -241,15 +220,11 @@ export const SearchBar = () => {
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown} // Detectar la tecla Tab
                 className="p-2 pl-10 pr-4 !mt-0 placeholder-gray-100 !border-t-blue-gray-200 focus:!border-t-gray-900 bg-white ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900"
-                labelProps={{ className: "hidden" }}
+                labelProps={{ className: 'hidden' }}
                 onBlur={handleBlur} // Verificar la ciudad al perder el foco
               />
               {inputValue && (
-                <button
-                  type="button"
-                  className="absolute right-2 top-2 text-gray-500"
-                  onClick={clearCityInput}
-                >
+                <button type="button" className="absolute right-2 top-2 text-gray-500" onClick={clearCityInput}>
                   &#10005;
                 </button>
               )}
@@ -261,10 +236,7 @@ export const SearchBar = () => {
                       className="p-2 cursor-pointer hover:bg-gray-200 hover:ring-2 hover:ring-[#2A606E] rounded transition-all"
                       onClick={() => handleCitySelect(city)}
                     >
-                      {highlightMatch(
-                        `${city.cityName}, ${city.countryName}`,
-                        inputValue
-                      )}
+                      {highlightMatch(`${city.cityName}, ${city.countryName}`, inputValue)}
                     </div>
                   ))}
                 </div>
@@ -272,11 +244,7 @@ export const SearchBar = () => {
             </div>
             <div>
               <div className="text-sm mt-1 lg:hidden">
-                {cityError && (
-                  <p className="error-message">
-                    La ciudad no se encuentra en la lista.
-                  </p>
-                )}
+                {cityError && <p className="error-message">La ciudad no se encuentra en la lista.</p>}
               </div>
             </div>
           </div>
@@ -286,11 +254,7 @@ export const SearchBar = () => {
               Fecha de recogida
             </Typography>
             <div className="relative z-10">
-              <img
-                src={calendario}
-                className="input-icon"
-                alt="Icono de Calendario"
-              />
+              <img src={calendario} className="input-icon" alt="Icono de Calendario" />
               <Input
                 type="date"
                 value={startDate}
@@ -298,13 +262,11 @@ export const SearchBar = () => {
                 onBlur={() => setTouchedStartDate(true)}
                 onChange={(e) => setStartDate(e.target.value)}
                 className="p-2 pl-10 !mt-0 placeholder-gray-100 !border-t-blue-gray-200 focus:!border-t-gray-900 bg-white ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900"
-                labelProps={{ className: "hidden" }}
+                labelProps={{ className: 'hidden' }}
               />
             </div>
             <div className="text-sm mt-1 lg:hidden">
-              {touchedStartDate && startDateError && (
-                <p className="error-message">{startDateError}</p>
-              )}
+              {touchedStartDate && startDateError && <p className="error-message">{startDateError}</p>}
             </div>
           </div>
 
@@ -313,25 +275,19 @@ export const SearchBar = () => {
               Fecha de devolución
             </Typography>
             <div className="relative z-10">
-              <img
-                src={calendario}
-                className="input-icon"
-                alt="Icono de Calendario"
-              />
+              <img src={calendario} className="input-icon" alt="Icono de Calendario" />
               <Input
                 type="date"
                 value={endDate}
                 min={startDate || formattedTomorrow}
                 onBlur={() => setTouchedEndDate(true)}
                 onChange={(e) => setEndDate(e.target.value)}
-                labelProps={{ className: "hidden" }}
+                labelProps={{ className: 'hidden' }}
                 className="p-2 pl-10 !mt-0 placeholder-gray-100 !border-t-blue-gray-200 focus:!border-t-gray-900 bg-white ring-4 ring-transparent placeholder:text-gray-500 placeholder:opacity-100 focus:!border-gray-900"
               />
             </div>
             <div className="text-sm  mt-1 lg:hidden">
-              {touchedEndDate && endDateError && (
-                <p className="error-message">{endDateError}</p>
-              )}
+              {touchedEndDate && endDateError && <p className="error-message">{endDateError}</p>}
             </div>
           </div>
 
@@ -346,23 +302,15 @@ export const SearchBar = () => {
 
           <div className="hidden lg:grid lg:grid-cols-4 lg:col-span-4 gap-2 mb-1">
             <div className="text-sm mt-1">
-              {cityError && (
-                <p className="error-message">
-                  La ciudad no se encuentra en la lista.
-                </p>
-              )}
+              {cityError && <p className="error-message">La ciudad no se encuentra en la lista.</p>}
             </div>
 
             <div className="text-sm mt-1">
-              {touchedStartDate && startDateError && (
-                <p className="error-message">{startDateError}</p>
-              )}
+              {touchedStartDate && startDateError && <p className="error-message">{startDateError}</p>}
             </div>
 
             <div className="text-sm mt-1">
-              {touchedEndDate && endDateError && (
-                <p className="error-message">{endDateError}</p>
-              )}
+              {touchedEndDate && endDateError && <p className="error-message">{endDateError}</p>}
             </div>
             <div className=""></div>
           </div>
