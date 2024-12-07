@@ -344,7 +344,8 @@ const ProductDetail = () => {
             endDate: selectedRange.to.toISOString().split('T')[0],
           };
           try {
-            const response = await axios.post('http://localhost:8080/api/reservations', payload, {
+            const baseUrl = import.meta.env.VITE_API_BASE_URL;
+            const response = await axios.post(`${baseUrl}/api/reservations`, payload, {
               headers: {
                 Authorization: `Bearer ${state.accessToken}`,
               },
@@ -436,7 +437,7 @@ const ProductDetail = () => {
   }, [product]);
   // url para compartir link del producto
   const title = '¡Mira este sitio web!';
-  const url = 'http://localhost:5173/product/' + product?.productId;
+  const url = 'https://storage.googleapis.com/movelt-front/index.html' + product?.productId;
 
   // Si aún no hay vehículos cargados, muestra "Cargando..."
   if (!state.vehicles || state.vehicles.length === 0) {

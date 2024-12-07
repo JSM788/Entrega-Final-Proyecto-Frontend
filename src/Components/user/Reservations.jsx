@@ -25,7 +25,8 @@ export const Reservations = () => {
   useEffect(() => {
     const fetchReservations = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/reservations/history/user', {
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
+        const response = await axios.get(`${baseUrl}/api/reservations/history/user`, {
           params: {
             page: 0,
             size: 10,
