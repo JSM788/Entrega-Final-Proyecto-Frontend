@@ -18,6 +18,7 @@ import ReactDOMServer from 'react-dom/server';
 // Importa el componente AvailableVehicle
 import DoubleCalendar from './AvailableVehicle';
 import styles from '../Components/Styles/Share.module.css';
+import axios from 'axios';
 
 ReactModal.setAppElement('#root');
 
@@ -89,12 +90,12 @@ const ProductDetail = () => {
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
 
-  const { state } = useContextGlobal(); // Acceder al estado global
+  const { state, dispatch } = useContextGlobal(); // Acceder al estado global
   const { isAuth } = state; // Extrae la información de autenticación
   const { id } = useParams();
   const [activeImage, setActiveImage] = useState(null);
   const [showCalendar, setShowCalendar] = useState(false); // Estado para mostrar el calendario
-  const [selectedCity, setSelectedCity] = useState('');// Estado para almacenar la ciudad seleccionada
+  const [selectedCity, setSelectedCity] = useState(''); // Estado para almacenar la ciudad seleccionada
   const [selectedProductId, setSelectedProductId] = useState(null); // Mantener el ID del itemProduct
   const [selectedProduct, setSelectedProduct] = useState(null); // Estado para guardar el producto seleccionado
   const [selectedRange, setSelectedRange] = useState({ from: null, to: null });
@@ -112,14 +113,14 @@ const ProductDetail = () => {
   const handleCityChange = (event) => {
     const cityId = event.target.value;
     setSelectedCity(cityId);
-    console.log("cityId",cityId)
+    console.log('cityId', cityId);
     // Filtrar los productos por la ciudad seleccionada
-    console.log("product.itemProducts",product.itemProducts)
+    console.log('product.itemProducts', product.itemProducts);
     const selectedProduct = product.itemProducts.find((product) => product.city.idCity === parseInt(cityId));
-    console.log("selectedProduct",selectedProduct)
+    console.log('selectedProduct', selectedProduct);
     // Si hay un producto correspondiente, actualizar el id del producto
     if (selectedProduct) {
-      console.log("selectedProduct*",selectedProduct)
+      console.log('selectedProduct*', selectedProduct);
       setSelectedProductId(selectedProduct.id);
       setSelectedProduct(selectedProduct);
     } else {
@@ -148,74 +149,259 @@ const ProductDetail = () => {
       }
 
       // Calcular el monto total de la reserva
-      const daysBooked = (selectedRange.to - selectedRange.from) / (1000 * 3600 * 24); // Diferencia en días
-      const totalAmount = daysBooked * product.pricePerHour * 24; // Asumiendo que el precio es por hora
+      const normalizeToStartOfDay = (date) => {
+        const normalized = new Date(date);
+        normalized.setUTCHours(0, 0, 0, 0); // Normaliza al inicio del día
+        return normalized;
+      };
+
+      // Normaliza las fechas seleccionadas
+      const fromDate = normalizeToStartOfDay(selectedRange.from);
+      const toDate = normalizeToStartOfDay(selectedRange.to || selectedRange.from); // Si no hay `to`, usa `from`
+
+      // Calcula los días reservados (incluye el último día completo)
+      const daysBooked = Math.max(1, Math.ceil((toDate - fromDate) / (1000 * 3600 * 24)) + 1);
+      const totalAmount = daysBooked * product.pricePerDay; // Asumiendo que el precio es por hora
 
       Swal.fire({
-        title: 'Detalles de la Reserva',
+        title: `<span style="color: #00696b;">Detalles de tu reserva</span>`,
         html: `
-        <div style="font-family: Arial, sans-serif; line-height: 1.6">
-          <div style="display: flex; align-items: center; margin-bottom: 20px">
-            <!-- Imagen del producto a la izquierda -->
-            <div style="flex-shrink: 0; margin-right: 20px">
-              <img
-                src="${product.images[0].url}"
-                alt="${product.name}"
-                style="max-width: 150px; border-radius: 10px"
-              />
+          <div style="font-family: Arial, sans-serif; line-height: 1.6">
+            <div class="reservation-details">
+              <!-- Imagen del producto a la izquierda -->
+              <div class="product-image">
+                <img
+                  src="${product.images[0].url}"
+                  alt="${product.name}"
+                  style="max-width: 200px; border-radius: 10px"
+                />
+              </div>
+      
+              <!-- Información del producto a la derecha -->
+              <div class="product-info">
+                <p>
+                  <strong>Vehiculo:</strong>
+                  <span style="color: #00696b">${product.name}</span>
+                </p>
+                <p><strong>Fecha:</strong> <span style="color: #00696b">${selectedRange.from.toLocaleDateString()} - ${selectedRange.to.toLocaleDateString()}</span></p>
+                <p>
+                  <strong>Ciudad de entrega:</strong>
+                  <span style="color: #00696b">
+                    ${selectedProduct.city.cityName} - ${selectedProduct.city.countryName}
+                  </span>
+                </p>
+              </div>
+            </div>
+      
+            <hr style="border: 2px solid #ddd" />
+      
+            <h1 style="margin: 8px 0; text-align: left; color: #00696b;"><strong>Datos de usuario y reservación</strong></h1>
+            <div style="margin: 0 0 15px 10px; text-align: left">
+              <p><strong>Nombre de Usuario:</strong> 
+              <span style="color: #00696b">${state.user.fullName}</span></p>
+              <p><strong>Correo:</strong> 
+              <span style="color: #00696b">${state.user.email}</span></p>
             </div>
 
-            <!-- Información del producto a la derecha -->
-            <div>
-              <p>
-                <strong>Producto:</strong>
-                <span style="color: #2980b9">${product.productId}</span>
-              </p>
-              <p>
-                <strong>Nombre del Producto:</strong>
-                <span style="color: #2980b9">${product.name}</span>
-              </p>
-              <p><strong>Fecha:</strong> <span style="color: #2980b9">${selectedRange.from.toLocaleDateString()} - ${selectedRange.to.toLocaleDateString()}</span></p>
-              <p><strong>Total:</strong> <span style="color: #2980b9">$${totalAmount.toFixed(2)}</span></p>
-            </div>
-          </div>
-
-          <hr style="border: 1px solid #ddd" />
-
-          <div style="margin-bottom: 15px">
-            <p><strong>Nombre del Usuario:</strong> ${state.user.fullName}</p>
-            <p><strong>Correo:</strong> ${state.user.email}</p>
-          </div>
-
-          <div style="margin-bottom: 15px">
-            <p>
-              <strong>Ubicación del Producto:</strong> ${selectedProduct.city.cityName}
-              - ${selectedProduct.city.countryName}
+            <p class="texto-detalles" style="text-align: left; color: #00696b; margin-bottom: 5px;">
+              "Revisa los detalles antes de confirmar tu reserva. ¡Nos aseguraremos de que tu vehículo esté listo!"
             </p>
-            <p><strong>Serial del Producto:</strong> ${selectedProduct.nro_serial}</p>
-            <p><strong>Color:</strong> ${selectedProduct.color}</p>
-            <p><strong>ID del Producto:</strong> ${selectedProduct.id}</p>
+      
+            <!-- Sección oculta inicialmente -->
+            <div id="extra-info" style="margin: 0 0 15px 10px; text-align: left; display: none;">
+              <p><strong>Costo Total:</strong> <span style="color: #00696b">$${totalAmount.toFixed(2)}</span></p>
+              <p><strong>N° de serie:</strong>
+              <span style="color: #00696b">${selectedProduct.nro_serial}</span></p>
+              <p><strong>Color:</strong>
+              <span style="color: #00696b">${selectedProduct.color}</span></p>
+              <p><strong>ID del Producto:</strong>
+              <span style="color: #00696b">${selectedProduct.id}</span></p> 
+              <p><strong>Descripción:</strong>
+              <span style="color: #00696b">${product.description}</span></p>
+            </div>
+      
+            <!-- Texto interactivo -->
+            <p class="texto-detalles" id="toggle-text" style="cursor: pointer; color: #2980b9; text-decoration: underline; text-align: center;">
+              Ver más detalles
+            </p>
           </div>
-        </div>
-
-      `,
-        //mostrar la fecha seleccionada
-        // mostrar calcular segun los dias seleccionados el monto total de la reserva
+        `,
         confirmButtonText: 'Confirmar Reserva',
         confirmButtonColor: '#32CEB1',
         showCancelButton: true,
         cancelButtonText: 'Cancelar',
         cancelButtonColor: '#D9534F',
-      }).then((result) => {
+        customClass: {
+          popup: 'custom-swal-popup',
+          confirmButton: 'swal-confirm-button',
+          cancelButton: 'swal-cancel-button',
+        },
+        didRender: () => {
+          const toggleText = document.getElementById('toggle-text');
+          const extraInfo = document.getElementById('extra-info');
+
+          toggleText.addEventListener('click', () => {
+            const isVisible = extraInfo.style.display === 'block';
+            extraInfo.style.display = isVisible ? 'none' : 'block';
+            toggleText.textContent = isVisible ? 'Ver más detalles' : 'Ver menos';
+          
+            const paragraph = document.querySelector('.texto-detalles');
+            if (!isVisible) {
+              extraInfo.appendChild(paragraph); 
+              paragraph.style.marginTop = '25px'; 
+            } else {
+              extraInfo.parentElement.insertBefore(paragraph, extraInfo.nextSibling);
+              paragraph.style.marginTop = '0';
+            }
+          });
+
+          const style = document.createElement('style');
+          style.innerHTML = `
+            .custom-swal-popup {
+              max-width: 800px !important;
+              width: 90% !important;
+              padding: 20px !important;
+            }
+
+            .reservation-details {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 35px;
+              background-color: #e4f0f0;
+              padding: 15px 8px;
+              margin-bottom: 8px;
+            }
+
+            .product-image {
+              flex-shrink: 0;
+            }
+
+            .product-info {
+              text-align: left;
+            }
+
+            @media (max-width: 768px) {
+              .reservation-details {
+                flex-direction: column;
+                text-align: center;
+              }
+
+              .product-image img {
+                margin-bottom: 10px;
+              }
+
+              .product-info {
+                text-align: center;
+              }
+
+              .texto-detalles {
+                font-size: 13px;
+              }
+            }
+
+            .swal2-actions {
+              display: flex !important; 
+              justify-content: center; 
+              gap: 10px; 
+              margin: 10px 0 20px 0;
+            }
+
+            .swal-confirm-button, .swal-cancel-button {
+              flex: 1; 
+              padding: 5px; 
+              font-size: 16px; 
+              border-radius: 5px; 
+            }
+          `;
+          document.head.appendChild(style);
+        },
+      }).then(async (result) => {
         if (result.isConfirmed) {
           // Lógica para procesar la reserva (hacer una llamada a la API de reservas POST)
-          Swal.fire({
-            icon: 'success',
-            title: '¡Reserva Confirmada!',
-            text: 'Tu reserva ha sido realizada con éxito.',
-            showConfirmButton: false,
-            timer: 2000,
-          });
+          const payload = {
+            itemProductId: selectedProduct.id,
+            startDate: selectedRange.from.toISOString().split('T')[0],
+            endDate: selectedRange.to.toISOString().split('T')[0]
+          };
+          try {
+            const response = await axios.post('http://localhost:8080/api/reservations', payload, {
+              headers: {
+                Authorization: `Bearer ${state.accessToken}`,
+              },
+            });
+            dispatch({ type: 'ADD_RESERVATION', payload: response.data });
+            Swal.fire({
+              title: 'Reserva confirmada con éxito',
+              html: `
+                <p style="text-align: center; margin-bottom: 20px;">
+                  Hemos enviado todos los detalles a tu correo.
+                  Si necesitas más información, puedes revisarla en tu lista de reservas.
+                  ¡Gracias por confiar en nosotros!
+                </p>
+              `,
+              showCancelButton: true,
+              confirmButtonText: 'OK, cerrar ventana',
+              cancelButtonText: 'Ir a reservas',
+              focusConfirm: false,
+              customClass: {
+                cancelButton: 'btn-ir-a-reservas', 
+                confirmButton: 'btn-ok-cerrar', 
+                title: 'title-centered', 
+                htmlContainer: 'html-centered', 
+              },
+              preCancel: () => {
+                console.log("Redireccionando a lista de reservas..");
+                // navigate('/...'); // redirigir al listado de reservas
+                return false; 
+              },
+              buttonsStyling: false, 
+              willOpen: () => {
+                const cancelButton = document.querySelector('.swal2-cancel');
+                cancelButton.style.backgroundColor = '#00696b';
+                cancelButton.style.color = 'white';
+                cancelButton.style.border = 'none';
+                cancelButton.style.padding = '10px 20px';
+                cancelButton.style.fontSize = '16px';
+                cancelButton.style.borderRadius = '5px';
+                cancelButton.style.marginRight = '10px'; 
+
+                cancelButton.addEventListener('mouseenter', () => {
+                  cancelButton.style.backgroundColor = '#004d49'; 
+                });
+
+                cancelButton.addEventListener('mouseleave', () => {
+                  cancelButton.style.backgroundColor = '#00696b'; 
+                });
+
+                const confirmButton = document.querySelector('.swal2-confirm');
+                confirmButton.style.backgroundColor = '#32CEB1';
+                confirmButton.style.color = 'white';
+                confirmButton.style.border = 'none';
+                confirmButton.style.padding = '10px 20px';
+                confirmButton.style.fontSize = '16px';
+                confirmButton.style.borderRadius = '5px';
+                confirmButton.style.marginLeft = '10px'; 
+
+                confirmButton.addEventListener('mouseenter', () => {
+                  confirmButton.style.backgroundColor = '#28b3a0'; 
+                });
+
+                confirmButton.addEventListener('mouseleave', () => {
+                  confirmButton.style.backgroundColor = '#32CEB1'; 
+                });
+              }
+            });            
+          } catch (error) {
+            console.log(error);
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: 'El vehiculo no tiene fechas de reserva disponibles.',
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
         }
       });
     }
@@ -223,15 +409,14 @@ const ProductDetail = () => {
 
   // Filtrar el producto específico desde el array vehicles en el contexto global
   const product = state.vehicles.find((vehicle) => vehicle.productId === Number(id));
-  console.log(product);
 
   useEffect(() => {
     if (product?.images?.length > 0) {
-      setActiveImage(product.images[0].url); // Primera imagen como activa
+      setActiveImage(product.images[0].url);
     }
   }, [product]);
   // url para compartir link del producto
-  const title = '¡Mira este sitio web!'; // Título o mensaje a compartir
+  const title = '¡Mira este sitio web!';
   const url = 'http://localhost:5173/product/' + product?.productId;
 
   if (!product) return <div>Producto no encontrado</div>;
@@ -265,6 +450,7 @@ const ProductDetail = () => {
                 <DoubleCalendar
                   productId={selectedProductId}
                   onDateSelect={handleDateSelect}
+                  selectedCity={selectedCity}
                 />
               )}
             </div>
@@ -291,18 +477,18 @@ const ProductDetail = () => {
               alignItems: 'center',
               justifyContent: 'center',
               flexDirection: 'column',
-              width: '400px', // Ancho del modal
-              height: '400px', // Alto automático
-              maxWidth: '90%', // Ancho máximo relativo a la pantalla
-              margin: 'auto', // Centrado
-              padding: '20px', // Espaciado interno
-              borderRadius: '10px', // Bordes redondeados
-              backgroundColor: '#fff', // Color de fondo
-              zIndex: -1, //overlay
+              width: '400px',
+              height: '400px',
+              maxWidth: '90%',
+              margin: 'auto',
+              padding: '20px',
+              borderRadius: '10px',
+              backgroundColor: '#fff',
+              zIndex: -1,
               gap: '20px',
             },
             overlay: {
-              backgroundColor: 'rgba(0, 0, 0, 0.5)', // Color del fondo del overlay
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
             },
           }}
         >

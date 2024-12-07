@@ -3,7 +3,7 @@ import axios from 'axios';
 import { DayPicker } from 'react-day-picker';
 import Swal from 'sweetalert2';
 import 'react-day-picker/style.css';
-import { es } from 'date-fns/locale'; // Importa el idioma español desde date-fns
+import { es } from 'date-fns/locale';
 import '../Components/Styles/DoubleCalendar.css';
 import { useContextGlobal } from '../Components/utils/global.context';
 
@@ -13,15 +13,20 @@ const getStartOfDayUTC = (dateString) => {
   return new Date(Date.UTC(year, month - 1, day));
 };
 
-const DoubleCalendar = ({ productId, onDateSelect }) => {
-  const { state } = useContextGlobal(); // Extrae el estado global
-  const { isAuth } = state; // Verifica la autenticación
+const DoubleCalendar = ({ productId, onDateSelect, selectedCity }) => {
+  const { state } = useContextGlobal();
+  const { isAuth } = state;
   const [showCalendar, setShowCalendar] = useState(false);
   const [bookedRanges, setBookedRanges] = useState([]);
   const [errorLoading, setErrorLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedRange, setSelectedRange] = useState({ from: null, to: null });
   const calendarRef = useRef(null);
+
+  useEffect(() => {
+    setSelectedRange({ from: null, to: null });
+    if (onDateSelect) onDateSelect({ from: null, to: null });
+  }, [selectedCity]);
 
   const tomorrow = new Date();
   tomorrow.setUTCHours(0, 0, 0, 0);
@@ -35,23 +40,19 @@ const DoubleCalendar = ({ productId, onDateSelect }) => {
 
   const getCalendar = async () => {
     setLoading(true);
-    setErrorLoading(false); // Reinicia el estado de error al intentar de nuevo
-    // Limpia las reservas cuando no hay calendario
+    setErrorLoading(false);
+
     if (!productId) {
       setBookedRanges([]);
     }
 
     try {
-      const response = await axios.get(
-        `http://localhost:8080/api/reservations/calendar/${productId}`, // URL dinámica
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
+      const response = await axios.get(`http://localhost:8080/api/reservations/calendar/${productId}`, {
+        headers: {
+          'Content-Type': 'application/json',
         },
-      );
+      });
 
-      // Si no hay calendario, limpia las reservas
       if (!response.data || !response.data.calendar) {
         setBookedRanges([]);
       } else {
@@ -80,8 +81,8 @@ const DoubleCalendar = ({ productId, onDateSelect }) => {
           }
         },
       });
-      setErrorLoading(true); // Marca el estado como error
-      setBookedRanges([]); // Limpia las reservas si hay un error
+      setErrorLoading(true);
+      setBookedRanges([]);
     } finally {
       setLoading(false);
     }
@@ -89,7 +90,7 @@ const DoubleCalendar = ({ productId, onDateSelect }) => {
 
   useEffect(() => {
     if (productId) {
-      getCalendar(); // Llama a la API solo si `productId` está definido
+      getCalendar();
     }
   }, [productId]);
   const handleInputClick = () => {
@@ -129,13 +130,29 @@ const DoubleCalendar = ({ productId, onDateSelect }) => {
       });
       return;
     }
+
     if (range?.from && range?.to) {
-      setSelectedRange(range); // Actualiza el estado con el rango seleccionado
-      console.log('Rango de fechas seleccionado:', range);
-      // Llamar a la función del padre para pasar el rango seleccionado
+      // Validar si el rango seleccionado incluye fechas reservadas
+      const isInvalidRange = bookedRanges.some(
+        (reserved) => range.from <= reserved.to && range.to >= reserved.from, // Chequea si hay solapamiento
+      );
+
+      if (isInvalidRange) {
+        Swal.fire({
+          title: 'El rango seleccionado incluye fechas reservadas.',
+          icon: 'warning',
+          toast: true,
+          position: 'top-right',
+          timer: 2000,
+          showConfirmButton: false,
+        });
+        return;
+      }
+
+      setSelectedRange(range);
       if (onDateSelect) onDateSelect(range);
     } else if (range?.from) {
-      setSelectedRange({ from: range.from, to: null }); // Selecciona solo la fecha de inicio
+      setSelectedRange({ from: range.from, to: null });
       if (onDateSelect) onDateSelect({ from: range.from, to: null });
     }
   };
@@ -190,15 +207,13 @@ const DoubleCalendar = ({ productId, onDateSelect }) => {
         )}
       </div>
       {showCalendar && (
-        <div
-          className="container-calendar absolute z-10 bg-[#E3E3E3] border border-gray-300 shadow-lg rounded-lg p-6 mt-6 w-[700px]" // Ajustamos el ancho
-        >
+        <div className="container-calendar absolute z-10 bg-[#E3E3E3] border border-gray-300 shadow-lg rounded-lg p-6 mt-6 w-[700px]">
           <DayPicker
             numberOfMonths={2}
             mode="range"
-            locale={es} // Configura el calendario en español
+            locale={es}
             selected={selectedRange}
-            onSelect={handleDateSelect} // Llama a la función cuando el usuario selecciona un rango
+            onSelect={handleDateSelect}
             modifiers={{
               reserved: bookedRanges,
               selectedRange, // Agrega el rango seleccionado como modificador
@@ -206,14 +221,32 @@ const DoubleCalendar = ({ productId, onDateSelect }) => {
                 isFutureRange(date) && !bookedRanges.some((range) => date >= range.from && date <= range.to),
             }}
             modifiersClassNames={{
-              reserved: 'bg-[#79747E] text-white rounded-full font-bold', // Clases de Material Tailwind
+              reserved: 'bg-[#79747E] text-white rounded-full font-bold',
               selectedRange: '!bg-mintTeal !text-customBlack rounded-full font-bold', // Estilo verde para el rango seleccionado
               available: '', // Opcional, para fechas disponibles
               // disabled: 'bg-[#79747E] text-white rounded-full font-bold', // Para fechas deshabilitadas
               disabled: 'text-[#79747E] rounded-full font-bold', // Para fechas deshabilitadas
             }}
-            disabled={(date) => !isFutureRange(date)}
+            disabled={[
+              ...bookedRanges, // Usar los rangos reservados como fechas deshabilitadas
+              (date) => !isFutureRange(date), // Otras condiciones adicionales
+            ]}
           />
+          {/* Botón para limpiar fechas */}
+          <button
+            className={`mt-4 p-2 rounded-lg font-semibold shadow-md ${
+              selectedRange.from || selectedRange.to
+                ? 'bg-[#32CEB1] text-white'
+                : 'bg-gray-400 text-gray-700'
+            }`}
+            onClick={() => {
+              setSelectedRange({ from: null, to: null });
+              if (onDateSelect) onDateSelect({ from: null, to: null });
+            }}
+            disabled={!selectedRange.from && !selectedRange.to}
+          >
+            Limpiar Fechas
+          </button>
         </div>
       )}
     </div>
