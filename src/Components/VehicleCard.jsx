@@ -188,7 +188,11 @@ export const VehicleCard = (props) => {
         />
       </div>
       <div className="flex justify-evenly gap-3 mb-4">
-        <Link to={`/product/${vehicle.productId}`} className="w-full">
+        <Link 
+          to={`/product/${vehicle.productId}`} 
+          className="w-full"
+          state={{ city: vehicle.itemProducts.length === 1 ? vehicle.itemProducts[0].city : null }}
+        >
           <Button size="sm" color="gray" className="w-full">
             VER MÁS
           </Button>
