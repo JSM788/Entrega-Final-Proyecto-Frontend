@@ -125,12 +125,15 @@ const DoubleCalendar = ({ productId, onDateSelect, selectedCity }) => {
   const handleDateSelect = (range) => {
     if (!isAuth) {
       Swal.fire({
-        title: 'Inicia sesión para seleccionar fechas',
-        icon: 'info',
-        toast: true,
-        position: 'top-right',
-        timer: 2000,
-        showConfirmButton: false,
+        html: `
+        <p class="text-[#79747E]">Para continuar, por favor inicia sesión en tu cuenta. ¿No tienes una cuenta? <a href="/singIn" class="text-[#32ceb1]">Regístrate aquí</a></p>
+      `,
+        showCloseButton: true,
+        confirmButtonColor: '#32CEB1',
+        confirmButtonText: 'INICIAR SESIÓN',
+        preConfirm: () => {
+          window.location.href = '/login';
+        },
       });
       return;
     }
@@ -143,12 +146,18 @@ const DoubleCalendar = ({ productId, onDateSelect, selectedCity }) => {
 
       if (isInvalidRange) {
         Swal.fire({
-          title: 'El rango seleccionado incluye fechas reservadas.',
-          icon: 'warning',
+          title: 'La fecha seleccionada no está disponible. Por favor, elige otro rango de fechas.',
           toast: true,
           position: 'top-right',
-          timer: 2000,
           showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          didOpen: () => {
+            const progressBar = document.querySelector('.swal2-timer-progress-bar');
+            if (progressBar) {
+              progressBar.style.backgroundColor = '#D9534F';
+            }
+          },
         });
         return;
       }
@@ -239,9 +248,7 @@ const DoubleCalendar = ({ productId, onDateSelect, selectedCity }) => {
           {/* Botón para limpiar fechas */}
           <button
             className={`mt-4 p-2 rounded-lg font-semibold shadow-md ${
-              selectedRange.from || selectedRange.to
-                ? 'bg-[#32CEB1] text-white'
-                : 'bg-gray-400 text-gray-700'
+              selectedRange.from || selectedRange.to ? 'bg-[#32CEB1] text-white' : 'bg-gray-400 text-gray-700'
             }`}
             onClick={() => {
               setSelectedRange({ from: null, to: null });

@@ -103,7 +103,7 @@ const ProductDetail = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const cityFromLink = location.state?.city; 
+  const cityFromLink = location.state?.city;
 
   const handleDateSelect = (range) => {
     if (range?.from && range?.to) {
@@ -149,14 +149,20 @@ const ProductDetail = () => {
       navigate('/login');
     } else {
       // Si está autenticado, continúa con el proceso de reserva
-      console.log('Usuario autenticado, iniciar reserva...');
       if (!selectedCity || !selectedProductId || !selectedRange.from || !selectedRange.to) {
         Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Selecciona una ciudad y un rango de fechas antes de continuar.',
+          title: 'Por favor, selecciona una ciudad y un rango de fechas para realizar tu reserva.',
+          toast: true,
+          position: 'top-right',
           showConfirmButton: false,
           timer: 2000,
+          timerProgressBar: true,
+          didOpen: () => {
+            const progressBar = document.querySelector('.swal2-timer-progress-bar');
+            if (progressBar) {
+              progressBar.style.backgroundColor = '#D9534F';
+            }
+          },
         });
         return;
       }
@@ -257,11 +263,11 @@ const ProductDetail = () => {
             const isVisible = extraInfo.style.display === 'block';
             extraInfo.style.display = isVisible ? 'none' : 'block';
             toggleText.textContent = isVisible ? 'Ver más detalles' : 'Ver menos';
-          
+
             const paragraph = document.querySelector('.texto-detalles');
             if (!isVisible) {
-              extraInfo.appendChild(paragraph); 
-              paragraph.style.marginTop = '25px'; 
+              extraInfo.appendChild(paragraph);
+              paragraph.style.marginTop = '25px';
             } else {
               extraInfo.parentElement.insertBefore(paragraph, extraInfo.nextSibling);
               paragraph.style.marginTop = '0';
@@ -335,7 +341,7 @@ const ProductDetail = () => {
           const payload = {
             itemProductId: selectedProduct.id,
             startDate: selectedRange.from.toISOString().split('T')[0],
-            endDate: selectedRange.to.toISOString().split('T')[0]
+            endDate: selectedRange.to.toISOString().split('T')[0],
           };
           try {
             const response = await axios.post('http://localhost:8080/api/reservations', payload, {
@@ -358,17 +364,17 @@ const ProductDetail = () => {
               cancelButtonText: 'Ir a reservas',
               focusConfirm: false,
               customClass: {
-                cancelButton: 'btn-ir-a-reservas', 
-                confirmButton: 'btn-ok-cerrar', 
-                title: 'title-centered', 
-                htmlContainer: 'html-centered', 
+                cancelButton: 'btn-ir-a-reservas',
+                confirmButton: 'btn-ok-cerrar',
+                title: 'title-centered',
+                htmlContainer: 'html-centered',
               },
               preCancel: () => {
-                console.log("Redireccionando a lista de reservas..");
+                console.log('Redireccionando a lista de reservas..');
                 // navigate('/...'); // redirigir al listado de reservas
-                return false; 
+                return false;
               },
-              buttonsStyling: false, 
+              buttonsStyling: false,
               willOpen: () => {
                 const cancelButton = document.querySelector('.swal2-cancel');
                 cancelButton.style.backgroundColor = '#00696b';
@@ -377,14 +383,14 @@ const ProductDetail = () => {
                 cancelButton.style.padding = '10px 20px';
                 cancelButton.style.fontSize = '16px';
                 cancelButton.style.borderRadius = '5px';
-                cancelButton.style.marginRight = '10px'; 
+                cancelButton.style.marginRight = '10px';
 
                 cancelButton.addEventListener('mouseenter', () => {
-                  cancelButton.style.backgroundColor = '#004d49'; 
+                  cancelButton.style.backgroundColor = '#004d49';
                 });
 
                 cancelButton.addEventListener('mouseleave', () => {
-                  cancelButton.style.backgroundColor = '#00696b'; 
+                  cancelButton.style.backgroundColor = '#00696b';
                 });
 
                 const confirmButton = document.querySelector('.swal2-confirm');
@@ -394,17 +400,17 @@ const ProductDetail = () => {
                 confirmButton.style.padding = '10px 20px';
                 confirmButton.style.fontSize = '16px';
                 confirmButton.style.borderRadius = '5px';
-                confirmButton.style.marginLeft = '10px'; 
+                confirmButton.style.marginLeft = '10px';
 
                 confirmButton.addEventListener('mouseenter', () => {
-                  confirmButton.style.backgroundColor = '#28b3a0'; 
+                  confirmButton.style.backgroundColor = '#28b3a0';
                 });
 
                 confirmButton.addEventListener('mouseleave', () => {
-                  confirmButton.style.backgroundColor = '#32CEB1'; 
+                  confirmButton.style.backgroundColor = '#32CEB1';
                 });
-              }
-            });            
+              },
+            });
           } catch (error) {
             console.log(error);
             Swal.fire({
@@ -432,7 +438,15 @@ const ProductDetail = () => {
   const title = '¡Mira este sitio web!';
   const url = 'http://localhost:5173/product/' + product?.productId;
 
-  if (!product) return <div>Producto no encontrado</div>;
+  // Si aún no hay vehículos cargados, muestra "Cargando..."
+  if (!state.vehicles || state.vehicles.length === 0) {
+    return <div>Cargando...</div>;
+  }
+
+  // Si ya cargaron los vehículos pero el producto no fue encontrado
+  if (!product) {
+    return <div>Producto no encontrado</div>;
+  }
   return (
     <div className="w-full min-h-screen">
       <header className="m-auto flex sm:flex-row flex-col gap-4 items-start sm:items-center py-4 px-7 w-full">
@@ -442,8 +456,9 @@ const ProductDetail = () => {
         <div className="flex flex-col w-full items-start ml-0 sm:ml-12">
           <h4 className="text-lg	text-customBlack">{product.category.categoryName.toUpperCase()}</h4>
           <h3 className="text-2xl text-black font-semibold text-left flex-grow">{product.name}</h3>
-          <div className="flex flex-col w-full">
+          <div className="flex flex-col w-full pt-2">
             <h4 className="text-left text-black font-bold">Disponibilidad:</h4>
+            <span className="text-left text-black">*Visualiza la disponibilidad según la ciudad de recojo </span>
             <div className="flex gap-2 w-full flex-col lg:flex-row">
               <select
                 name="cities"
