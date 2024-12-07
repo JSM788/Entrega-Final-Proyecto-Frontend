@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { Card, Typography, Button } from "@material-tailwind/react";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import { HeartIcon as FilledHeart } from "@heroicons/react/24/solid";
-import { HeartIcon as OutlineHeart } from "@heroicons/react/24/outline";
-import Swal from "sweetalert2";
+import { useEffect, useState } from 'react';
+import { Card, Typography, Button } from '@material-tailwind/react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
+import { HeartIcon as FilledHeart } from '@heroicons/react/24/solid';
+import { HeartIcon as OutlineHeart } from '@heroicons/react/24/outline';
+import Swal from 'sweetalert2';
 
 export const VehicleCard = (props) => {
   const { vehicle, state, favoriteList, onRemoveVehicle } = props;
@@ -14,7 +14,7 @@ export const VehicleCard = (props) => {
     console.error("Datos del vehículo faltantes o inválidos:", vehicle);
     return null; // No renderizar si `vehicle` o `productId` son nulos
   }
-  
+
   const handleRemoveVehicle = () => {
     // Llamar a la función del padre (onRemoveVehicle)
     onRemoveVehicle(vehicle.productId);
@@ -22,21 +22,19 @@ export const VehicleCard = (props) => {
 
   useEffect(() => {
     // Verificamos si el vehículo ya está en la lista de favoritos
-    setIsFavorite(
-      favoriteList.some((favorite) => favorite.productId === vehicle.productId)
-    );
+    setIsFavorite(favoriteList.some((favorite) => favorite.productId === vehicle.productId));
   }, [favoriteList, vehicle.productId]);
 
   const deleteVehicleFavorites = async (item) => {
     const result = await Swal.fire({
-      title: "Eliminar de favoritos",
+      title: 'Eliminar de favoritos',
       html: `¿Desea eliminar <strong>${item.name.toUpperCase()}</strong> de tu lista de favoritos?`,
       showCloseButton: true,
       showCancelButton: true,
-      confirmButtonColor: "#32CEB1",
-      cancelButtonColor: "#D9534F",
-      confirmButtonText: "Confirmar",
-      cancelButtonText: "Cancelar",
+      confirmButtonColor: '#32CEB1',
+      cancelButtonColor: '#D9534F',
+      confirmButtonText: 'Confirmar',
+      cancelButtonText: 'Cancelar',
     });
 
     if (result.isConfirmed) {
@@ -54,15 +52,17 @@ export const VehicleCard = (props) => {
 
         if (response.status === 200) {
           Swal.fire({
-            position: "top-end",
-            html: `
-              <div style="width: 100%; height: 5px; background-color: #4caf50; margin-bottom: 10px; border-radius:10px;"></div>
-              <p class="text-left">"El producto fue eliminado de tu lista de favoritos." </p>
-            `,
+            title: 'El producto fue eliminado de tu lista de favoritos.',
+            toast: true,
+            position: 'top-right',
             showConfirmButton: false,
             timer: 2000,
-            customClass: {
-              popup: "max-w-sm w-full p-4",
+            timerProgressBar: true,
+            didOpen: () => {
+              const progressBar = document.querySelector('.swal2-timer-progress-bar');
+              if (progressBar) {
+                progressBar.style.backgroundColor = '#4caf50';
+              }
             },
           });
           setIsFavorite(false);
@@ -70,19 +70,21 @@ export const VehicleCard = (props) => {
             handleRemoveVehicle();
           }
         } else {
-          throw new Error("No se pudo eliminar de favoritos");
+          throw new Error('No se pudo eliminar de favoritos');
         }
       } catch (error) {
         Swal.fire({
-          position: "top-end",
-          html: `
-              <div style="width: 100%; height: 5px; background-color: #D9534F; margin-bottom: 10px; border-radius:10px;"></div>
-              <p class="text-left">"Error al eliminar el producto. Por favor, vuelve a intentarlo." </p>
-            `,
+          title: 'Error al eliminar el producto. Por favor, vuelve a intentarlo.',
+          toast: true,
+          position: 'top-right',
           showConfirmButton: false,
           timer: 2000,
-          customClass: {
-            popup: "max-w-sm w-full p-4",
+          timerProgressBar: true,
+          didOpen: () => {
+            const progressBar = document.querySelector('.swal2-timer-progress-bar');
+            if (progressBar) {
+              progressBar.style.backgroundColor = '#D9534F';
+            }
           },
         });
       }
@@ -110,32 +112,38 @@ export const VehicleCard = (props) => {
       if (response.status === 200 || response.status === 201) {
         setIsFavorite(true);
         Swal.fire({
-          position: "top-end",
           html: `
-              <div style="width: 100%; height: 5px; background-color: #4caf50; margin-bottom: 10px; border-radius:10px;"></div>
               <p class="text-left">¡Éxito! Ahora está en tus favoritos.</p>
               <p class="text-left">${item.name.toUpperCase()}</p>
             `,
+          toast: true,
+          position: 'top-right',
           showConfirmButton: false,
           timer: 2000,
-          customClass: {
-            popup: "max-w-sm w-full p-4",
+          timerProgressBar: true,
+          didOpen: () => {
+            const progressBar = document.querySelector('.swal2-timer-progress-bar');
+            if (progressBar) {
+              progressBar.style.backgroundColor = '#4caf50';
+            }
           },
         });
       } else {
-        throw new Error("No se pudo agregar a favoritos");
+        throw new Error('No se pudo agregar a favoritos');
       }
     } catch (error) {
       Swal.fire({
-        position: "top-end",
-        html: `
-            <div style="width: 100%; height: 5px; background-color: #D9534F; margin-bottom: 10px; border-radius:10px;"></div>
-            <p class="text-left">"No se pudo añadir a favoritos. Inténtalo de nuevo."</p>
-          `,
+        title: 'No se pudo añadir a favoritos. Inténtalo de nuevo.',
+        toast: true,
+        position: 'top-right',
         showConfirmButton: false,
         timer: 2000,
-        customClass: {
-          popup: "max-w-sm w-full p-4",
+        timerProgressBar: true,
+        didOpen: () => {
+          const progressBar = document.querySelector('.swal2-timer-progress-bar');
+          if (progressBar) {
+            progressBar.style.backgroundColor = '#4caf50';
+          }
         },
       });
     }
@@ -153,18 +161,14 @@ export const VehicleCard = (props) => {
     <Card
       className="p-4 rounded-[20px] bg-[#f9f9f9] shadow border"
       style={{
-        "--tw-border-opacity": 1,
-        borderColor: "rgba(98, 91, 113, 0.16)",
-        boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+        '--tw-border-opacity': 1,
+        borderColor: 'rgba(98, 91, 113, 0.16)',
+        boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
       }}
     >
       <div className="flex justify-between items-center mb-2">
         <div className="flex">
-          <Typography
-            variant="small"
-            color="blue-gray"
-            className="font-bold w-full uppercase"
-          >
+          <Typography variant="small" color="blue-gray" className="font-bold w-full uppercase">
             {vehicle.name}
           </Typography>
         </div>
@@ -174,29 +178,19 @@ export const VehicleCard = (props) => {
           <button
             onClick={() => toggleFavorite(vehicle)}
             className={`transition-colors duration-300 ${
-              isFavorite
-                ? "text-red-500 hover:text-red-700"
-                : "text-black hover:text-gray-600"
+              isFavorite ? 'text-red-500 hover:text-red-700' : 'text-black hover:text-gray-600'
             }`}
           >
-            {isFavorite ? (
-              <FilledHeart className="h-6 w-6" />
-            ) : (
-              <OutlineHeart className="h-6 w-6" />
-            )}
+            {isFavorite ? <FilledHeart className="h-6 w-6" /> : <OutlineHeart className="h-6 w-6" />}
           </button>
         )}
       </div>
       <div className="flex justify-center mb-4">
-        <img
-          src={vehicle.images[0]?.url}
-          alt="Vehículo eléctrico"
-          className="h-36 w-full object-contain"
-        />
+        <img src={vehicle.images[0]?.url} alt="Vehículo eléctrico" className="h-36 w-full object-contain" />
       </div>
       <div className="flex justify-evenly gap-3 mb-4">
-        <Link 
-          to={`/product/${vehicle.productId}`} 
+        <Link
+          to={`/product/${vehicle.productId}`}
           className="w-full"
           state={{ city: vehicle.itemProducts.length === 1 ? vehicle.itemProducts[0].city : null }}
         >
