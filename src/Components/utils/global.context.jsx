@@ -8,6 +8,8 @@ const ContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const endpointProducts = "http://localhost:8080/api/products";
 
+  console.log(state.reservations);
+
   const reloadVehicles = () => {
     dispatch({ type: "SET_IS_LOADING_VEHICLES", payload: true });
     axios(endpointProducts)
@@ -27,7 +29,10 @@ const ContextProvider = ({ children }) => {
     localStorage.setItem("login", JSON.stringify(state.isAuth));
     localStorage.setItem("user", JSON.stringify(state.user));
     localStorage.setItem("accessToken", state.accessToken || "");
-  }, [state.isAuth, state.user, state.accessToken]);
+    if (Array.isArray(state.reservations)) {
+      localStorage.setItem("reservations", JSON.stringify(state.reservations));
+    }
+  }, [state.isAuth, state.user, state.accessToken, state.reservations]);
 
   return <ContextGlobal.Provider value={{ state, dispatch, reloadVehicles }}>{children}</ContextGlobal.Provider>;
 };
