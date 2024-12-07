@@ -15,6 +15,7 @@ export const FavoritesProducts = () => {
   const fetchFavorites = async () => {
     setLoading(true);
     try {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
       const response = await axios.get(
         `${baseUrl}/api/favorites/${state.user.id}`,
         {
