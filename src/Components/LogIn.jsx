@@ -43,7 +43,7 @@ const LoginForm = () => {
     }
 
     try {
-      const baseUrl = import.meta.env.BASE_URL;
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
       const response = await axios.post(`${baseUrl}/api/auth/login`, loginData)
       console.log(response.data)
       if (response.status === 200) {
