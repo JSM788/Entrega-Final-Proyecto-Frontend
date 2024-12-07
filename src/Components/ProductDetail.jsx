@@ -102,6 +102,9 @@ const ProductDetail = () => {
   const [selectedRange, setSelectedRange] = useState({ from: null, to: null });
   const navigate = useNavigate();
 
+  console.log(state.user);
+  
+
   const location = useLocation();
   const cityFromLink = location.state?.city;
 
@@ -337,6 +340,14 @@ const ProductDetail = () => {
         },
       }).then(async (result) => {
         if (result.isConfirmed) {
+          Swal.fire({
+            title: 'Procesando Reserva...',
+            text: 'Por favor, espera un momento mientras confirmamos tu reserva.',
+            showConfirmButton: false,
+            didOpen: () => {
+              Swal.showLoading(); // Muestra el indicador de carga
+            }
+          });
           // Lógica para procesar la reserva (hacer una llamada a la API de reservas POST)
           const payload = {
             itemProductId: selectedProduct.id,
@@ -351,11 +362,13 @@ const ProductDetail = () => {
               },
             });
             dispatch({ type: 'ADD_RESERVATION', payload: response.data });
+            setSelectedCity('');
+            Swal.close();
             Swal.fire({
               title: 'Reserva confirmada con éxito',
               html: `
                 <p style="text-align: center; margin-bottom: 20px;">
-                  Hemos enviado todos los detalles a tu correo.
+                  Hemos enviado todos los detalles a tu correo <strong>${state.user.email}</strong>.
                   Si necesitas más información, puedes revisarla en tu lista de reservas.
                   ¡Gracias por confiar en nosotros!
                 </p>
@@ -369,11 +382,6 @@ const ProductDetail = () => {
                 confirmButton: 'btn-ok-cerrar',
                 title: 'title-centered',
                 htmlContainer: 'html-centered',
-              },
-              preCancel: () => {
-                console.log('Redireccionando a lista de reservas..');
-                // navigate('/...'); // redirigir al listado de reservas
-                return false;
               },
               buttonsStyling: false,
               willOpen: () => {
@@ -411,13 +419,17 @@ const ProductDetail = () => {
                   confirmButton.style.backgroundColor = '#32CEB1';
                 });
               },
-            });
+            }).then((result) => {
+              if (result.isDismissed) {
+                navigate('/reservations');
+              }
+            })
           } catch (error) {
-            console.log(error);
+            Swal.close();
             Swal.fire({
               icon: 'error',
               title: 'Error',
-              text: 'El vehiculo no tiene fechas de reserva disponibles.',
+              text: 'Hubo un problema de conexón, por favor intentelo mas tarde.',
               showConfirmButton: false,
               timer: 2000,
             });
