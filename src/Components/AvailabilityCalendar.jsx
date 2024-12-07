@@ -16,8 +16,8 @@ const AvailabilityCalendar = ({ productId }) => {
       const token = localStorage.getItem("accessToken");
 
       console.log(`Requesting reservations for product ${productId}...`);
-
-      const response = await axios.get(`http://localhost:8080/api/reservations/calendar/${productId}`, {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
+      const response = await axios.get(`${baseUrl}/api/reservations/calendar/${productId}`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

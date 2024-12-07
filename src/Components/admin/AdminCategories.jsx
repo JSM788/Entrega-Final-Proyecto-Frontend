@@ -27,7 +27,9 @@ export const AdminCategories = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/categories", {
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
+        const response = await fetch(`${baseUrl}/api/categories`, {
+
           headers: {
             Authorization: `Bearer ${state.accessToken}`,
           },
@@ -59,8 +61,9 @@ export const AdminCategories = () => {
     fetchCategories();
   }, [state.accessToken]);
 
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
   const handleAddCategory = (newCategory) => {
-    fetch("http://localhost:8080/api/categories", {
+    fetch(`${baseUrl}/api/categories`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -123,8 +126,9 @@ export const AdminCategories = () => {
 
     if (result.isConfirmed) {
       try {
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
         const response = await fetch(
-          `http://localhost:8080/api/categories/${id}`,
+          `${baseUrl}/api/categories/${id}`,
           {
             method: "DELETE",
             headers: {

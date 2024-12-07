@@ -30,7 +30,8 @@ export const SearchBar = () => {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/api/cities');
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
+        const response = await axios.get(`${baseUrl}/api/cities`);
         setCities(response.data); // Asignar las ciudades recibidas
       } catch (error) {
         Swal.fire({
@@ -150,7 +151,8 @@ export const SearchBar = () => {
 
     dispatch({ type: 'SET_IS_LOADING_VEHICLES', payload: true });
     try {
-      const response = await axios.get(`http://localhost:8080/api/products/search/${startDate}/${endDate}/${city}`);
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
+      const response = await axios.get(`${baseUrl}/api/products/search/${startDate}/${endDate}/${city}`);
       dispatch({ type: 'SET_FILTERED_VEHICLES', payload: response.data });
     } catch (error) {
       Swal.fire({

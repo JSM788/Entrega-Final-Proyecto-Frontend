@@ -3,7 +3,7 @@ const loginLs = localStorage.getItem("login")
   : false;
 const userLs = localStorage.getItem("user")
   ? JSON.parse(localStorage.getItem("user"))
-  : null;
+  : {}; // Cambiado a un objeto vacío
 const tokenLs = localStorage.getItem("accessToken") || "";
 const reservationLs = localStorage.getItem("reservations")
   ? Array.isArray(JSON.parse(localStorage.getItem("reservations")))
@@ -15,7 +15,7 @@ export const initialState = {
   vehicles: [],
   filteredVehicles: [],
   isAuth: loginLs,
-  user: userLs,
+  user: userLs, // Ahora es un objeto vacío si no está definido
   accessToken: tokenLs,
   isLoadingVehicles: false,
   reservations: reservationLs
@@ -33,8 +33,8 @@ export const reducer = (state, action) => {
       return {
         ...state,
         isAuth: true,
-        user: action.payload,
-        accessToken: action.payload.accessToken,
+        user: action.payload || {}, // Garantizamos que user no sea null
+        accessToken: action.payload?.accessToken || "",
       };
     case "logout":
       return { ...state, isAuth: false, user: [], accessToken: "" };
