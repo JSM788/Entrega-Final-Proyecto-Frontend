@@ -10,6 +10,11 @@ export const VehicleCard = (props) => {
   const { vehicle, state, favoriteList, onRemoveVehicle } = props;
   const [isFavorite, setIsFavorite] = useState(false);
 
+  if (!vehicle || !vehicle.productId) {
+    console.error("Datos del vehículo faltantes o inválidos:", vehicle);
+    return null; // No renderizar si `vehicle` o `productId` son nulos
+  }
+  
   const handleRemoveVehicle = () => {
     // Llamar a la función del padre (onRemoveVehicle)
     onRemoveVehicle(vehicle.productId);
@@ -36,8 +41,9 @@ export const VehicleCard = (props) => {
 
     if (result.isConfirmed) {
       try {
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
         const response = await axios.delete(
-          `http://localhost:8080/api/favorites/${state.user.id}/${vehicle.productId}`,
+          `${baseUrl}/api/favorites/${state.user.id}/${vehicle.productId}`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -85,8 +91,9 @@ export const VehicleCard = (props) => {
 
   const addVehicleToFavorites = async (item) => {
     try {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
       const response = await axios.post(
-        "http://localhost:8080/api/favorites",
+        `${baseUrl}/api/favorites`,
 
         {
           userId: state.user.id,

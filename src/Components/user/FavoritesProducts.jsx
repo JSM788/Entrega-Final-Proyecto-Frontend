@@ -16,7 +16,7 @@ export const FavoritesProducts = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        `http://localhost:8080/api/favorites/${state.user.id}`,
+        `${baseUrl}/api/favorites/${state.user.id}`,
         {
           headers: {
             Authorization: `Bearer ${state.accessToken}`,

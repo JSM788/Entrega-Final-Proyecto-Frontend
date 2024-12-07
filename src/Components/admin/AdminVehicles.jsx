@@ -36,7 +36,8 @@ export const AdminVehicles = () => {
 
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/categories", {
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
+        const response = await fetch(`${baseUrl}/api/categories`, {
           headers: {
             Authorization: `Bearer ${state.accessToken}`,
           },
@@ -79,7 +80,7 @@ export const AdminVehicles = () => {
     if (result.isConfirmed) {
       try {
         const response = await fetch(
-          `http://localhost:8080/api/products/${productId}`,
+          `${baseUrl}/api/products/${productId}`,
           {
             method: "DELETE",
             headers: {
@@ -118,7 +119,7 @@ export const AdminVehicles = () => {
   const updateCategory = async (vehicleId, newCategoryId) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/products/${vehicleId}`,
+        `${baseUrl}/api/products/${vehicleId}`,
         {
           method: "PUT",
           headers: {

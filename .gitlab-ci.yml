@@ -1,0 +1,38 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  BUCKET_NAME: "movelt-front"
+  GCLOUD_PROJECT: "moveltdb"
+
+cache:
+  paths:
+    - node_modules/
+
+build-job:
+  stage: build
+  image: node:18
+  script:
+    - echo "Installing dependencies..."
+    - npm install
+    - echo "Building the frontend..."
+    - npm run build
+  artifacts:
+    paths:
+      - build/
+
+# Deploy job to upload files to Google Cloud Storage
+deploy-job:
+  stage: deploy
+  image: google/cloud-sdk:latest
+  before_script:
+    # Authenticate with Google Cloud using a service account key stored in GitLab CI/CD variables
+    - echo $GCLOUD_SERVICE_KEY | base64 -d > ${CI_PROJECT_DIR}/moveltdb-8f8331151153.json
+    - gcloud auth activate-service-account --key-file=${CI_PROJECT_DIR}/moveltdb-8f8331151153.json
+    - gcloud config set project $GCLOUD_PROJECT
+  script:
+    - echo "Deploying to Google Cloud Storage..."
+    - gsutil -m cp -r build/* gs://movelt-front/
+  only:
+    - main

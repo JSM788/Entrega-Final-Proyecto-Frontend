@@ -22,7 +22,8 @@ export const AdminUsers = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/user/all", {
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
+        const response = await fetch(`${baseUrl}/api/user/all`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -56,7 +57,8 @@ export const AdminUsers = () => {
     const newRoleId = newRole === "admin" ? 1 : 2;
     try {
       // Remove the current role
-      await fetch("http://localhost:8080/api/user/removeRole", {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
+      await fetch(`${baseUrl}/api/user/removeRole`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -66,7 +68,7 @@ export const AdminUsers = () => {
       });
 
       // Add the new role
-      await fetch("http://localhost:8080/api/user/addRole", {
+      await fetch(`${baseUrl}/api/user/addRole`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${accessToken}`,

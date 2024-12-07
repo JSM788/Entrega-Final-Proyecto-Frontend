@@ -39,7 +39,9 @@ const AddVehicleForm = ({
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/categories", {
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
+        const response = await fetch(`${baseUrl}/api/categories`, {
+
           headers: {
             Authorization: `Bearer ${state.accessToken}`,
           },
@@ -63,7 +65,9 @@ const AddVehicleForm = ({
 
     const fetchCities = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/cities");
+        const baseUrl = import.meta.env.VITE_API_BASE_URL;
+        const response = await fetch(`${baseUrl}/api/cities`);
+
         if (response.ok) {
           const data = await response.json();
           setCities(data);
@@ -302,7 +306,8 @@ const AddVehicleForm = ({
     };
 
     try {
-      const response = await fetch("http://localhost:8080/api/products", {
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
+      const response = await fetch(`${baseUrl}/api/products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

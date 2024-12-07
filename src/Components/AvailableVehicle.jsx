@@ -47,11 +47,15 @@ const DoubleCalendar = ({ productId, onDateSelect, selectedCity }) => {
     }
 
     try {
-      const response = await axios.get(`http://localhost:8080/api/reservations/calendar/${productId}`, {
-        headers: {
-          'Content-Type': 'application/json',
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
+      const response = await axios.get(
+        `${baseUrl}/api/reservations/calendar/${productId}`, // URL dinámica
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      });
+      );
 
       if (!response.data || !response.data.calendar) {
         setBookedRanges([]);

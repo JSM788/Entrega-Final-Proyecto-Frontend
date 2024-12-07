@@ -6,7 +6,9 @@ const ContextGlobal = createContext();
 
 const ContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const endpointProducts = "http://localhost:8080/api/products";
+  
+  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+  const endpointProducts = `${baseUrl}/api/products`;
 
   console.log(state.reservations);
 
