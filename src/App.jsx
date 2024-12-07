@@ -15,6 +15,7 @@ import { AdminCategories } from "./Components/admin/AdminCategories.jsx";
 import { AdminCharacteristics } from "./Components/admin/AdminCharacteristics.jsx";
 import { FavoritesProducts } from "./Components/user/FavoritesProducts.jsx";
 import { Reservations } from "./Components/user/Reservations.jsx";
+import { Whatsapp } from "./Components/Whatsapp.jsx";
 
 function App() {
   const { state } = useContextGlobal();
@@ -95,7 +96,8 @@ function App() {
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="*" element={<h1>Error 404 - Page not Found</h1>} />
       </Routes>
-      <Footer />
+      <Whatsapp/>
+      <Footer/>
     </div>
   );
 }
