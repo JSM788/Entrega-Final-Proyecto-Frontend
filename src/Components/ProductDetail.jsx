@@ -19,6 +19,7 @@ import ReactDOMServer from 'react-dom/server';
 import DoubleCalendar from './AvailableVehicle';
 import styles from '../Components/Styles/Share.module.css';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 ReactModal.setAppElement('#root');
 
@@ -101,14 +102,26 @@ const ProductDetail = () => {
   const [selectedRange, setSelectedRange] = useState({ from: null, to: null });
   const navigate = useNavigate();
 
+  const location = useLocation();
+  const cityFromLink = location.state?.city; 
+
   const handleDateSelect = (range) => {
     if (range?.from && range?.to) {
       setSelectedRange(range); // Actualiza el estado con el rango seleccionado
       console.log('Rango de fechas seleccionado:', range);
     } else if (range?.from) {
       setSelectedRange({ from: range.from, to: null }); // Selecciona solo la fecha de inicio
+    } else {
+      setSelectedRange({ from: null, to: null }); // Limpiar las fechas si el rango es vacío
     }
   };
+
+  useEffect(() => {
+    if (cityFromLink) {
+      setSelectedCity(cityFromLink.idCity); // Asegúrate de almacenar solo el idCity en selectedCity
+      handleCityChange({ target: { value: cityFromLink.idCity } });
+    }
+  }, [cityFromLink]);
 
   const handleCityChange = (event) => {
     const cityId = event.target.value;
