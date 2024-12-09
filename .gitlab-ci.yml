@@ -34,6 +34,6 @@ deploy-job:
     - gcloud config set project $GCLOUD_PROJECT
   script:
     - echo "Deploying to Google Cloud Storage..."
-    - gsutil -m cp -r build/* gs://movelt-front/
+    - gsutil -m cp -r dist/* gs://movelt-front/
   only:
     - main
