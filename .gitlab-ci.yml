@@ -33,7 +33,9 @@ deploy-job:
     - gcloud auth activate-service-account --key-file=${CI_PROJECT_DIR}/moveltdb-8f8331151153.json
     - gcloud config set project $GCLOUD_PROJECT
   script:
+    - echo "Cleaning up bucket $BUCKET_NAME..."
+    - gsutil -m rm -r gs://$BUCKET_NAME/*
     - echo "Deploying to Google Cloud Storage..."
-    - gsutil -m cp -r dist/* gs://movelt-front/
+    - gsutil -m cp -r dist/* gs://$BUCKET_NAME/
   only:
     - main
