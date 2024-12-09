@@ -21,7 +21,7 @@ build-job:
     - npm run build
   artifacts:
     paths:
-      - build/
+      - dist/
 
 # Deploy job to upload files to Google Cloud Storage
 deploy-job:
