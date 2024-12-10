@@ -5,7 +5,8 @@ import react from '@vitejs/plugin-react'
 export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
-    base: mode === 'production' ? '/movelt-front/' : '/', // Aplica base solo en producción
+    //base: mode === 'production' ? '/movelt-front/' : '/', // Aplica base solo en producción
+    base: mode === 'production' ? '/' : '/',
   };
 });
 

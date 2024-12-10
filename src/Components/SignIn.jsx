@@ -326,7 +326,7 @@ export const SignIn = () => {
 
         <p className="mt-4 text-sm text-gray-600">
           ¿Ya tienes una cuenta?{" "}
-          <a href="/logIn" className="text-blue-500 hover:underline">
+          <a href="/login" className="text-blue-500 hover:underline">
             Iniciar Sesión
           </a>
         </p>
