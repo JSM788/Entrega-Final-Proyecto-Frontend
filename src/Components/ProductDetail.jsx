@@ -449,7 +449,7 @@ const ProductDetail = () => {
   }, [product]);
   // url para compartir link del producto
   const title = '¡Mira este sitio web!';
-  const url = 'https://storage.googleapis.com/movelt-front/index.html' + product?.productId;
+  const url = 'http://35.207.2.37/' + product?.productId;
 
   // Si aún no hay vehículos cargados, muestra "Cargando..."
   if (!state.vehicles || state.vehicles.length === 0) {

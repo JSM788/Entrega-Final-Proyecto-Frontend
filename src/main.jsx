@@ -6,7 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "@material-tailwind/react";
 import ContextProvider from './Components/utils/global.context';
 
-const basename = import.meta.env.MODE === "production" ? "/movelt-front" : "/";
+//const basename = import.meta.env.MODE === "production" ? "/movelt-front" : "/";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
