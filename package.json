@@ -15,6 +15,7 @@
     "@heroicons/react": "^2.1.5",
     "@material-tailwind/react": "^2.1.10",
     "axios": "^1.7.7",
+    "build": "^0.1.4",
     "date-fns": "^4.1.0",
     "moveit-front": "file:",
     "react": "^18.3.1",

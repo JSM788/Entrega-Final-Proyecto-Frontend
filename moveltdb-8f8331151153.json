@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "moveltdb",
+  "private_key_id": "8f833115115389bcf935d048c6a2eb3fc11d562d",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDQheTidSOo/5A7\np0gNVCGbB2bgBYLgMaPCooAcD3hnsvDQ1DS2dCcqJ7jfcyChB41OSA153jtcQfeL\nGyqwhV2eNMq7AU0TJrpuykn+TXFm2nRwnnaXwuPDJUHo3gWuUw+TSpASETvv2Yu/\npWRe6oMLGtRBdrHlv0K/nRUwTbtF9Ue8fT/4j3I/rjcz7lOAzqL2mbPRQfRpZkh0\np/J9gy4Wy1/Vx+WQzrDdS8jeVRlFpKBcV4Nq7614z9mmMNGvecmM0CLzRzFcOYla\ngwRQOSLMZP4+vU8tgs62JxcSkoiz6BAes/83dlSaEC0NLvBPpSV5Eu0fZTxiwWSD\ntBul+GFNAgMBAAECggEAJLySGHt+rtVnebr87Kw3x3JEY49VAV59dVrfqxHmqo5R\n8tiP+Nz50WlyHpvP0c7czD/Rb/kBCD3u+Kjumm7EkYzHcq7F/2vBSKeG5bCLHA28\nmeKxDgedzNGRjQ8gfRfRFKf8PdKfdqAjCL6AsmAqehhd8LKSoOFTRyLLitkG90nv\nrMTP3FL1srh0M931V5HHTi7wKjapsZaMNj7dHZG5KvG0q5T0PmJUnPaHbTkrta5D\nLNrj2i/uAtmi54ime237r+npXi33iSAhkHA4VShT7iKRb3XGsTZ5ljWFzknJMMAa\net4/OPRiPwCC0ytQYCzgepF0fOHSVHR63bbGi6A0wQKBgQD1XnZv9gUJfRufmFSU\nskYD2VPWZ8dWwCG0XOVnowDQHfF6C85C8l8omJuZLQ8aTdIG9/NcnyOH4z6KKg/A\n+nng+KA7rGtAbUVg3ONKfExDe4S9o6fOhTEo72PqAF8+OWa1Q5mEVlcAMUu2cH3x\nHaYi/7RRUPX0/bVkWJL0/UwcVQKBgQDZjsARv1c8PtJ402HYOf/jcymcHJFHI8k3\nh052iMOUz64jZioQKgTcq9or+RkZSiu2XlvjR7NPQCsOzgsGmEER6PuBGvkU6rQ+\nHj52LBE16QKsUU/9SZ4rD3ZqZ05lmvskPxV3kj4T/ZIA1y20Cv1au0+kIrn45iji\nRqzf1QApGQKBgQC6xphDa7Oz4F8Jomwn8Hhpb6Jo4ACWYZSGdfxOYn847MInFBuD\nTHnxLhGrjOglLr3EfjPq+lySkQHHLHNng4MJJFjcc8gEd+lK7Xm69lkbOUf3Dz+q\nbirYrTmSI4xckldDfdy7Jvn89Ilcq87Cnr4bgCfjikxfnEzawK3E/ZdVLQKBgQCx\nInlf+dqdQsk7d2CDHTYriuimItxmf8ylWZWZDWGxGCdAyz4USyIKSiIpC3hUDv/o\nTIukUgy8yhJEy55OkEjqvDeKttt3HGIE8bsJnHem3UE/7DSklfwiM0TG/bXnJHi2\n2mYwJPJGdH8cEBc2MHx4E2qUyXGCJmPDWKgI1vR6gQKBgQDWtycX4DyRb2ygySUr\n+PVBq3mAXWIkirHi4rvwg+KIhY6KAjDMo7nf4JXjoGlJQ08MDMlo7ZTOH8/jV3VM\niDqN2quu4XKD2D6/vqBatK2F06+5i1k02EWltMHaRlxLkbr4KGOHBe7+71gVg4+b\npcJzrGBXfsfGlgZysrn2kXkGoQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "cdgitlab@moveltdb.iam.gserviceaccount.com",
+  "client_id": "108118286295487460831",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cdgitlab%40moveltdb.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

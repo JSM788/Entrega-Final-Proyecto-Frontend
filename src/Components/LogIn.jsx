@@ -6,6 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useContextGlobal } from "./utils/global.context";
 
+const baseUrl = import.meta.env.BASE_URL;
+
 const initialState = {
   email: "", 
   password: ""
@@ -41,7 +43,8 @@ const LoginForm = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/login", loginData)
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
+      const response = await axios.post(`${baseUrl}/api/auth/login`, loginData)
       console.log(response.data)
       if (response.status === 200) {
         dispatch({ type: 'login', payload: response.data })
@@ -174,7 +177,7 @@ const LoginForm = () => {
   
       <div className="hidden md:flex w-2/3 items-center justify-center h-[700px] ml-6">
         <img 
-          src="/imagen-login.png" 
+          src={`${baseUrl}imagen-login.png`} 
           alt="imagen de login" 
           className="h-[700px] object-cover w-full rounded-l-lg" 
         />

@@ -136,7 +136,8 @@ export const SignIn = () => {
       role: ["USER"],
     }
     try {
-      const response = await axios.post("http://localhost:8080/api/auth/signup", formattedData);
+      const baseUrl = import.meta.env.VITE_API_BASE_URL;
+      const response = await axios.post(`${baseUrl}/api/auth/signup`, formattedData);
       console.log('respuesta:', response.status);
       if (response.status === 200) {
         Swal.fire({
@@ -159,7 +160,8 @@ export const SignIn = () => {
           try {
             // Reemplazar la solicitud con una solicitud POST y enviar el correo como parámetro de consulta
             const email = encodeURIComponent(formData.email); // Asegurarse de que el correo esté codificado para la URL
-            const response = await axios.post(`http://localhost:8080/api/auth/resend-confirmation?email=${email}`);
+            const baseUrl = import.meta.env.VITE_API_BASE_URL;
+            const response = await axios.post(`${baseUrl}/api/auth/resend-confirmation?email=${email}`);
         
             Swal.fire({
               icon: 'success',
@@ -324,7 +326,7 @@ export const SignIn = () => {
 
         <p className="mt-4 text-sm text-gray-600">
           ¿Ya tienes una cuenta?{" "}
-          <a href="/logIn" className="text-blue-500 hover:underline">
+          <a href="/login" className="text-blue-500 hover:underline">
             Iniciar Sesión
           </a>
         </p>
