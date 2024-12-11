@@ -37,15 +37,15 @@ export const ReservationDetail = ({ reservation }) => {
 
   return (
     <div className="w-full items-center max-w-4xl mx-auto border rounded-lg shadow-lg overflow-hidden mb-4">
-      <div className="bg-[#FAFAFA] p-6">
-        <div className="flex flex-col sm:flex-row pb-1">
+      <div className="bg-[#FAFAFA] p-4 sm:p-6">
+        <div className="flex flex-col pb-1">
           <div className="flex flex-col">
-            <h5 className="mb-1 font-semibold">Código: {reservationCode}</h5>
+            <h5 className="mb-1 font-semibold text-center sm:text-left">Código: {reservationCode}</h5>
           </div>
         </div>
-        <div className="flex flex-col sm:flex-row justify-between bg-white max-h-48">
+        <div className="flex flex-col sm:flex-row justify-between bg-white sm:max-h-48">
           {/* Imagen del producto */}
-          <div className="flex justify-center items-center sm:w-1/2 w-full p-0">
+          <div className="flex justify-center items-center sm:w-1/2 w-full p-0 h-48 sm:h-auto">
             <img
               src={images?.[0]?.url || 'https://via.placeholder.com/150'}
               alt={productName}
@@ -54,10 +54,16 @@ export const ReservationDetail = ({ reservation }) => {
           </div>
 
           {/* Detalles de la reserva */}
-          <div className="flex flex-col w-full sm:w-2/3 justify-end p-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-l font-semibold text-black">{productName}</h3>
-              <span className={`text-sm font-bold uppercase ${statusColors[status] || 'text-gray-600'}`}>{status}</span>
+          <div className="flex flex-col w-full sm:w-2/3 justify-start p-4">
+            <div className="flex justify-between items-center mb-2">
+              <h3 className="text-lg font-semibold text-black text-center sm:text-left">{productName}</h3>
+              <span
+                className={`text-sm font-bold uppercase ${
+                  statusColors[status] || 'text-gray-600'
+                } sm:text-right text-center`}
+              >
+                {status}
+              </span>
             </div>
 
             <div className="flex flex-col justify-start items-start mb-1">
@@ -79,12 +85,12 @@ export const ReservationDetail = ({ reservation }) => {
             </div>
 
             {/* Botones de acción */}
-            <div className="flex gap-3 justify-end">
+            <div className="flex flex-wrap gap-3 justify-center sm:justify-end">
               <Link to={`/product/${productId}`}>
                 <Button
                   size="sm"
                   color="gray"
-                  className="flex items-center gap-1 border bg-[#2A606E] text-white rounded-lg px-4 py-2l"
+                  className="flex items-center gap-1 border bg-[#2A606E] text-white rounded-lg px-4 py-2"
                 >
                   <KeyIcon className="h-5 w-5 text-white" />
                   Ver producto

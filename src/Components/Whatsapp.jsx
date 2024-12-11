@@ -2,7 +2,7 @@ import { React, useState, useEffect } from 'react'
 
 export const Whatsapp = () => {
 
-    const whatsappUrl = "https://web.whatsapp.com/send/?phone=5552882212&text=Hola,%20tengo%20dudas%20sobre%20cómo%20puedo%20realizar%20una%20reserva%20...&type=phone_number&app_absent=0";
+    const whatsappUrl = "https://api.whatsapp.com/send?phone=51993356919&text=Hola,%20tengo%20dudas%20sobre%20cómo%20puedo%20realizar%20una%20reserva%20...&type=phone_number&app_absent=0";
     
     const [isAtBottom, setIsAtBottom] = useState(false);
 
