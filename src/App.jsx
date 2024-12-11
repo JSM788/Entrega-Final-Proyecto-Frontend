@@ -12,9 +12,10 @@ import { SignIn } from "./Components/SignIn.jsx";
 import { useContextGlobal } from "./Components/utils/global.context.jsx";
 import Page403 from "./Components/Page403.jsx";
 import { AdminCategories } from "./Components/admin/AdminCategories.jsx";
-import { AdminCharacteristics } from "./Components/admin/AdminCharacteristics.jsx";
+
 import { FavoritesProducts } from "./Components/user/FavoritesProducts.jsx";
 import { Reservations } from "./Components/user/Reservations.jsx";
+import { AdminCharacteristics } from "./Components/admin/AdminCharacteristics.jsx";
 
 function App() {
   const { state } = useContextGlobal();
