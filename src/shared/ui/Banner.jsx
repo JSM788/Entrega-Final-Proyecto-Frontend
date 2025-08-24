@@ -29,8 +29,7 @@ const BannerHome = () => {
           {/*Descripción del auto*/}
           <div className="w-full sm:w-1/2 flex flex-col justify-center items-center sm:items-start mt-4 sm:mt-2 pb-6 sm:pb-9 pl-0 sm:pl-4">
             <p className="text-gray-900 text-xs sm:text-sm font-bold mb-3 sm:mb-2 pt-2 text-center sm:text-left w-full lg:w-3/4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Este vehículo combina estilo, confort y eficiencia. Ideal para desplazamientos urbanos y viajes largos, ofrece un rendimiento confiable y tecnología moderna para una experiencia de conducción segura y cómoda.
             </p>
 
             <div className="flex justify-center items-center w-full sm:w-auto space-x-4 sm:space-x-6 lg:space-x-10 
@@ -73,8 +72,7 @@ const BannerHome = () => {
           
           <div className="w-full sm:w-1/2 flex flex-col justify-center items-center sm:items-start mt-4 sm:mt-2 pb-6 sm:pb-9 pl-0 sm:pl-4">
             <p className="text-gray-900 text-xs sm:text-sm font-bold mb-3 sm:mb-2 pt-2 text-center sm:text-left w-full lg:w-3/4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Este vehículo combina estilo, confort y eficiencia. Ideal para desplazamientos urbanos y viajes largos, ofrece un rendimiento confiable y tecnología moderna para una experiencia de conducción segura y cómoda.
             </p>
 
             <div className="flex justify-center items-center w-full sm:w-auto space-x-4 sm:space-x-6 lg:space-x-10 
@@ -114,8 +112,7 @@ const BannerHome = () => {
           
           <div className="w-full sm:w-1/2 flex flex-col justify-center items-center sm:items-start mt-4 sm:mt-2 pb-6 sm:pb-9 pl-0 sm:pl-4">
             <p className="text-gray-900 text-xs sm:text-sm font-bold mb-3 sm:mb-2 pt-2 text-center sm:text-left w-full lg:w-3/4">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Este vehículo combina estilo, confort y eficiencia. Ideal para desplazamientos urbanos y viajes largos, ofrece un rendimiento confiable y tecnología moderna para una experiencia de conducción segura y cómoda.
             </p>
 
             <div className="flex justify-center items-center w-full sm:w-auto space-x-4 sm:space-x-6 lg:space-x-10 
