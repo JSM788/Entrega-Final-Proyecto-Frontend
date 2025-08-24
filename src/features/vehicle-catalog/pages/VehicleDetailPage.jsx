@@ -87,6 +87,7 @@ const showPoliciesModal = () => {
 };
 
 const ProductDetail = () => {
+  const [shareMessage, setShareMessage] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
@@ -453,7 +454,7 @@ const ProductDetail = () => {
   }, [product]);
   // url para compartir link del producto
   const title = '¡Mira este sitio web!';
-  const url = 'http://35.207.2.37/' + product?.productId;
+  const url = window.location.href;
 
   // Si aún no hay vehículos cargados, muestra "Cargando..."
   if (!state.vehicles || state.vehicles.length === 0) {
@@ -523,37 +524,43 @@ const ProductDetail = () => {
               justifyContent: 'center',
               flexDirection: 'column',
               width: '400px',
-              height: '400px',
+              height: 'auto',
               maxWidth: '90%',
               margin: 'auto',
               padding: '20px',
               borderRadius: '10px',
               backgroundColor: '#fff',
-              zIndex: -1,
-              gap: '20px',
+              gap: '15px',
             },
             overlay: {
               backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              zIndex: 1000,
             },
           }}
         >
-          <div className="modal-content">
-            <p>Compartir este enlace</p>
-            <p>Elige una red social para compartir:</p>
+          <div className="modal-content w-full text-center">
+            <h3 className="text-lg font-semibold mb-2">Compartir {product.name}</h3>
+            <img src={activeImage} alt={product.name} className="w-32 h-32 object-cover mx-auto rounded-lg mb-4" />
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded-md mb-4"
+              rows="3"
+              placeholder="Añade un mensaje personalizado..."
+              value={shareMessage}
+              onChange={(e) => setShareMessage(e.target.value)}
+            ></textarea>
+            <p className="text-sm mb-2">Elige una red social para compartir:</p>
             <div className={styles.buttons}>
-              <FacebookShareButton url={url} quote={title} onClick={closeModal}>
+              <FacebookShareButton url={url} quote={shareMessage}>
                 <FacebookIcon size={32} round={true} />
               </FacebookShareButton>
 
-              <TwitterShareButton url={url} title={title} onClick={closeModal}>
+              <TwitterShareButton url={url} title={`${shareMessage}\n\n¡Mira este ${product.name} en MoveIt!`}>
                 <TwitterIcon size={32} round={true} />
               </TwitterShareButton>
 
-              <WhatsappShareButton url={url} title={title} onClick={closeModal}>
-                <WhatsappIcon size={32} round={true} />
-              </WhatsappShareButton>
+              <WhatsappShareButton url={`${shareMessage}\n\n¡Mira este ${product.name} en MoveIt!\n${url}`}>                <WhatsappIcon size={32} round={true} />              </WhatsappShareButton>
             </div>
-            <button onClick={closeModal} className="mt-4 bg-red-500 text-white p-2 rounded">
+            <button onClick={closeModal} className="mt-4 bg-red-500 text-white p-2 rounded w-full">
               Cerrar
             </button>
           </div>
