@@ -1,0 +1,211 @@
+Requerimientos por Sprint - Estado de Cumplimiento
+SPRINT 1
+✅ CUMPLIDOS
+#1 Colocar Encabezado
+
+Criterios: Header fijo, que ocupe 100%, siempre visible, consistente en todas las páginas, responsive. Header logo a la izq junto con el lema de la empresa con un link que redirija al home. Header a la derecha 2 botones (crear cuenta e iniciar sesión) sin funcionalidad.
+Historia: Como usuario quiero un encabezado que me muestre el logo de la aplicación y una barra para facilitar la navegación en el sitio
+
+#2 Definir cuerpo del sitio
+
+Criterios: El body debe tener bgColor que corresponda a la identidad de la marca, debe ocupar el 100% del alto de la pantalla, responsive. Debe estar formado por 3 secciones: Buscador, categorías y recomendaciones de los productos
+Historia: Como administrador quiero que el color de fondo del sitio esté en armonía con la identidad de marca de la empresa para mejorar la estética y la coherencia visual de la aplicación
+
+#5 Visualizar detalle de producto
+
+Criterios: Visualizar un bloque de header el cual deberá cubrir el 100% del ancho de la pantalla, el título del producto debe estar alineado a la izq, la fecha para volver atrás debe estar a la derecha, el cuerpo debe estar al 100% descriptivo del producto y sus imágenes
+Historia: Como usuario quiero poder ingresar en el detalle del producto para conocer datos básicos de éste
+
+#7 Colocar pie de página
+
+Criterios: Crear footer que ocupe el 100% del ancho, ubicado en el pie de página en todas las páginas. Dentro debe existir un bloque alineado a la izq con el logo de la empresa, el año y copyright. Debe ser responsive.
+Historia: Como usuario quiero un footer en la app para ver información relevante de la empresa
+
+❌ NO CUMPLIDOS
+#3 Registrar producto
+
+Criterios: El producto debe visualizarse en el listado de productos. El panel de admin debe contener un botón agregar Producto. La página de agregar producto debe incluir campos necesarios para la creación (nombre, descripción, imagen). Se debe poder subir una o más imágenes del producto. Se debe poder guardar el producto y agregar a la base de datos. Si se intenta agregar un producto con un nombre ya existente mostrar un mensaje de error indicando que el nombre está en uso.
+Historia: Como administrador quiero poder agregar nuevos productos para mantener actualizado el catálogo de productos disponibles.
+Observaciones: Pendiente la funcionalidad de agregar nuevo producto
+
+#4 Visualizar productos en el home
+
+Criterios: Mostrar máximo 10 productos aleatorios OB. No deben repetirse. Deben estar distribuidos en 2 columnas y 5 filas como máximo.
+Historia: Como usuario quiero ver una lista de productos aleatorios en el home cuando ingreso por primera vez para obtener información de productos que encontraré
+Observaciones: Pendiente la carga de productos
+
+#6 Visualizar galería de imágenes
+
+Criterios: Bloque de 100% de ancho con 5 imágenes. La imagen principal en la mitad izquierda del bloque. En desktop, una grilla de 2 filas y 2 columnas debe estar en la mitad derecha del bloque mostrando las 4 imágenes restantes. El bloque deberá incluir en el inferior el texto "ver más", el cual permitirá acceder a un componente para ver todas las imágenes disponibles del producto. La página debe ser responsive.
+Historia: Como usuario quiero poder visualizar una galería de imágenes del producto para tener una idea clara de cómo se ve y facilitar mi decisión de reserva
+Observaciones: Pendiente
+
+#8 Paginar productos
+
+Criterios: Dividir en páginas de 10 productos máximo, mostrar un contador de páginas, un botón de enlace para ir atrás, adelante o al inicio del listado
+Historia: Como usuario quiero ver resultados limitados en el home para que el contenido de forma ordenada
+Observaciones: No lo podemos chequear porque no tiene poblada la db
+
+#9 Panel de administración
+
+Criterios: Debe existir una url /administracion para acceder al panel. Se visualiza un menú con todas las funciones desarrolladas para la administración. No debe ser responsive, generar un mensaje de NO DISPONIBLE si se ingresa desde un móvil
+Historia: Como administrador quiero poder ingresar a las funciones de administración de mi negocio de forma simple para gestionarlo
+Observaciones: Pendiente
+
+#10 Listar productos
+
+Criterios: En el panel de admin debe existir un botón de Lista de productos. En la página de lista de productos se deben listar todos los productos. Deben existir las columnas id, nombre, acciones
+Historia: Como administrador quiero poder visualizar una lista de productos disponibles para poder gestionarlos con facilidad
+Observaciones: Pendiente
+
+#11 Eliminar producto
+
+Criterios: En el listado de productos del panel admin, por cada producto debe existir la acción Eliminar producto. Al presionar eliminar debe aparecer un mensaje de confirmación. Si se acepta se debe eliminar de la base de datos. El producto eliminado no debe mostrar en el listado. Si no se acepta la acción no se deben realizar cambios.
+Historia: Como administrador quiero poder eliminar un producto para mantener la lista actualizada y precisa de los productos disponibles
+Observaciones: Pendiente
+
+SPRINT 2
+✅ CUMPLIDOS
+#13 Registrar usuario
+
+Criterios: Proporcionar información precisa y válida durante el proceso de registro como nombre, apellido, email, password. Validar que los campos de nombre apellido y email cumplan con las reglas para prevenir errores en los datos proporcionados. Proporcionar una experiencia de usuario intuitiva y fácil de usar durante todo el proceso de registro
+Historia: Como usuario anónimo quiero poder registrarme en el sitio para acceder a funcionalidades extras
+
+#14 Identificar usuario
+
+Criterios: Mostrar un mensaje de error claro y útil en caso de que se proporcione información incorrecta. Permitir al usuario acceder a la información personal y las funcionalidades disponibles después de iniciar sesión. Cuando el usuario esté identificado mostrar su nombre, un avatar de letras con las iniciales del nombre de usuario. Debajo del avatar agregar la opción de cerrar sesión
+Historia: Como usuario, quiero poder iniciar sesión en mi cuenta para acceder a información personal y realizar reservas de manera más fácil
+
+#15 Cerrar sesión
+
+Criterios: Permitir al usuario cerrar sesión de manera segura cuando haya terminado de usar su cuenta. Asegurarse de que se cierre sesión efectivamente. Que se permita al usuario continuar navegando como anónimo después de cerrar sesión
+Historia: Como usuario autenticado, quiero poder cerrar sesión para poder navegar el sitio anónimamente
+
+#19 Notificación: Confirmación de registro de usuario
+
+Criterios: Enviar email cuando se registra el usuario, el email incluye un mensaje claro y fácil de entender que confirma el registro, incluya nombre de usuario y email, incluya un enlace para que el usuario para iniciar sesión con su cuenta recién creada. Si el correo no llega a la bandeja se proporciona una opción para reenviar el correo de confirmación
+Historia: Como usuario en proceso de registro quiero recibir un correo electrónico para asegurarme de que el registro fue exitoso
+
+❌ NO CUMPLIDOS
+#12 Categorizar productos
+
+Criterios: Que se pueda asignar una categoría a un producto ya creado desde el panel de administración del sitio web de manera fácil e intuitiva. Que se pueda asignar una categoría a productos nuevos desde registrar o editar producto.
+Historia: Como administrador, quiero poder asignar categorías a los productos para organizar el catálogo y facilitar la búsqueda de productos por parte de los clientes.
+Observaciones: Pendiente
+
+#16 Identificar administrador
+
+Criterios: Asignar un usuario como administrador para que pueda acceder a las secciones de administración. Permitir añadir o quitar los permisos de administrador desde un listado de usuarios. Garantizar que el permiso se aplique de manera efectiva y que los usuarios solo puedan realizar acciones que tengan permitidas
+Historia: Como administrador, quiero poder otorgar a un usuario el permiso de administrador para que colabore con la gestión del sitio.
+Observaciones: Pendiente
+
+#17 Administrar característica de producto
+
+Criterios: En el panel de admin agregar opción de administrar características. Se visualiza el listado de características registradas con la opción de editar y eliminar. Agregar un botón añadir, que permite registrar una nueva característica indicando el nombre e icono como asociado. Añadir la opción de añadir o editar producto la posibilidad de asociar una o más características
+Historia: Como administrador quiero poder añadir, editar y eliminar las características de un producto para mantener actualizada la información del producto
+Observaciones: Pendiente
+
+#18 Visualizar características de producto
+
+Criterios: Crear un bloque que contenga el título características, listar todas las características, cada una debe tener un icono asociado, el bloque debe ser responsive
+Historia: Como usuario quiero poder visualizar el bloque características en el detalle de un producto para saber con qué características cuenta.
+Observaciones: Pendiente
+
+#20 Crear sección de categorías
+
+Criterios: Visualizar una lista de categorías de productos en una sección de filtrado con los resultados de búsqueda. Mostrar cantidad de productos que cumplen con los filtros aplicados y la cantidad total de productos en la lista de resultados de búsqueda. La capacidad de seleccionar una o varias categorías para filtrar los productos en función de las necesidades del usuario. Permitir al usuario eliminar los filtros aplicados y volver a la lista de productos original. Asegurarse que sea responsive
+Historia: Como usuario quiero poder filtrar por una categoría específica solo ver los productos que me interesan.
+Observaciones: Pendiente
+
+#21 Agregar categoría
+
+Criterios: La categoría tiene como atributo título, descripción e imagen, debe incluirse en el panel de administración con la opción agregar categoría
+Historia: Como administrador, quiero crear nuevas categorías de productos para poder organizarlos y hacer más fácil la navegación para los clientes.
+Observaciones: Pendiente
+
+SPRINT 3
+✅ CUMPLIDOS
+#22 Realizar búsqueda
+
+Criterios: Diseño del bloque: Título visible, con un párrafo informativo o descriptor. Campos: Fecha, implementación de un calendario activo para permitir selección de rango de fechas. Botón para confirmar la búsqueda. Relevancia de los resultados: asegurar que las fechas mostradas como disponibles sean las fechas que se adecúan a lo que ingresó por el usuario. Feedback interactivo para ingresar datos en el campo de búsqueda, se deben ofrecer sugerencias y autocompletado de palabras claves relevantes. Usabilidad del bloque de búsqueda: diseño intuitivo y fácil de usar, etiquetas claras y sencillas, los resultados deben ser claros y detallados. Mantener el diseño de la página principal: Al mostrar los resultados se deben mantener las secciones de categorías y recomendaciones como están pre-establecidas en la página de inicio
+Historia: Como usuario quiero poder realizar búsquedas de productos para encontrar los resultados que mejor se adapten a lo que busco.
+
+#25 Listar productos favoritos
+
+Criterios: Visibilidad del botón Favorito: se debe mostrar el ícono favorito presente la acción de marcar como favorito en cada producto de la lista del home. Acción con onClick: Los usuarios autenticados deben tener la facilidad de marcar un producto como favorito con un Click sobre el ícono o botón. Experiencia de usuario: Esta interacción debe ser intuitiva y fácil de usar permitiendo que los usuarios marquen y desmarquen. Compatibilidad multi dispositivo: La funcionalidad debe ser compatible con todos los dispositivos. La lista de favoritos debe estar disponible desde su cuenta de usuario o desde una sección específica en el sitio web. Actualización en tiempo real: se debe actualizar automáticamente conforme el usuario marca o desmarca productos como favoritos para que aparezcan disponibles en otras secciones. Gestión de favoritos: Se debe permitir al usuario eliminar productos favoritos desde esta sección. Compatibilidad multi dispositivo debe ser compatible con dispositivos
+Historia: Como usuario autenticado quiero poder acceder a mi lista de favoritos para ver los productos que marqué previamente.
+
+❌ NO CUMPLIDOS
+#23 Visualizar disponibilidad
+
+Criterios: Visualización de disponibilidad: En el detalle del producto que se desea reservar se debe mostrar un calendario donde se muestran las fechas disponibles. Indicador de fechas ocupadas: Las fechas ya u tienen reservas realizadas deben ser fácilmente distinguibles. Esto puede lograrse mostrando en un color diferente o con algún indicador visual específico. Manejo de errores: Si ocurre un error al obtener las fechas disponibles se debe mostrar un mensaje de error claro indicando que no se puede obtener la información en ese momento, se debe proporcionar una opción para que el usuario intente acceder a la información nuevamente más tarde.
+Historia: Como usuario, quiero poder visualizar las fechas disponibles en la ficha del producto para poder acceder a la sección de reservas.
+Observaciones: No se pudo chequear porque no está poblada la db
+
+#24 Marcar como favorito
+
+Criterios: Visibilidad del botón Favorito: se debe mostrar un ícono que presente la acción de marcar como favorito en cada producto de la lista del home. Acción con onClick: Los usuarios autenticados deben tener la facilidad de marcar un producto como favorito con un Click sobre el ícono o botón. Experiencia de usuario: Esta interacción debe ser intuitiva y fácil de usar permitiendo que los usuarios marquen y desmarquen. Compatibilidad multi dispositivo: La funcionalidad debe ser compatible con todos los dispositivos.
+Historia: Como usuario autenticado quiero poder marcar productos como favoritos desde la lista de productos del home para poder acceder a ellos posteriormente
+Observaciones: No se pudo chequear porque no está poblada la db
+
+#26 Ver bloque de política del producto
+
+Criterios: Dimensiones del bloque de políticas: debe cubrir el 100% del contenedor en el que se encuentra. Título del bloque con un título que deje claramente para qué es el bloque para el destinario. Distribución de las políticas: las políticas deben estar distribuidas en columnas, cada una debe contar con título y descripción adecuada
+Historia: Como administrador, quiero poder gestionar las políticas para ofrecer recomendaciones en el buscador.
+Observaciones: Pendientes
+
+#27 Redes: Compartir productos
+
+Criterios: Acción de compartir: al hacer clic en el botón compartir se debe desencadenar una acción que muestre una ventana emergente para compartir el producto. Opciones de redes sociales: La ventana emergente debe ofrecer opciones para compartir el producto en diversas redes sociales. Contenido limitado a Facebook, Insta y Twitter. Contenido para compartir: Dentro de la ventana se debe mostrar una imagen clara y representativa del producto, descripción breve y un enlace directo que redirija específicamente al producto en el sitio web. Personalización de Compartir: El usuario debe tener la opción de elegir específicamente en qué red social desea compartir el producto. Opción donde el usuario pueda copiar el enlace o bien en el campo o área donde el usuario pueda agregar o editar un mensaje personalizado que acompañe el contenido compartido. Integración y redirección a la app social y hacer click en compartir, el sistema debe redireccionar o integrarse adecuadamente con la app de la red social seleccionada, asegurando que el contenido se comparta de manera efectiva y con el formato adecuado.
+Historia: Como usuario quiero poder compartir productos en mis redes sociales para poder recomendar productos a otros usuarios.
+Observaciones: Pendientes
+
+#28 Puntuar producto
+
+Criterios: Los usuarios que finalizaron una reserva pueden puntuar un producto. Visibilidad de la sección Valoraciones: La sección debe tener un lugar prominente en la página de detalle de un producto. Funcionalidad de puntuación para usarios auth debe poder valorar el producto usando un sistema de estrella de 1/5. Visualización detallada de reseñas: Cada reseña debe mostrar la puntuación, el nombre del usuario, fecha y su comentario o descripción si el usuario decidió proporcionarlo. Interacción de usuario y obtención de reseñas deben tener la opción de escribir una reseña detallada del producto para compartir su experiencia e impresiones. Puntuación media durante la información media que se actualice automáticamente. Presentación integral de puntuación: En la página de detalle de productos y en la lista de resultados se debe mostrar la puntuación media del producto y el número total de valoraciones que recibió el producto. Acceso intuitivo a la funcionalidad de Eliminación: desde el panel de admin debe existir una opción clara para eliminar categorías. Mecanismos de confirmación preventivo: Al seleccionar eliminar una categoría debe aparecer una alerta o ventana emergente solicitando confirmación. Esta alerta debe ser clara, debe explicar cuáles serían las consecuencias por ejemplo "la eliminación de todos los productos relacionados con esa categoría". Debe incluir opciones de Confirmar o cancelar.
+Historia: Como usuario que realizó una reserva quiero poder puntuar los productos con estrellas para dar mi opinión
+Observaciones: Pendientes
+
+#29 Eliminar categoría
+
+Criterios: Acceso intuitivo a la Funcionalidad de Eliminación: desde el panel de admin debe existir una opción clara para eliminar categorías. Mecanismos de confirmación preventivo: Al seleccionar eliminar una categoría debe aparecer una alerta o ventana emergente solicitando confirmación. Esta alerta debe ser clara, debe explicar cuáles serían las consecuencias por ejemplo "la eliminación de todos los productos relacionados con esa categoría". Debe incluir opciones de Confirmar o cancelar.
+Historia: Como administrador, quiero poder eliminar categorías que ya no se utilizan para mantener el catálogo de productos organizado y actualizado
+Observaciones: Pendientes
+
+SPRINT 4
+✅ CUMPLIDOS
+#30 Reservas: Seleccionar fecha
+
+Criterios: El usuario debe acceder fácilmente a la sección desde el detalle del producto. Al dar click en reserva, se debe chequear si la usuaria está logueada. Como usuario logueado redirija a la página de reserva del producto a reservar. Si el usuario no está logueado se redirija al login. El login debe contener un texto en su parte superior que indique que el login es obligatorio y que en caso de que no esté registrado, se registre. Permitir al usuario buscar productos disponibles para la fecha deseada. Que se muestre una lista de aquellos productos que coinciden la fecha deseada. Como usuario auth se podrá seleccionar un rango de fechas para la reserva. Al seleccionar un rango de fechas en el calendario, el mismo debe imprimirse en el texto del formulario relacionado con la fecha. La reserva que se está creando no puede incluir fechas no disponibles dentro del rango.
+Historia: Como usuario, quiero poder realizar búsquedas por fecha para encontrar productos que coincidan con mis intereses
+
+❌ NO CUMPLIDOS
+#31 Reservas: Visualizar detalles
+
+Criterios: El detalle del producto debe tener toda la información relacionada éste (título, ubicación, imágenes, descripción info destacada, detalles, etc). Se debe visualizar los datos del usuario que se encuentra efectuando la reserva (Nombre, apellido, email, posibilidad de ampliar). Se debe visualizar el periodo de fechas seleccionado por el usuario (que sea válido). Debe contener un botón de submit para confirmar la reserva.
+Historia: Como usuario autenticado, quiero poder visualizar una página de reservas con el detalle del producto para poder reservarlo.
+Observaciones: Pendientes
+
+#32 Realizar reserva
+
+Criterios: El usuario puede seleccionar el producto de interés, se debe poder mostrar la selección de rangos de fechas deseadas para el producto, se debe visualizar en el registro de la reserva los datos no obligatorios del formulario. Después de realizar la reserva al sistema debe mostrar una página de confirmación que indique que la reserva se ha realizado con éxito. Si hay algún error en el proceso de reserva el sistema debe mostrar un mensaje de error específico para que el usuario sepa qué salió mal y cómo solucionarlo.
+Historia: Como usuario autenticado, quiero poder realizar reservas para poder utilizar los productos.
+Observaciones: Pendientes
+
+#33 Acceder a historial
+
+Criterios: El usuario auth puede acceder a una sección específica en la que se muestran sus reservas anteriores. Las reservas se muestran en una lista clara y ordenada por fecha o por otro criterio relevante para el negocio. Cada reserva incluye información relevante, como el nombre del producto reservado, la fecha de reserva, la fecha de uso del producto, entre otros.
+Historia: Como usuario autenticado, quiero poder visualizar mis reservas anteriores para conocer mi historial.
+Observaciones: Pendientes
+
+#34 Whatsapp: Iniciar chat
+
+Criterios: Integración de Whatsapp. La funcionalidad debe estar integrada con la plataforma de whatsapp permitiendo a los usuarios comunicarse directamente desde la aplicación. Botón o enlace visible: debe haber un botón visible en la interfaz del usuario que indique la opción de comunicarse a través de whatsapp. El ícono debe estar ubicado en el lado derecho de la pantalla, en la parte inferior, debe ser responsive. Compatibilidad de dispositivos: Debe ser compatible con diversos dispositivos. Auth de usuario: para acceder a esta función no es necesario que esté registrado. Notificación de éxito: Después de enviar un mensaje a través de whatsapp el usuario debe recibir una notificación o confirmación de que el mensaje se envió correctamente. Manejo de errores: si hay algún error al intentar comunicarse algún no válido o error de conexión) la aplicación debe manejar los errores de forma adecuada proporcionando mensajes. Privacidad y seguridad: Garantizar la privacidad y seguridad de la info al utilizar whatsapp como canal de comunicación ( se podría agregar a las políticas u526 si es que no se tuvo en cuenta la privacidad del usuario)
+Historia: Como usuario, quiero poder comunicarme con el proveedor del producto a través de whatsapp para poder consultar si tengo alguna duda.
+Observaciones: Pendientes
+
+#35 Notificación: Confirmar reserva por correo
+
+Criterios: Después de la ejecución de una reserva, el usuario registrado debe recibir un correo automáticamente, este debe contener detalles de la reserva (nombre del producto, fecha, hora,e info de contacto del proveedor. El correo debe ser enviado a la dirección de correo proporcionada por el usuario durante el registro en un plazo razonable después de la ejecución de reserva (antes de las 24 hs). El correo debe ser fácil y claro de entender en cualquier dispositivo
+Historia: Como usuario registrado, quiero recibir un correo electrónico con los datos de mi reserva luego de su selección para validarlos y encontrarlos fácilmente.
+Observaciones: Pendientes
